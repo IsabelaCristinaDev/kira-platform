@@ -17,10 +17,9 @@ O app reaproveita, sem copiar, o código que não depende de navegador, pelo ali
 - `@kira/shared/api`: contrato, mock e gateway do chat (`api.chat`)
 - `@kira/shared/data`, `@kira/shared/utils`: profissionais e datas
 - `@kira/client/chat`: reducer, agrupamento por dia e textos do chat
-- `@kira/client/utils`: busca de profissionais
 - `@kira/context/SchedulingContext`: estado do agendamento
 
-Trocar o mock pela API real em `src/shared/api` vale para o web e para o app ao mesmo tempo.
+No app, `@kira/shared/api` carrega o `index.native.js`, que usa só o mock. O web já usa o backend; ligar o app a ele é o próximo passo depois do web (ver "Mobile" em `docs/ARQUITETURA.md`).
 
 ## O que já está convertido
 

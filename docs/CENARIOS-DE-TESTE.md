@@ -133,12 +133,19 @@ Roteiro para testar o Kira de ponta a ponta usando o frontend, com o backend e o
 
 - [ ] Logada como cliente, Perfil → histórico e pagamentos. **Esperado:** os atendimentos concluídos com os valores.
 
+## 8. Recursos simulados
+
+Estes recursos ainda não têm backend. O teste é só conferir que a tela deixa isso claro.
+
+- [ ] Perfil → Ajuda → "Conversar com o suporte". **Esperado:** abre o chat com IA, com o aviso de demonstração.
+- [ ] No detalhe de um agendamento próximo, "Acompanhar agendamento". **Esperado:** mostra o serviço, a profissional e o horário reais, e o aviso de que as etapas e o Pix são simulados.
+
 ## Ainda sem tela no app
 
 Estes recursos já existem no backend, mas o app ainda não tem a tela. Entram neste roteiro quando a tela ficar pronta (ver "O que falta no frontend" no `ARQUITETURA.md`):
 
 - Editar perfil da cliente e do profissional
-- Chat do agendamento
+- Chat cliente–empresa (do agendamento)
 - Gerenciar serviços depois do cadastro
 - Funcionárias e escolher a funcionária no agendamento
 - Profissional remarcar

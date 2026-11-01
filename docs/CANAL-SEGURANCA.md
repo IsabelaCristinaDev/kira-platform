@@ -1,10 +1,10 @@
 # Canal de segurança: backend e app
 
-Situação em 28/10/2026. Revisão do canal de denúncias no backend (branch `feat/canal-seguranca` do kira-backend) e no app (`src/shared/components/Safety.jsx`), com a lista do que falta resolver.
+Situação em 01/11/2026. Revisão do canal de denúncias no backend (branch `feat/canal-seguranca` do kira-backend) e no app (`src/shared/components/Safety.jsx`), com a lista do que falta resolver.
 
 ## Backend (`feat/canal-seguranca`)
 
-A branch ainda não foi juntada. O merge com a `main` está feito no worktree `kira-backend-canal-seguranca`, mas falta o commit. Os 269 testes passam: os 241 da `main` mais os 28 das denúncias.
+A branch ainda não foi juntada e, em 01/11, estava 51 commits atrás da `main`. O worktree `kira-backend-canal-seguranca` tem um merge sem commit, feito quando a `main` tinha 241 testes (hoje são 322), e precisa ser refeito com a `main` atual. Naquele merge, passavam os 269 testes: os 241 da `main` mais os 28 das denúncias.
 
 ### O que está certo
 
@@ -28,7 +28,7 @@ A branch ainda não foi juntada. O merge com a `main` está feito no worktree `k
 
 ### O que falta
 
-- [ ] Fazer o commit do merge com a `main`, o push (normal, sem forçar) e abrir o PR da `feat/canal-seguranca` para a `main`.
+- [ ] Refazer o merge com a `main` atual, rodar os testes, fazer o commit e o push (normal, sem forçar) e abrir o PR da `feat/canal-seguranca` para a `main`.
 - [ ] Uma rota para quem denunciou acompanhar a própria denúncia. Hoje só o admin vê o andamento.
 
 ## App (`Safety.jsx`)
@@ -54,7 +54,7 @@ A branch ainda não foi juntada. O merge com a `main` está feito no worktree `k
 
 ### O que falta
 
-- [ ] A chamada `api.reports.create` no `httpAdapter.js`, com a tradução dos motivos e o `denunciadoId` tirado do agendamento (a outra parte dele). Depois, ligar essa chamada aos dois botões.
+- [ ] A chamada `api.reports.submit` no `httpAdapter.js` (mesmo contrato do mock do Expo, em `reportContract.js`), com a tradução dos motivos e o `denunciadoId` tirado do agendamento (a outra parte dele). Depois, ligar essa chamada aos dois botões.
 - [ ] Mostrar a orientação que o backend devolve (`DenunciaRegistradaResponse`): se o perfil foi suspenso, o telefone 190 e o texto de orientação.
 - [ ] Uma área de admin para analisar as denúncias. Hoje só daria para fazer pelo Swagger.
 
@@ -62,5 +62,5 @@ A branch ainda não foi juntada. O merge com a `main` está feito no worktree `k
 
 1. **Backend:** dar uma mensagem clara no login de conta suspensa. (Esconder e bloquear o estúdio suspenso já está na `main`, pelo PR #11.)
 2. **Backend:** criar o primeiro admin, por exemplo a partir de variáveis do `.env` ao subir a aplicação.
-3. Commit do merge e PR da `feat/canal-seguranca`.
+3. Refazer o merge e abrir o PR da `feat/canal-seguranca`.
 4. **App:** ligar a denúncia no `httpAdapter.js`. Ligar os botões e corrigir as duas mensagens exige mexer em `Safety.jsx` e na tela do profissional, então isso fica para quando for a hora de mexer nas telas.

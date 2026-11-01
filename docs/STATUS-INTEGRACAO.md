@@ -1,6 +1,6 @@
 # Integração do Kira: frontend e backend
 
-Situação em 29/10/2026. Lista do que o app (kira-platform) já usa do backend (kira-backend).
+Situação em 01/11/2026. Lista do que o app web (kira-platform) já usa do backend (kira-backend). O sistema será web e mobile: a prioridade agora é terminar o web, e o app Expo (`mobile/`) será ligado ao backend depois (ver "Mobile" no `ARQUITETURA.md`).
 
 ## Funcionando: frontend ligado ao backend
 
@@ -45,16 +45,16 @@ Situação em 29/10/2026. Lista do que o app (kira-platform) já usa do backend 
 
 ## Integrado na API, mas ainda sem tela
 
-As chamadas já existem em `src/shared/api/httpAdapter.js` (com conversão e testes). Falta só a tela usar.
+As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e, nos casos marcados, completar a chamada ou a conversão.
 
-| Função                                | Chamadas (`api.…`)                                                                                                                                    | Situação na tela                                         |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| Chat do agendamento                   | `messages.listByAppointment`, `send`, `markRead`                                                                                                      | O botão "Conversar com…" ainda não faz nada              |
-| Gerenciar serviços depois do cadastro | `services.create`, `update`, `deactivate`                                                                                                             | Os serviços só são definidos no cadastro do profissional |
-| Funcionárias                          | `staff.listForMyBusiness`, `create`, `update`, `deactivate`, `agendaDay`, `agendaWeek`, `listBlocks`, `createBlock`, `removeBlock`, `commissionTotal` | Não há tela de funcionárias                              |
-| Profissional remarcar                 | `appointments.rescheduleAsBusiness`                                                                                                                   | A agenda do profissional só tem concluir e cancelar      |
-| Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha                       |
-| Painel pronto do backend              | `dashboard.getMine({ from, to })`                                                                                                                     | O app ainda calcula os números no navegador              |
+| Função                                | Chamadas (`api.…`)                                                                                                                                    | Situação na tela                                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Chat cliente–empresa (do agendamento) | `messages.listByAppointment`, `send`, `markRead`                                                                                                      | O botão "Conversar com…" ainda não faz nada                                                 |
+| Gerenciar serviços depois do cadastro | `services.create`, `update`, `deactivate`                                                                                                             | Os serviços só são definidos no cadastro do profissional                                    |
+| Funcionárias                          | `staff.listForMyBusiness`, `create`, `update`, `deactivate`, `agendaDay`, `agendaWeek`, `listBlocks`, `createBlock`, `removeBlock`, `commissionTotal` | Não há tela de funcionárias                                                                 |
+| Profissional remarcar                 | `appointments.rescheduleAsBusiness`                                                                                                                   | A agenda do profissional só tem concluir e cancelar                                         |
+| Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha; os horários livres ainda não enviam `funcionariaId`     |
+| Painel pronto do backend              | `dashboard.getMine({ from, to })`                                                                                                                     | O app ainda calcula os números no navegador; `toDashboard` ainda não lê os campos do PR #12 |
 
 ### Problemas no backend encontrados na integração
 
@@ -74,12 +74,14 @@ As chamadas já existem em `src/shared/api/httpAdapter.js` (com conversão e tes
 
 ## O app tem, mas o backend não
 
+- **Chat com IA (atendimento):** tela pronta em `/cliente/atendimento`, com respostas simuladas (`api.chat`) e aviso de demonstração. Futuro: n8n. É outro chat, diferente do cliente–empresa (`api.messages`). Os cards de profissional usam dados de exemplo, então abrir o perfil de um deles dá erro.
+- **Acompanhar agendamento:** mostra o agendamento real, mas as etapas e o Pix são simulados (`api.bookings`), com aviso de demonstração.
 - Fotos, favoritas, emergência, gift cards, fidelidade, cupons e formas de pagamento.
 - **Documento e selfie do cadastro:** as fotos ficam só no navegador e não são enviadas. O backend não tem rota de upload nem campo de verificação, então o botão "Continuar para verificação facial" não verifica nada. Falta decidir entre verificação por um serviço externo (guardar só o resultado e descartar a selfie), revisão manual dos documentos ou esconder essas telas por enquanto.
 
 ## Situação do backend
 
-Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os PRs #8, #9, #10, #11 #12 e #13 (funcionária, comissões, horário por funcionária, rota de admin, conta desativada, painel completo e editar perfil). A edição de perfil ainda não tem tela no app. O [PR #7](https://github.com/IsabelaCristinaDev/kira-backend/pull/7) juntou a pilha de branches que faltava:
+Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os PRs #8, #9, #10, #11, #12, #13 e #14 (funcionária, comissões, horário por funcionária, rota de admin, conta desativada, painel completo, editar perfil, categoria no serviço e coordenadas do estúdio). A edição de perfil, a categoria e a distância ainda não têm tela no app. O [PR #7](https://github.com/IsabelaCristinaDev/kira-backend/pull/7) juntou a pilha de branches que faltava:
 
 - Só o estúdio dono conclui ou cancela, sem erro 500 ao cancelar
 - Confere o dono nas rotas de agendamento e o estúdio dono nas rotas do estabelecimento
@@ -88,9 +90,11 @@ Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os 
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 300 (o `contextLoads` precisa do banco local no ar). No app, os 69 testes passam.
+Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 115 testes passam.
 
 ## Para tudo funcionar de verdade
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
-2. **Telas que faltam no app:** chat do agendamento, gerenciar serviços, funcionárias, profissional remarcar, escolher a funcionária no agendamento e usar o painel do backend. As chamadas já estão prontas.
+2. **Telas que faltam no app:** chat cliente–empresa, gerenciar serviços, funcionárias, profissional remarcar, escolher a funcionária no agendamento, editar perfil, categoria e distância, e usar o painel do backend.
+3. **Chamadas e conversões que faltam:** as rotas de perfil, o `funcionariaId` nos horários livres, a `categoria` e as coordenadas nos mappers e os campos novos do `toDashboard`.
+4. **Hospedar o backend e o web:** hoje tudo roda só local.
