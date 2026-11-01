@@ -167,6 +167,20 @@ export const toMessage = (m, myId = null) => ({
   mine: myId != null && m.remetenteId === myId,
 });
 
+// Linha da lista de conversas: `unread` é o que a pessoa recebeu e ainda não leu
+export const toConversation = (c) => ({
+  appointmentId: c.agendamentoId,
+  otherName: c.nomeOutraParte,
+  otherPhoto: c.fotoOutraParte ?? null,
+  service: c.nomeServico,
+  appointmentStart: parseLocalDateTime(c.dataHoraInicio),
+  appointmentStatus: c.statusAgendamento,
+  lastMessage: c.ultimaMensagem,
+  lastMessageMine: Boolean(c.ultimaMensagemMinha),
+  lastMessageAt: parseLocalDateTime(c.dataUltimaMensagem),
+  unread: c.naoLidas,
+});
+
 // O painel usa java.time.DayOfWeek ("MONDAY"); a tela usa as chaves de `weekDays`
 const dayOfWeekToKey = {
   MONDAY: "SEGUNDA",

@@ -110,8 +110,8 @@ A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela 
 
 | Tela                                                | O que precisa mostrar                                                                                                                                      | Integração                                                                                      |
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Backend pronto na branch `feat/chat-conversas`; falta a chamada e o hook                        |
-| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Vem da lista de conversas; falta o canal ao vivo                                                |
+| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Pronta: `useConversations()` traz `conversations`                                               |
+| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Pronta: `useConversations()` traz `totalUnread`, ao vivo                                        |
 | **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Falta o backend e a integração                                                                  |
 | **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                |
 | **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | `professionals.listStaff` e `staffId` prontos; `availability.get` ainda não envia a funcionária |
@@ -146,6 +146,7 @@ A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela 
 ### Outras telas com a chamada já pronta
 
 - [x] **Chat cliente–empresa (do agendamento):** feito, com WebSocket. Sem a conexão, a conversa atualiza por consulta a cada 10 segundos.
+- [ ] **Áudio no chat:** gravar, enviar e ouvir mensagens de voz. Depende do armazenamento de arquivos do backend (o mesmo do upload de fotos).
 - [ ] **Notificação de mensagem nova, como no Instagram:** lista de conversas, contador ao vivo e notificação com o app fechado (web push no web; push do celular quando o mobile chegar). E-mail não faz parte do chat.
 - [ ] **Conversa de agendamento cancelado no profissional:** a agenda do dia esconde os cancelados, então o estúdio não abre esse histórico.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
@@ -170,6 +171,34 @@ A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela 
 
 - [ ] **Fotos, favoritas, emergência, busca no servidor e pagamentos:** cada um quando o passo correspondente de "O que falta no backend" estiver pronto.
 - [ ] **Denúncia (por último, com o canal de segurança):** `api.reports.submit` real no web (hoje só existe o mock do Expo), com a tradução dos motivos, ligar os botões de `Safety.jsx` e corrigir as mensagens (ver `CANAL-SEGURANCA.md`).
+
+## Pendências do chat
+
+Situação em 01/11/2026.
+
+**Integração**
+
+- [ ] **Notificação com o app fechado (web):** falta o registro de aparelhos, o envio e a permissão do navegador.
+- [ ] **Áudio no chat:** depende do armazenamento de arquivos do backend. Fazer junto com o upload de fotos.
+
+**Testes que faltam**
+
+- [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`).
+- [ ] Encerrar a conexão ao vivo quando a pessoa sai da conta.
+- [ ] `useConversations()` em uma tela de verdade, quando a lista de conversas e o número do menu existirem.
+- [ ] Chat com contas reais no banco local (seção 7 do `CENARIOS-DE-TESTE.md`).
+
+**Limitações conhecidas**
+
+- [ ] Token que vence com a conexão aberta: a conexão continua ativa até cair.
+- [ ] Broker em memória: funciona com uma instância do backend.
+- [ ] O `lastReceived` também recebe mensagens da conversa aberta: a tela decide se mostra o aviso.
+
+**Antes de publicar**
+
+- [ ] Fazer o merge dos PRs do backend e do PR #13, nessa ordem.
+- [ ] Colocar o domínio do site nas origens permitidas do backend e em `FRONTEND_URL`.
+- [ ] Fazer uma revisão de segurança completa.
 
 ## Mobile (depois do web)
 

@@ -9,6 +9,7 @@ import {
   toClientRegistration,
   toDashboard,
   toLocalDateTime,
+  toConversation,
   toMessage,
   toProfessional,
   toProfessionalRegistration,
@@ -235,6 +236,31 @@ describe("gestão do estúdio", () => {
     };
     expect(toMessage(m, "c1")).toMatchObject({ mine: true, read: false, text: "Oi", senderName: "Ana" });
     expect(toMessage(m, "s1").mine).toBe(false);
+  });
+  it("converte a linha da lista de conversas", () => {
+    const c = toConversation({
+      agendamentoId: "a1",
+      nomeOutraParte: "Ana Lima",
+      fotoOutraParte: null,
+      nomeServico: "Corte",
+      dataHoraInicio: "2026-11-04T12:00:00",
+      statusAgendamento: "CANCELADO",
+      ultimaMensagem: "Oi",
+      ultimaMensagemMinha: true,
+      dataUltimaMensagem: "2026-11-01T09:30:00",
+      naoLidas: 2,
+    });
+    expect(c).toMatchObject({
+      appointmentId: "a1",
+      otherName: "Ana Lima",
+      otherPhoto: null,
+      service: "Corte",
+      appointmentStatus: "CANCELADO",
+      lastMessage: "Oi",
+      lastMessageMine: true,
+      unread: 2,
+    });
+    expect(c.lastMessageAt).toEqual(new Date(2026, 10, 1, 9, 30));
   });
   it("converte o painel e o dia da semana do java.time", () => {
     const d = toDashboard({

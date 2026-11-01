@@ -10,6 +10,7 @@ import {
   toDashboard,
   toLocalDate,
   toLocalDateTime,
+  toConversation,
   toMessage,
   toProfessional,
   toProfessionalRegistration,
@@ -22,7 +23,7 @@ import {
   toTimeBlockRequest,
 } from "./mappers";
 import { onlyDigits } from "../utils/format";
-import { subscribeToConversation } from "./messageSocket";
+import { subscribeToConversation, subscribeToUserChannel } from "./messageSocket";
 
 // O backend recebe o id do usuário logado na URL (ex.: /api/agendamentos/cliente/{id})
 const currentUserId = () => {
@@ -264,6 +265,15 @@ export const httpAdapter = {
       );
     },
     markRead: (id) => request(`/api/mensagens/${id}/lida`, { method: "PATCH" }),
+    listConversations: async () => (await request("/api/mensagens/conversas")).map(toConversation),
+    // Aviso de que a lista mudou: `message` é a mensagem nova; sem ela, uma conversa foi lida
+    subscribeToChanges: ({ onChange, onStatus }) => {
+      const myId = currentUserId();
+      return subscribeToUserChannel(myId, {
+        onNotice: (aviso) => onChange({ message: aviso.mensagem ? toMessage(aviso.mensagem, myId) : null }),
+        onStatus,
+      });
+    },
     // Marca de uma vez o que o usuário logado recebeu na conversa
     markAllRead: (appointmentId) => request(`/api/mensagens/agendamento/${appointmentId}/lidas`, { method: "PATCH" }),
     subscribe: (appointmentId, { onMessage, onStatus }) =>

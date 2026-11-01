@@ -1,10 +1,10 @@
-// Conversa de um agendamento em tempo real: STOMP sobre WebSocket, com reconexão e token renovado · API: kira-backend (/ws)
+// Chat em tempo real: STOMP sobre WebSocket, com reconexão e token renovado · API: kira-backend (/ws)
 import { Client } from "@stomp/stompjs";
 import { authStore, refreshToken, webSocketUrl } from "./http";
 
-// Devolve a função que encerra a conexão. `onStatus(true)` a cada conexão aberta: a tela busca a
-// conversa de novo para pegar o que chegou enquanto estava desconectada.
-export function subscribeToConversation(appointmentId, { onMessage, onStatus }) {
+// Devolve a função que encerra a conexão. `onStatus(true)` a cada conexão aberta: quem usa busca os
+// dados de novo para pegar o que chegou enquanto estava desconectado.
+const subscribeTo = (destination, { onData, onStatus }) => {
   const client = new Client({
     brokerURL: webSocketUrl(),
     reconnectDelay: 3000,
@@ -12,7 +12,7 @@ export function subscribeToConversation(appointmentId, { onMessage, onStatus }) 
       client.connectHeaders = { Authorization: `Bearer ${authStore.get()?.token}` };
     },
     onConnect: () => {
-      client.subscribe(`/topic/agendamentos/${appointmentId}/mensagens`, (frame) => onMessage(JSON.parse(frame.body)));
+      client.subscribe(destination, (frame) => onData(JSON.parse(frame.body)));
       onStatus(true);
     },
     onWebSocketClose: () => onStatus(false),
@@ -25,4 +25,12 @@ export function subscribeToConversation(appointmentId, { onMessage, onStatus }) 
   });
   client.activate();
   return () => client.deactivate();
-}
+};
+
+// Mensagens de uma conversa aberta
+export const subscribeToConversation = (appointmentId, { onMessage, onStatus }) =>
+  subscribeTo(`/topic/agendamentos/${appointmentId}/mensagens`, { onData: onMessage, onStatus });
+
+// Canal da pessoa: avisa quando a lista de conversas muda, mesmo sem nenhuma conversa aberta
+export const subscribeToUserChannel = (userId, { onNotice, onStatus }) =>
+  subscribeTo(`/topic/usuarios/${userId}/conversas`, { onData: onNotice, onStatus });

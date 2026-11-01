@@ -103,6 +103,21 @@
  */
 
 /**
+ * Conversa da lista, da mais recente para a mais antiga.
+ * @typedef {Object} Conversation
+ * @property {string} appointmentId
+ * @property {string} otherName            com quem é a conversa
+ * @property {string|null} otherPhoto
+ * @property {string} service
+ * @property {Date} appointmentStart
+ * @property {string} appointmentStatus    status do backend ("CANCELADO"…)
+ * @property {string} lastMessage
+ * @property {boolean} lastMessageMine
+ * @property {Date} lastMessageAt
+ * @property {number} unread
+ */
+
+/**
  * Painel do estúdio (`/dashboard`): só atendimentos concluídos no período.
  * @typedef {Object} Dashboard
  * @property {number} revenue

@@ -40,3 +40,6 @@ export const mergeMessage = (messages, message) =>
   [...messages.filter((m) => m.id !== message.id), message].sort(
     (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
   );
+
+/** Número do menu: total de mensagens não lidas em todas as conversas. */
+export const totalUnread = (conversations) => conversations.reduce((total, c) => total + c.unread, 0);
