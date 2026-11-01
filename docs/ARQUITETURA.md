@@ -102,7 +102,28 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 ## O que falta no frontend
 
-Telas e ajustes do app para usar o que o backend já tem. Por enquanto só anotados aqui; nada disso foi feito.
+Telas e ajustes do app para usar o que o backend já tem.
+
+### Telas que faltam
+
+A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela só precisa cuidar do visual.
+
+| Tela                                                | O que precisa mostrar                                                                                                                                      | Integração                                                                                      |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Backend pronto na branch `feat/chat-conversas`; falta a chamada e o hook                        |
+| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Vem da lista de conversas; falta o canal ao vivo                                                |
+| **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Falta o backend e a integração                                                                  |
+| **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                |
+| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | `professionals.listStaff` e `staffId` prontos; `availability.get` ainda não envia a funcionária |
+| **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                             |
+| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Backend pronto; falta a chamada                                                                 |
+| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Backend pronto; falta a chamada                                                                 |
+| **Filtro por categoria e distância** (ajuste)       | Filtrar pela categoria do serviço e mostrar a distância na lista e no perfil                                                                               | Backend pronto; falta a conversão                                                               |
+| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Backend pronto; falta enviar o campo                                                            |
+| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Backend pronto; falta a conversão                                                               |
+| **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                                   |
+
+**Telas já feitas, para revisar o visual:** remarcar (cliente e profissional), conversa do agendamento (cliente e profissional), botões "Remarcar" e "Conversar com…" na agenda do profissional e aviso de "Demonstração" no chat com IA e no acompanhamento.
 
 ### Painel do profissional (backend pronto no PR #12)
 
@@ -125,7 +146,7 @@ Telas e ajustes do app para usar o que o backend já tem. Por enquanto só anota
 ### Outras telas com a chamada já pronta
 
 - [x] **Chat cliente–empresa (do agendamento):** feito, com WebSocket. Sem a conexão, a conversa atualiza por consulta a cada 10 segundos.
-- [ ] **Aviso de mensagem nova:** hoje só quem está com a conversa aberta vê. Falta uma rota de não lidas no backend e um contador nas telas.
+- [ ] **Notificação de mensagem nova, como no Instagram:** lista de conversas, contador ao vivo e notificação com o app fechado (web push no web; push do celular quando o mobile chegar). E-mail não faz parte do chat.
 - [ ] **Conversa de agendamento cancelado no profissional:** a agenda do dia esconde os cancelados, então o estúdio não abre esse histórico.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
 - [x] **Profissional remarcar:** botão na agenda abre `ProRescheduleScreen`, que divide o fluxo com a cliente (`shared/components/RescheduleScreen.jsx`).
