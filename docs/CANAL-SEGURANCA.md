@@ -60,6 +60,8 @@ A branch ainda não foi juntada e, em 01/11, estava 51 commits atrás da `main`.
 
 ## Ordem sugerida
 
+O canal de segurança fica por último, depois das outras pendências do web.
+
 1. **Backend:** dar uma mensagem clara no login de conta suspensa. (Esconder e bloquear o estúdio suspenso já está na `main`, pelo PR #11.)
 2. **Backend:** criar o primeiro admin, por exemplo a partir de variáveis do `.env` ao subir a aplicação.
 3. Refazer o merge e abrir o PR da `feat/canal-seguranca`.

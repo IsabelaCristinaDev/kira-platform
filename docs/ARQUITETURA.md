@@ -29,6 +29,7 @@ Front-end em Vite + React que consome o kira-backend (Spring Boot). Em desenvolv
 | Avaliações da cliente                                  | `ClientReviewsScreen`, detalhe do agendamento        | `GET /api/avaliacoes/cliente/{id}`, `POST /api/avaliacoes/cliente` (`ReviewForm`)                   |
 | Painel, agenda, financeiro e analytics do profissional | `useBusinessData` + `professional/utils/metrics.js`  | `GET /api/agendamentos/empresa/{id}`, `/api/empresas/{id}/servicos`, `/api/avaliacoes/empresa/{id}` |
 | Concluir e cancelar (profissional)                     | `ProAgendaDashScreen`                                | `PATCH /api/agendamentos/{id}/concluir`, `/cancelar/empresa`                                        |
+| Remarcar (profissional)                                | `ProRescheduleScreen`                                | `PATCH /api/agendamentos/{id}/reagendar/empresa`                                                    |
 | Horário de funcionamento                               | `ProBusinessHoursScreen`, aviso no `ProHomeScreen`   | `GET` e `PUT /api/empresas/{id}/disponibilidade`                                                    |
 | CEP                                                    | `useCepLookup`                                       | ViaCEP (`viacep.com.br`)                                                                            |
 | Geolocalização                                         | `useLocationActivation`                              | API do navegador                                                                                    |
@@ -85,7 +86,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [ ] **Formas de pagamento, saldo e repasse.**
 - [ ] **Cupons, gift cards e fidelidade.**
 
-### 6. Canal de segurança (adiado; detalhes em `CANAL-SEGURANCA.md`)
+### 6. Canal de segurança (fica por último, depois das outras pendências; detalhes em `CANAL-SEGURANCA.md`)
 
 - [ ] **Login de conta suspensa:** mensagem própria em vez de "Usuário inexistente ou senha inválida".
 - [ ] **Primeiro admin:** criar ao subir a aplicação, a partir de variáveis do `.env`. Sem admin, ninguém analisa denúncias nem recebe o e-mail de risco imediato.
@@ -118,13 +119,13 @@ Telas e ajustes do app para usar o que o backend já tem. Por enquanto só anota
 
 - [ ] **Tela de funcionárias** no perfil do profissional: listar, criar, editar e desativar (`api.staff.*`), com a agenda do dia e da semana, os bloqueios de horário e o total de comissões.
 - [ ] **Escolher a funcionária no agendamento:** mostrar `professionals.listStaff` e mandar o `staffId` no `appointments.create`.
-- [ ] **Horários livres da funcionária escolhida:** `api.availability.get` precisa mandar `funcionariaId` para `/disponibilidade/slots`. Sem ele, a tela mostra os horários em que alguma funcionária está livre.
+- [ ] **Horários livres da funcionária escolhida:** `api.availability.get` precisa mandar `funcionariaId` para `/disponibilidade/slots` (ao remarcar, `forAppointment` já manda). Sem ele, a tela mostra os horários em que alguma funcionária está livre.
 
 ### Outras telas com a chamada já pronta
 
 - [ ] **Chat cliente–empresa (do agendamento):** ligar o botão "Conversar com…" a `api.messages.*`. Chamar `markRead` só nas mensagens com `mine: false`.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
-- [ ] **Profissional remarcar:** botão na agenda do profissional com `appointments.rescheduleAsBusiness`.
+- [x] **Profissional remarcar:** botão na agenda abre `ProRescheduleScreen`, que divide o fluxo com a cliente (`shared/components/RescheduleScreen.jsx`).
 
 ### Perfil (backend pronto no PR #13)
 
@@ -144,7 +145,7 @@ Telas e ajustes do app para usar o que o backend já tem. Por enquanto só anota
 ### Depende do backend
 
 - [ ] **Fotos, favoritas, emergência, busca no servidor e pagamentos:** cada um quando o passo correspondente de "O que falta no backend" estiver pronto.
-- [ ] **Denúncia (adiada com o canal de segurança):** `api.reports.submit` real no web (hoje só existe o mock do Expo), com a tradução dos motivos, ligar os botões de `Safety.jsx` e corrigir as mensagens (ver `CANAL-SEGURANCA.md`).
+- [ ] **Denúncia (por último, com o canal de segurança):** `api.reports.submit` real no web (hoje só existe o mock do Expo), com a tradução dos motivos, ligar os botões de `Safety.jsx` e corrigir as mensagens (ver `CANAL-SEGURANCA.md`).
 
 ## Mobile (depois do web)
 

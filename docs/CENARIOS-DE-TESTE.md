@@ -112,7 +112,15 @@ Roteiro para testar o Kira de ponta a ponta usando o frontend, com o backend e o
 - [ ] Concluir um atendimento. **Esperado:** vai para concluído; a receita da semana e o Financeiro passam a contar o valor.
 - [ ] Cancelar outro atendimento. **Esperado:** some da agenda do dia; para a cliente, aparece em cancelados.
 
-### 5.3 Financeiro e Analytics
+### 5.3 Remarcar
+
+- [ ] Na Agenda, em um atendimento ativo, "Remarcar", escolher outro dia (de outro mês também) e um horário.
+- [ ] **Esperado:** confirmação; "Ver agenda" abre o dia novo com o atendimento marcado como remarcado, e o horário antigo volta a ficar livre.
+- [ ] Para a cliente. **Esperado:** o agendamento aparece com a data nova.
+- [ ] Remarcar um atendimento para daqui a menos de 2 horas. **Esperado:** funciona (o limite de 2 horas só vale para a cliente).
+- [ ] Com duas funcionárias, deixar a do atendimento ocupada em um horário. **Esperado:** esse horário não aparece.
+
+### 5.4 Financeiro e Analytics
 
 - [ ] Abrir Financeiro e Analytics. **Esperado:** os números batem com os atendimentos concluídos (soma dos preços, serviço mais feito, dia da semana).
 
@@ -148,5 +156,4 @@ Estes recursos já existem no backend, mas o app ainda não tem a tela. Entram n
 - Chat cliente–empresa (do agendamento)
 - Gerenciar serviços depois do cadastro
 - Funcionárias e escolher a funcionária no agendamento
-- Profissional remarcar
 - Denúncia (canal de segurança)

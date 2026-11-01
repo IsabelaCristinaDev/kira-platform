@@ -11,6 +11,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 - Avaliar atendimento concluído (nota de 1 a 5 e comentário) pelo detalhe do agendamento.
 - Esqueci a senha: link no login, pedido por e-mail e tela de nova senha (abre pelo link do e-mail ou com o código).
 - Remarcar horário pelo detalhe do agendamento: mesmo serviço e profissional, novo dia e horário livre.
+- O profissional remarca pela agenda, sem o limite de 2 horas da cliente. Os horários oferecidos são os da funcionária do atendimento.
 - Chat de atendimento em `/cliente/atendimento` com dados simulados: respostas da nossa inteligência artificial,
   cartão de profissional, sugestão de horário, transferência para atendente, falha de envio e modo sem conexão.
 - Contrato `api.chat` pronto para conectar ao n8n (mensagens, transferência e eventos).

@@ -33,7 +33,7 @@ Situação em 01/11/2026. Lista do que o app web (kira-platform) já usa do back
 | ------------------------------------------------------------- | ----------------------------------- |
 | Painel: clientes do dia, receita da semana e nota             | Início                              |
 | Agenda com calendário                                         | Agenda                              |
-| Concluir e cancelar atendimento                               | Agenda                              |
+| Concluir, remarcar e cancelar atendimento                     | Agenda                              |
 | Horário de funcionamento (dias e horas em que atende)         | Perfil → "Horário de funcionamento" |
 | Financeiro e analytics (calculados a partir dos agendamentos) | Financeiro / Analytics              |
 | Avaliações recebidas                                          | Painel                              |
@@ -52,7 +52,6 @@ As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e,
 | Chat cliente–empresa (do agendamento) | `messages.listByAppointment`, `send`, `markRead`                                                                                                      | O botão "Conversar com…" ainda não faz nada                                                 |
 | Gerenciar serviços depois do cadastro | `services.create`, `update`, `deactivate`                                                                                                             | Os serviços só são definidos no cadastro do profissional                                    |
 | Funcionárias                          | `staff.listForMyBusiness`, `create`, `update`, `deactivate`, `agendaDay`, `agendaWeek`, `listBlocks`, `createBlock`, `removeBlock`, `commissionTotal` | Não há tela de funcionárias                                                                 |
-| Profissional remarcar                 | `appointments.rescheduleAsBusiness`                                                                                                                   | A agenda do profissional só tem concluir e cancelar                                         |
 | Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha; os horários livres ainda não enviam `funcionariaId`     |
 | Painel pronto do backend              | `dashboard.getMine({ from, to })`                                                                                                                     | O app ainda calcula os números no navegador; `toDashboard` ainda não lê os campos do PR #12 |
 
@@ -65,7 +64,7 @@ As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e,
 
 ## O backend tem, mas o app não usa
 
-- **Denúncias (só na `feat/canal-seguranca`):** `POST /api/denuncias` e as rotas de análise em `/api/admin/denuncias`. A branch parte de um commit antigo e ainda não foi juntada. O app tem a tela de denúncia, mas ela não envia nada. Os motivos também não batem: o app usa `endereco_invalido` e `risco_imediato`, e o backend espera `ENDERECO_FALSO`, `LOCAL_NAO_VALIDADO` e `PERIGO_DURANTE_ATENDIMENTO`.
+- **Denúncias (só na `feat/canal-seguranca`; canal de segurança fica por último):** `POST /api/denuncias` e as rotas de análise em `/api/admin/denuncias`. A branch parte de um commit antigo e ainda não foi juntada. O app tem a tela de denúncia, mas ela não envia nada. Os motivos também não batem: o app usa `endereco_invalido` e `risco_imediato`, e o backend espera `ENDERECO_FALSO`, `LOCAL_NAO_VALIDADO` e `PERIGO_DURANTE_ATENDIMENTO`.
 
 ### Rotas que o app não usa de propósito
 
@@ -90,11 +89,11 @@ Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os 
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 115 testes passam.
+Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 120 testes passam.
 
 ## Para tudo funcionar de verdade
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
-2. **Telas que faltam no app:** chat cliente–empresa, gerenciar serviços, funcionárias, profissional remarcar, escolher a funcionária no agendamento, editar perfil, categoria e distância, e usar o painel do backend.
+2. **Telas que faltam no app:** chat cliente–empresa, gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, categoria e distância, e usar o painel do backend.
 3. **Chamadas e conversões que faltam:** as rotas de perfil, o `funcionariaId` nos horários livres, a `categoria` e as coordenadas nos mappers e os campos novos do `toDashboard`.
 4. **Hospedar o backend e o web:** hoje tudo roda só local.
