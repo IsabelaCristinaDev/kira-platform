@@ -108,22 +108,46 @@ Telas e ajustes do app para usar o que o backend já tem.
 
 A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela só precisa cuidar do visual.
 
-| Tela                                                | O que precisa mostrar                                                                                                                                      | Integração                                                                                      |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Pronta: `useConversations()` traz `conversations`                                               |
-| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Pronta: `useConversations()` traz `totalUnread`, ao vivo                                        |
-| **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Falta o backend e a integração                                                                  |
-| **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                |
-| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | `professionals.listStaff` e `staffId` prontos; `availability.get` ainda não envia a funcionária |
-| **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                             |
-| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Backend pronto; falta a chamada                                                                 |
-| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Backend pronto; falta a chamada                                                                 |
-| **Filtro por categoria e distância** (ajuste)       | Filtrar pela categoria do serviço e mostrar a distância na lista e no perfil                                                                               | Backend pronto; falta a conversão                                                               |
-| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Backend pronto; falta enviar o campo                                                            |
-| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Backend pronto; falta a conversão                                                               |
-| **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                                   |
+| Tela                                                | O que precisa mostrar                                                                                                                                      | Integração                                                                                           |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Pronta: `useConversations()` traz `conversations`                                                    |
+| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Pronta: `useConversations()` traz `totalUnread`, ao vivo                                             |
+| **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Backend pronto na branch `feat/notificacao-web`; falta a integração (ver "Notificação do navegador") |
+| **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                     |
+| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | `professionals.listStaff` e `staffId` prontos; `availability.get` ainda não envia a funcionária      |
+| **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                                  |
+| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Backend pronto; falta a chamada                                                                      |
+| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Backend pronto; falta a chamada                                                                      |
+| **Filtro por categoria e distância** (ajuste)       | Filtrar pela categoria do serviço e mostrar a distância na lista e no perfil                                                                               | Backend pronto; falta a conversão                                                                    |
+| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Backend pronto; falta enviar o campo                                                                 |
+| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Backend pronto; falta a conversão                                                                    |
+| **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                                        |
 
 **Telas já feitas, para revisar o visual:** remarcar (cliente e profissional), conversa do agendamento (cliente e profissional), botões "Remarcar" e "Conversar com…" na agenda do profissional e aviso de "Demonstração" no chat com IA e no acompanhamento.
+
+### Notificação do navegador (backend pronto na branch `feat/notificacao-web`)
+
+Para a notificação chegar com o app fechado, como no Instagram.
+
+**Integração**
+
+- [ ] **Service worker:** recebe a notificação do navegador e a mostra com o nome de quem enviou e o texto. Campos recebidos: `titulo`, `corpo` e `agendamentoId`.
+- [ ] **Abrir a conversa:** ao tocar na notificação, abrir o app na conversa daquele agendamento.
+- [ ] **Não repetir:** não mostrar a notificação se a conversa já estiver aberta na tela.
+- [ ] **Chamadas:** `GET /api/notificacoes/chave-publica`, `POST` e `DELETE /api/notificacoes/dispositivos/web`, com uma função pronta para a tela pedir a permissão e registrar o navegador.
+- [ ] **Sair da conta:** remover o navegador, para a pessoa não receber notificações de uma conta que saiu.
+
+**Tela**
+
+- [ ] **Botão "Permitir notificações":** chama a função acima e mostra o resultado (permitido ou bloqueado).
+
+**Testes**
+
+- [ ] Notificação chegando de verdade no Chrome e no Firefox, com o app fechado.
+
+**Decisão pendente**
+
+- [ ] A notificação mostra o texto da mensagem (até 120 caracteres) ou só "Nova mensagem"? Hoje o backend envia o texto.
 
 ### Painel do profissional (backend pronto no PR #12)
 
@@ -178,18 +202,22 @@ Situação em 01/11/2026.
 
 **Integração**
 
-- [ ] **Notificação com o app fechado (web):** falta o registro de aparelhos, o envio e a permissão do navegador.
+- [x] **Notificação com o app fechado, backend:** registro de navegadores e envio (`/api/notificacoes`), na branch `feat/notificacao-web`.
+- [ ] **Notificação com o app fechado, integração:** ver "Notificação do navegador" em "O que falta no frontend".
 - [ ] **Áudio no chat:** depende do armazenamento de arquivos do backend. Fazer junto com o upload de fotos.
 
 **Testes que faltam**
 
 - [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`).
 - [ ] Encerrar a conexão ao vivo quando a pessoa sai da conta.
+- [ ] Notificação chegando de verdade em um navegador real. O envio só foi testado com um servidor local.
+- [ ] Notificação no iPhone: só funciona com o site adicionado à tela inicial.
 - [ ] `useConversations()` em uma tela de verdade, quando a lista de conversas e o número do menu existirem.
 - [ ] Chat com contas reais no banco local (seção 7 do `CENARIOS-DE-TESTE.md`).
 
 **Limitações conhecidas**
 
+- [ ] Notificação no celular: fica para quando o app mobile for ligado ao backend.
 - [ ] Token que vence com a conexão aberta: a conexão continua ativa até cair.
 - [ ] Broker em memória: funciona com uma instância do backend.
 - [ ] O `lastReceived` também recebe mensagens da conversa aberta: a tela decide se mostra o aviso.
@@ -198,6 +226,7 @@ Situação em 01/11/2026.
 
 - [ ] Fazer o merge dos PRs do backend e do PR #13, nessa ordem.
 - [ ] Colocar o domínio do site nas origens permitidas do backend e em `FRONTEND_URL`.
+- [ ] Gerar novas chaves de notificação para produção (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e definir `VAPID_SUBJECT` com um contato real.
 - [ ] Fazer uma revisão de segurança completa.
 
 ## Mobile (depois do web)
