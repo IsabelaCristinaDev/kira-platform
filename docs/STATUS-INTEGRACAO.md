@@ -24,6 +24,7 @@ Situação em 01/11/2026. Lista do que o app web (kira-platform) já usa do back
 | Ver a agenda: próximos, concluídos e cancelados     | Agenda                                      |
 | Cancelar (até 2 horas antes)                        | Detalhe do agendamento                      |
 | Remarcar (até 2 horas antes)                        | Detalhe do agendamento → "Remarcar horário" |
+| Chat com o estúdio, em tempo real                   | Detalhe do agendamento → "Conversar com…"   |
 | Avaliar atendimento concluído                       | Detalhe do agendamento / Minhas avaliações  |
 | Histórico e pagamentos                              | Perfil                                      |
 
@@ -34,6 +35,7 @@ Situação em 01/11/2026. Lista do que o app web (kira-platform) já usa do back
 | Painel: clientes do dia, receita da semana e nota             | Início                              |
 | Agenda com calendário                                         | Agenda                              |
 | Concluir, remarcar e cancelar atendimento                     | Agenda                              |
+| Chat com a cliente, em tempo real                             | Agenda → "Conversar com…"           |
 | Horário de funcionamento (dias e horas em que atende)         | Perfil → "Horário de funcionamento" |
 | Financeiro e analytics (calculados a partir dos agendamentos) | Financeiro / Analytics              |
 | Avaliações recebidas                                          | Painel                              |
@@ -49,7 +51,6 @@ As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e,
 
 | Função                                | Chamadas (`api.…`)                                                                                                                                    | Situação na tela                                                                            |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Chat cliente–empresa (do agendamento) | `messages.listByAppointment`, `send`, `markRead`                                                                                                      | O botão "Conversar com…" ainda não faz nada                                                 |
 | Gerenciar serviços depois do cadastro | `services.create`, `update`, `deactivate`                                                                                                             | Os serviços só são definidos no cadastro do profissional                                    |
 | Funcionárias                          | `staff.listForMyBusiness`, `create`, `update`, `deactivate`, `agendaDay`, `agendaWeek`, `listBlocks`, `createBlock`, `removeBlock`, `commissionTotal` | Não há tela de funcionárias                                                                 |
 | Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha; os horários livres ainda não enviam `funcionariaId`     |
@@ -57,6 +58,7 @@ As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e,
 
 ### Problemas no backend encontrados na integração
 
+- **Sessão não renovava (corrigido na `feat/chat-agendamento`):** token vencido recebia 403, mas o app só renova no 401. Agora, quem não está autenticado recebe 401, e o 403 fica para quem está logado sem permissão.
 - **Chat sem checagem de acesso (corrigido):** antes, qualquer pessoa logada lia qualquer conversa. Com a correção, só a cliente e o estúdio do agendamento veem as mensagens, e só quem recebeu pode marcar como lida. Quem tentar marcar a própria mensagem recebe erro, então a tela deve chamar `markRead` só para mensagens com `mine: false`. A correção já está na `main` do backend.
 - **Lista de comissões (corrigido no PR #9):** `GET /api/comissoes/funcionaria/{id}` agora devolve DTO. O app ainda usa só o total (`/total`).
 - **Funcionária no agendamento (corrigido nos PRs #8 e #10):** o `POST /api/agendamentos` só aceita funcionária ativa do próprio estúdio. O conflito de horário e os slots livres passam a valer por funcionária: com duas funcionárias livres, o estúdio aceita dois atendimentos no mesmo horário. Os slots aceitam a funcionária escolhida (`funcionariaId`).
@@ -89,11 +91,11 @@ Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os 
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 120 testes passam.
+Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 123 testes passam.
 
 ## Para tudo funcionar de verdade
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
-2. **Telas que faltam no app:** chat cliente–empresa, gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, categoria e distância, e usar o painel do backend.
+2. **Telas que faltam no app:** gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, categoria e distância, e usar o painel do backend.
 3. **Chamadas e conversões que faltam:** as rotas de perfil, o `funcionariaId` nos horários livres, a `categoria` e as coordenadas nos mappers e os campos novos do `toDashboard`.
 4. **Hospedar o backend e o web:** hoje tudo roda só local.

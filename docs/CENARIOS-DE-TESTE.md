@@ -137,11 +137,20 @@ Roteiro para testar o Kira de ponta a ponta usando o frontend, com o backend e o
 
 - [ ] Logada como profissional. **Esperado:** a avaliação aparece no painel e a nota é atualizada.
 
-## 7. Histórico
+## 7. Chat entre cliente e estúdio
+
+Abra as duas contas ao mesmo tempo (uma delas em janela anônima).
+
+- [ ] Cliente: detalhe do agendamento → "Conversar com…". Profissional: Agenda → "Conversar com…".
+- [ ] Enviar uma mensagem de cada lado. **Esperado:** aparece na hora do outro lado, sem recarregar e sem repetir.
+- [ ] Parar o backend. **Esperado:** aviso "Reconectando...". Subir de novo. **Esperado:** o aviso some, e as mensagens voltam a chegar na hora.
+- [ ] Cancelar o agendamento e abrir a conversa pelo lado da cliente. **Esperado:** o histórico aparece, sem campo de envio.
+
+## 8. Histórico
 
 - [ ] Logada como cliente, Perfil → histórico e pagamentos. **Esperado:** os atendimentos concluídos com os valores.
 
-## 8. Recursos simulados
+## 9. Recursos simulados
 
 Estes recursos ainda não têm backend. O teste é só conferir que a tela deixa isso claro.
 
@@ -153,7 +162,6 @@ Estes recursos ainda não têm backend. O teste é só conferir que a tela deixa
 Estes recursos já existem no backend, mas o app ainda não tem a tela. Entram neste roteiro quando a tela ficar pronta (ver "O que falta no frontend" no `ARQUITETURA.md`):
 
 - Editar perfil da cliente e do profissional
-- Chat cliente–empresa (do agendamento)
 - Gerenciar serviços depois do cadastro
 - Funcionárias e escolher a funcionária no agendamento
 - Denúncia (canal de segurança)

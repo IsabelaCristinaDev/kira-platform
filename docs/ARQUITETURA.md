@@ -15,28 +15,29 @@ Front-end em Vite + React que consome o kira-backend (Spring Boot). Em desenvolv
 
 ## O que roda em cada integração
 
-| Integração                                             | Onde roda                                            | Endpoint                                                                                            |
-| ------------------------------------------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Login, refresh e logout                                | `LoginScreen`, `SessionContext`, `http.js`           | `POST /api/auth/login`, `/refresh`, `/logout`                                                       |
-| Esqueci a senha                                        | `ForgotPasswordScreen`, `ResetPasswordScreen`        | `POST /api/auth/recuperar-senha`, `/redefinir-senha`                                                |
-| Cadastro                                               | `ClientTermsScreen`, `ProTermsScreen`                | `POST /api/auth/registro/cliente`, `/registro/empresa`                                              |
-| Busca, Home e ranking                                  | `useProfessionals`, `useSearchScreen`, `useRanking`  | `GET /api/studios` + `GET /api/studios/{id}/servicos` (um por estúdio)                              |
-| Perfil do profissional                                 | `ClientProfessionalProfileScreen`                    | `GET /api/studios/{id}`, `/servicos`, `/avaliacoes`                                                 |
-| Horários livres                                        | `ClientSchedulingScreen`                             | `GET /api/empresas/{id}/disponibilidade/slots?servicoId&data`                                       |
-| Agendar e cancelar                                     | `ClientSchedulingScreen`, `ClientAgendaDetailScreen` | `POST /api/agendamentos/cliente/{id}`, `PATCH /api/agendamentos/{id}/cancelar`                      |
-| Remarcar                                               | `ClientRescheduleScreen`                             | `PATCH /api/agendamentos/{id}/reagendar/cliente`                                                    |
-| Agenda, histórico, pagamentos                          | telas da agenda e do perfil do cliente               | `GET /api/agendamentos/cliente/{id}`                                                                |
-| Avaliações da cliente                                  | `ClientReviewsScreen`, detalhe do agendamento        | `GET /api/avaliacoes/cliente/{id}`, `POST /api/avaliacoes/cliente` (`ReviewForm`)                   |
-| Painel, agenda, financeiro e analytics do profissional | `useBusinessData` + `professional/utils/metrics.js`  | `GET /api/agendamentos/empresa/{id}`, `/api/empresas/{id}/servicos`, `/api/avaliacoes/empresa/{id}` |
-| Concluir e cancelar (profissional)                     | `ProAgendaDashScreen`                                | `PATCH /api/agendamentos/{id}/concluir`, `/cancelar/empresa`                                        |
-| Remarcar (profissional)                                | `ProRescheduleScreen`                                | `PATCH /api/agendamentos/{id}/reagendar/empresa`                                                    |
-| Horário de funcionamento                               | `ProBusinessHoursScreen`, aviso no `ProHomeScreen`   | `GET` e `PUT /api/empresas/{id}/disponibilidade`                                                    |
-| CEP                                                    | `useCepLookup`                                       | ViaCEP (`viacep.com.br`)                                                                            |
-| Geolocalização                                         | `useLocationActivation`                              | API do navegador                                                                                    |
-| Câmera da selfie                                       | `useSelfieCamera`                                    | API do navegador                                                                                    |
-| Chat de IA (atendimento)                               | `ClientChatScreen`, `useChat`                        | Mock (`api.chat`, futuro n8n). É outro chat, diferente do cliente–empresa (`api.messages`)          |
-| Acompanhar agendamento                                 | `ClientBookingTrackingScreen`, `useBookingTracking`  | Agendamento real do backend; etapas e Pix em mock (`api.bookings`)                                  |
-| Fontes                                                 | `App.jsx`                                            | Google Fonts                                                                                        |
+| Integração                                             | Onde roda                                                         | Endpoint                                                                                                                                     |
+| ------------------------------------------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Login, refresh e logout                                | `LoginScreen`, `SessionContext`, `http.js`                        | `POST /api/auth/login`, `/refresh`, `/logout`                                                                                                |
+| Esqueci a senha                                        | `ForgotPasswordScreen`, `ResetPasswordScreen`                     | `POST /api/auth/recuperar-senha`, `/redefinir-senha`                                                                                         |
+| Cadastro                                               | `ClientTermsScreen`, `ProTermsScreen`                             | `POST /api/auth/registro/cliente`, `/registro/empresa`                                                                                       |
+| Busca, Home e ranking                                  | `useProfessionals`, `useSearchScreen`, `useRanking`               | `GET /api/studios` + `GET /api/studios/{id}/servicos` (um por estúdio)                                                                       |
+| Perfil do profissional                                 | `ClientProfessionalProfileScreen`                                 | `GET /api/studios/{id}`, `/servicos`, `/avaliacoes`                                                                                          |
+| Horários livres                                        | `ClientSchedulingScreen`                                          | `GET /api/empresas/{id}/disponibilidade/slots?servicoId&data`                                                                                |
+| Agendar e cancelar                                     | `ClientSchedulingScreen`, `ClientAgendaDetailScreen`              | `POST /api/agendamentos/cliente/{id}`, `PATCH /api/agendamentos/{id}/cancelar`                                                               |
+| Remarcar                                               | `ClientRescheduleScreen`                                          | `PATCH /api/agendamentos/{id}/reagendar/cliente`                                                                                             |
+| Chat cliente–empresa                                   | `AppointmentChatScreen`, `useAppointmentChat`, `messageSocket.js` | `GET` e `POST /api/mensagens/...`, `PATCH /agendamento/{id}/lidas`; tempo real em `/ws` (STOMP), tópico `/topic/agendamentos/{id}/mensagens` |
+| Agenda, histórico, pagamentos                          | telas da agenda e do perfil do cliente                            | `GET /api/agendamentos/cliente/{id}`                                                                                                         |
+| Avaliações da cliente                                  | `ClientReviewsScreen`, detalhe do agendamento                     | `GET /api/avaliacoes/cliente/{id}`, `POST /api/avaliacoes/cliente` (`ReviewForm`)                                                            |
+| Painel, agenda, financeiro e analytics do profissional | `useBusinessData` + `professional/utils/metrics.js`               | `GET /api/agendamentos/empresa/{id}`, `/api/empresas/{id}/servicos`, `/api/avaliacoes/empresa/{id}`                                          |
+| Concluir e cancelar (profissional)                     | `ProAgendaDashScreen`                                             | `PATCH /api/agendamentos/{id}/concluir`, `/cancelar/empresa`                                                                                 |
+| Remarcar (profissional)                                | `ProRescheduleScreen`                                             | `PATCH /api/agendamentos/{id}/reagendar/empresa`                                                                                             |
+| Horário de funcionamento                               | `ProBusinessHoursScreen`, aviso no `ProHomeScreen`                | `GET` e `PUT /api/empresas/{id}/disponibilidade`                                                                                             |
+| CEP                                                    | `useCepLookup`                                                    | ViaCEP (`viacep.com.br`)                                                                                                                     |
+| Geolocalização                                         | `useLocationActivation`                                           | API do navegador                                                                                                                             |
+| Câmera da selfie                                       | `useSelfieCamera`                                                 | API do navegador                                                                                                                             |
+| Chat de IA (atendimento)                               | `ClientChatScreen`, `useChat`                                     | Mock (`api.chat`, futuro n8n). É outro chat, diferente do cliente–empresa (`api.messages`)                                                   |
+| Acompanhar agendamento                                 | `ClientBookingTrackingScreen`, `useBookingTracking`               | Agendamento real do backend; etapas e Pix em mock (`api.bookings`)                                                                           |
+| Fontes                                                 | `App.jsx`                                                         | Google Fonts                                                                                                                                 |
 
 ### Ainda sem backend ou sem tela
 
@@ -123,7 +124,9 @@ Telas e ajustes do app para usar o que o backend já tem. Por enquanto só anota
 
 ### Outras telas com a chamada já pronta
 
-- [ ] **Chat cliente–empresa (do agendamento):** ligar o botão "Conversar com…" a `api.messages.*`. Chamar `markRead` só nas mensagens com `mine: false`.
+- [x] **Chat cliente–empresa (do agendamento):** feito, com WebSocket. Sem a conexão, a conversa atualiza por consulta a cada 10 segundos.
+- [ ] **Aviso de mensagem nova:** hoje só quem está com a conversa aberta vê. Falta uma rota de não lidas no backend e um contador nas telas.
+- [ ] **Conversa de agendamento cancelado no profissional:** a agenda do dia esconde os cancelados, então o estúdio não abre esse histórico.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
 - [x] **Profissional remarcar:** botão na agenda abre `ProRescheduleScreen`, que divide o fluxo com a cliente (`shared/components/RescheduleScreen.jsx`).
 
