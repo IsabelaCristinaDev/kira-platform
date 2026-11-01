@@ -39,7 +39,7 @@ export default function ClientHelpSupportScreen() {
             ),
           )}
         </ProfileSection>
-        <SecondaryButton onClick={() => {}}>
+        <SecondaryButton onClick={() => setScreen("clientChat")}>
           <MessageCircle size={15} /> Conversar com o suporte
         </SecondaryButton>
       </div>

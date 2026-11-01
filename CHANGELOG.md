@@ -11,6 +11,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 - Avaliar atendimento concluído (nota de 1 a 5 e comentário) pelo detalhe do agendamento.
 - Esqueci a senha: link no login, pedido por e-mail e tela de nova senha (abre pelo link do e-mail ou com o código).
 - Remarcar horário pelo detalhe do agendamento: mesmo serviço e profissional, novo dia e horário livre.
+- Chat de atendimento em `/cliente/atendimento` com dados simulados: respostas da nossa inteligência artificial,
+  cartão de profissional, sugestão de horário, transferência para atendente, falha de envio e modo sem conexão.
+- Contrato `api.chat` pronto para conectar ao n8n (mensagens, transferência e eventos).
+- App React Native (Expo) em `mobile/` com abertura, login, início, busca, perfil da profissional, agendamento, ajuda e o
+  chat de atendimento, reaproveitando a lógica do web pelo alias `@kira`.
+- Provador virtual no app, com consentimento LGPD, prévia simulada, exclusão de fotos e revogação, e contrato
+  `api.tryOn` pronto para a API real.
+- Canal de segurança no app, com denúncia anônima, emergência com ligação ao 190 e registro sem anonimato, e contrato
+  `api.reports` pronto para a API real.
+- Acompanhamento do agendamento em `/cliente/agenda/acompanhar`, no estilo de acompanhar um pedido: status no topo,
+  linha do tempo (pedido enviado, profissional confirmou, pagamento confirmado, quase na hora, em atendimento,
+  concluído) e Pix com copiar código, aviso de pagamento e conferência. Contrato `api.bookings` pronto para a API real.
 
 ### Alterado
 
@@ -22,7 +34,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ### Removido
 
-- Adaptador de mock, arquivos `data/mocks.js` e `shared/data/professionals.js`, horários gerados (`getDaySchedule`) e o mapa ilustrativo da Home.
+- Adaptador de mock e dados de exemplo no web (ficam só para o app Expo e os recursos ainda simulados), arquivos `data/mocks.js` e o mapa ilustrativo da Home.
 - Saldo, próximo repasse e gift cards de exemplo, que não têm backend.
 
 ## [0.6.0] - 2026-10-14

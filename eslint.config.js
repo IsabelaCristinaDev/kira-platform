@@ -7,7 +7,7 @@ import jsxA11y from "eslint-plugin-jsx-a11y";
 import prettier from "eslint-config-prettier";
 
 export default [
-  { ignores: ["dist", "legacy", "coverage"] },
+  { ignores: ["dist", "legacy", "coverage", "mobile"] },
   js.configs.recommended,
   {
     files: ["**/*.{js,jsx}"],

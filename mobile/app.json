@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Kira",
+    "slug": "kira",
+    "version": "0.1.0",
+    "scheme": "kira",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": false, "bundleIdentifier": "br.com.kira.app" },
+    "android": { "package": "br.com.kira.app" },
+    "web": { "bundler": "metro", "output": "single" },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "A Kira usa as fotos que você escolher para criar a prévia do visual no Provador virtual.",
+          "cameraPermission": "A Kira usa a câmera para você tirar a foto do Provador virtual."
+        }
+      ]
+    ]
+  }
+}

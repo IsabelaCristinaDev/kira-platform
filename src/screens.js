@@ -4,6 +4,8 @@ import ClientAddressScreen from "./client/screens/ClientAddressScreen";
 import ClientAgendaDetailScreen from "./client/screens/ClientAgendaDetailScreen";
 import ClientRescheduleScreen from "./client/screens/ClientRescheduleScreen";
 import ClientAgendaScreen from "./client/screens/ClientAgendaScreen";
+import ClientBookingTrackingScreen from "./client/screens/ClientBookingTrackingScreen";
+import ClientChatScreen from "./client/screens/ClientChatScreen";
 import ClientCouponsScreen from "./client/screens/ClientCouponsScreen";
 import ClientDocumentScreen from "./client/screens/ClientDocumentScreen";
 import ClientDoneScreen from "./client/screens/ClientDoneScreen";
@@ -80,6 +82,7 @@ export const screens = {
   clientAgenda: ClientAgendaScreen,
   clientAgendaDetail: ClientAgendaDetailScreen,
   clientReschedule: ClientRescheduleScreen,
+  clientBookingTracking: ClientBookingTrackingScreen,
   clientProfile: ClientProfileScreen,
   clientProfileEdit: ClientProfileEditScreen,
   clientAccountSecurity: ClientAccountSecurityScreen,
@@ -89,6 +92,7 @@ export const screens = {
   clientPaymentHistory: ClientPaymentHistoryScreen,
   clientCoupons: ClientCouponsScreen,
   clientHelpSupport: ClientHelpSupportScreen,
+  clientChat: ClientChatScreen,
   clientReviews: ClientReviewsScreen,
   clientFavorites: ClientFavoritesScreen,
   clientHistory: ClientHistoryScreen,
