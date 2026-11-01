@@ -4,7 +4,7 @@ import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
 import { errorMessage } from "../../shared/api";
 import { BOOKING_STEPS, PAYMENT_STATES } from "../../shared/api/bookingContract";
-import { ErrorState, SkeletonLoading } from "../../shared/components/states";
+import { DemoNotice, ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header, SecondaryButton } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { headline, progressOf } from "../booking/bookingContent";
@@ -105,6 +105,7 @@ function BookingTracking({ appointment }) {
                 />
               </div>
             </div>
+            <DemoNotice>as etapas e o Pix são simulados e não mudam seu agendamento. Não faça pagamentos.</DemoNotice>
             {awaitingPayment && (
               <PaymentPanel payment={booking.payment} paying={paying} error={payError} onReport={reportPayment} />
             )}
