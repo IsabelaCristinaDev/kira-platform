@@ -34,6 +34,7 @@
  * @property {"PENDENTE"|"CONFIRMADO"|"CANCELADO"|"CONCLUIDO"|"REAGENDADO"} rawStatus
  * @property {string} proId
  * @property {string} proName
+ * @property {string|null} staffId
  * @property {string|null} staffName
  * @property {string} clientId
  * @property {string} clientName

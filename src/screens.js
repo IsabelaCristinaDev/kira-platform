@@ -33,6 +33,7 @@ import ClientTryOnReferenceScreen from "./client/screens/ClientTryOnReferenceScr
 import ClientTryOnResultScreen from "./client/screens/ClientTryOnResultScreen";
 import ProAddressScreen from "./professional/screens/ProAddressScreen";
 import ProAgendaDashScreen from "./professional/screens/ProAgendaDashScreen";
+import ProRescheduleScreen from "./professional/screens/ProRescheduleScreen";
 import ProAnalyticsScreen from "./professional/screens/ProAnalyticsScreen";
 import ProDocumentScreen from "./professional/screens/ProDocumentScreen";
 import ProDoneScreen from "./professional/screens/ProDoneScreen";
@@ -109,6 +110,7 @@ export const screens = {
   proDone: ProDoneScreen,
   proHome: ProHomeScreen,
   proAgendaDash: ProAgendaDashScreen,
+  proReschedule: ProRescheduleScreen,
   proProfileMenu: ProProfileMenuScreen,
   proFinance: ProFinanceScreen,
   proAnalytics: ProAnalyticsScreen,

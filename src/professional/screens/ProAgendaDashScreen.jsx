@@ -1,8 +1,9 @@
-// Agenda do profissional com calendário, concluir e cancelar · API: kira-backend (GET /api/agendamentos/empresa/{id}, PATCH /concluir e /cancelar/empresa)
+// Agenda do profissional com calendário, concluir, remarcar e cancelar · API: kira-backend (GET /api/agendamentos/empresa/{id}, PATCH /concluir e /cancelar/empresa)
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Calendar, Clock } from "lucide-react";
 import { useProDashboard } from "../../context/ProDashboardContext";
+import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
 import { api, errorMessage } from "../../shared/api";
 import { CalendarHeader, CalendarMonth } from "../../shared/components/Calendar";
@@ -148,8 +149,10 @@ const actionButton = (tone) => ({
   }),
 });
 
-// Atendimento do dia. Ativo: concluir (depois que o horário começou) ou cancelar (com confirmação).
+// Atendimento do dia. Ativo: concluir (depois que o horário começou), remarcar ou cancelar (com confirmação).
 function AppointmentCard({ appointment: a }) {
+  const { setSelectedAppointmentId } = useScheduling();
+  const { setScreen } = useSession();
   const queryClient = useQueryClient();
   const [confirmingCancel, setConfirmingCancel] = useState(false);
   const onSuccess = () => queryClient.invalidateQueries({ queryKey: ["appointments"] });
@@ -247,6 +250,17 @@ function AppointmentCard({ appointment: a }) {
                   {complete.isPending ? "Concluindo..." : "Concluir atendimento"}
                 </button>
               )}
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setSelectedAppointmentId(a.id);
+                  setScreen("proReschedule");
+                }}
+                style={actionButton("neutral")}
+              >
+                Remarcar
+              </button>
               <button
                 type="button"
                 disabled={busy}

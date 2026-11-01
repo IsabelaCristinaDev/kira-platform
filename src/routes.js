@@ -59,6 +59,7 @@ export const professionalPaths = area("/profissional", [
   ["proDone", "cadastro/concluido"],
   ["proHome", "painel"],
   ["proAgendaDash", "agenda"],
+  ["proReschedule", "agenda/remarcar"],
   ["proProfileMenu", "perfil"],
   ["proFinance", "financeiro"],
   ["proAnalytics", "analytics"],

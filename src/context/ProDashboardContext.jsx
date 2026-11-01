@@ -13,11 +13,18 @@ export function ProDashboardProvider({ children }) {
 
   const changeProMonth = (delta) => setProViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + delta, 1));
 
+  // Abre a agenda em um dia, mesmo que seja de outro mês
+  const goToProDate = (date) => {
+    setProSelectedDate(date);
+    setProViewMonth(startOfMonth(date));
+  };
+
   const value = {
     proViewMonth,
     proSelectedDate,
     setProSelectedDate,
     changeProMonth,
+    goToProDate,
     loyaltySettings,
     setLoyaltySettings,
   };

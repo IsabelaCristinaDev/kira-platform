@@ -99,6 +99,7 @@ function Prototype() {
         ["Concluído", "proDone"],
         ["Painel", "proHome"],
         ["Agenda", "proAgendaDash"],
+        ["Agenda: remarcar", "proReschedule"],
         ["Perfil (menu)", "proProfileMenu"],
         ["Horário", "proBusinessHours"],
         ["Financeiro", "proFinance"],

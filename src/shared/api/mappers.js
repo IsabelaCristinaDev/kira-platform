@@ -81,6 +81,7 @@ export const toAppointment = (a, now = new Date()) => {
     rawStatus: a.status,
     proId: a.empresaId,
     proName: a.nomeEmpresa,
+    staffId: a.funcionariaId ?? null,
     staffName: a.nomeFuncionaria ?? null,
     clientId: a.clienteId,
     clientName: a.nomeCliente,

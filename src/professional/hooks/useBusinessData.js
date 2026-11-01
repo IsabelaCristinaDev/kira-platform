@@ -2,11 +2,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../shared/api";
 
+export const useBusinessAppointments = () =>
+  useQuery({ queryKey: ["appointments", "business"], queryFn: api.appointments.listForMyBusiness });
+
 export function useBusinessData() {
-  const appointments = useQuery({
-    queryKey: ["appointments", "business"],
-    queryFn: api.appointments.listForMyBusiness,
-  });
+  const appointments = useBusinessAppointments();
   const services = useQuery({ queryKey: ["services", "business"], queryFn: api.services.listForMyBusiness });
   const reviews = useQuery({ queryKey: ["reviews", "business"], queryFn: api.reviews.listForMyBusiness });
   const queries = [appointments, services, reviews];

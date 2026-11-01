@@ -37,6 +37,22 @@ const currentUserId = () => {
 
 const listServices = (studioId) => request(`/api/studios/${studioId}/servicos`, { auth: false });
 
+const availableSlots = async ({ proId, serviceId, staffId, date }) => {
+  const slots = await request(`/api/empresas/${proId}/disponibilidade/slots`, {
+    query: { servicoId: serviceId, data: toLocalDate(date), funcionariaId: staffId },
+    auth: false,
+  });
+  return slots.map(toSlotTime);
+};
+
+const isBusinessRule = (e) => e instanceof ApiError && e.code === "REGRA_DE_NEGOCIO";
+
+// Dia sem expediente volta como 400 (regra de negócio): para a tela é só um dia sem horários
+const noSlotsOnBusinessRule = (e) => {
+  if (isBusinessRule(e)) return [];
+  throw e;
+};
+
 export const httpAdapter = {
   auth: {
     // LoginResponse: { token, refreshToken, tipo, nome, email, id? }
@@ -94,19 +110,16 @@ export const httpAdapter = {
     },
   },
   availability: {
-    // Dia sem expediente volta como 400 (regra de negócio): para a tela é só um dia sem horários
-    get: async ({ proId, serviceId, date }) => {
-      try {
-        const slots = await request(`/api/empresas/${proId}/disponibilidade/slots`, {
-          query: { servicoId: serviceId, data: toLocalDate(date) },
-          auth: false,
-        });
-        return slots.map(toSlotTime);
-      } catch (e) {
-        if (e instanceof ApiError && e.code === "REGRA_DE_NEGOCIO") return [];
-        throw e;
-      }
-    },
+    get: ({ proId, serviceId, date }) => availableSlots({ proId, serviceId, date }).catch(noSlotsOnBusinessRule),
+    // Para remarcar: a funcionária continua a mesma. Se ela foi desativada, o backend recusa os horários dela,
+    // mas remarca com quem estiver livre, então a lista passa a ser a do estúdio.
+    forAppointment: ({ appointment: { proId, serviceId, staffId }, date }) =>
+      availableSlots({ proId, serviceId, staffId, date })
+        .catch((e) => {
+          if (staffId && isBusinessRule(e)) return availableSlots({ proId, serviceId, date });
+          throw e;
+        })
+        .catch(noSlotsOnBusinessRule),
   },
   appointments: {
     listMine: async () => {
