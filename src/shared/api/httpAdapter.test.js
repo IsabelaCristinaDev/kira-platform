@@ -1,4 +1,4 @@
-// Testes do adaptador HTTP: horários livres por funcionária e remarcar pelo estúdio · fetch simulado
+// Testes do adaptador HTTP: horários livres por funcionária e conversa como lida · fetch simulado
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { httpAdapter as api } from "./httpAdapter";
 
@@ -52,5 +52,17 @@ describe("availability.forAppointment", () => {
       vi.fn().mockImplementation(async () => json(500, { mensagem: "falhou" })),
     );
     await expect(api.availability.forAppointment({ appointment, date })).rejects.toMatchObject({ status: 500 });
+  });
+});
+
+describe("messages.markAllRead", () => {
+  it("marca a conversa inteira em uma chamada só", async () => {
+    const fetch = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal("fetch", fetch);
+    await api.messages.markAllRead("a1");
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const [url, init] = fetch.mock.calls[0];
+    expect(String(url)).toContain("/api/mensagens/agendamento/a1/lidas");
+    expect(init.method).toBe("PATCH");
   });
 });

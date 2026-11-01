@@ -163,7 +163,7 @@ export const toMessage = (m, myId = null) => ({
   senderName: m.nomeRemetente,
   text: m.conteudo,
   read: Boolean(m.lida),
-  sentAt: parseLocalDateTime(m.dataEnvio),
+  createdAt: parseLocalDateTime(m.dataEnvio),
   mine: myId != null && m.remetenteId === myId,
 });
 

@@ -153,7 +153,7 @@ export default function ClientAgendaDetailScreen() {
               <Route size={15} aria-hidden="true" /> Acompanhar agendamento
             </PrimaryButton>
           )}
-          <SecondaryButton onClick={() => {}}>
+          <SecondaryButton onClick={() => setScreen("clientConversation")}>
             <MessageCircle size={15} /> Conversar com {pro.name.split(" ")[0]}
           </SecondaryButton>
           {myReview && (

@@ -1,7 +1,7 @@
-// Agenda do profissional com calendário, concluir, remarcar e cancelar · API: kira-backend (GET /api/agendamentos/empresa/{id}, PATCH /concluir e /cancelar/empresa)
+// Agenda do profissional com calendário, concluir, remarcar, cancelar e conversar · API: kira-backend (GET /api/agendamentos/empresa/{id}, PATCH /concluir e /cancelar/empresa)
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, MessageCircle } from "lucide-react";
 import { useProDashboard } from "../../context/ProDashboardContext";
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
@@ -273,6 +273,24 @@ function AppointmentCard({ appointment: a }) {
           )}
         </div>
       )}
+      <button
+        type="button"
+        onClick={() => {
+          setSelectedAppointmentId(a.id);
+          setScreen("proConversation");
+        }}
+        style={{
+          ...actionButton("neutral"),
+          width: "100%",
+          marginTop: "var(--space-8)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "var(--space-6)",
+        }}
+      >
+        <MessageCircle size={14} aria-hidden="true" /> Conversar com {a.clientName.split(" ")[0]}
+      </button>
       {failed && (
         <p
           role="alert"

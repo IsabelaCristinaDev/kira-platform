@@ -1,5 +1,5 @@
-// Agrupa as mensagens do chat por dia e formata dia e hora · API: nenhuma
-import { startOfDay } from "../../shared/utils/date";
+// Mensagens de chat (IA e cliente–empresa): agrupa por dia, formata dia e hora e junta mensagem nova na lista · API: nenhuma
+import { startOfDay } from "./date";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const timeFormat = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" });
@@ -31,3 +31,12 @@ export const groupMessagesByDay = (messages, now = new Date()) => {
   }
   return groups;
 };
+
+/**
+ * Junta uma mensagem à conversa na ordem de envio. A mesma mensagem pode chegar duas vezes
+ * (resposta do envio e aviso em tempo real), então o id não se repete.
+ */
+export const mergeMessage = (messages, message) =>
+  [...messages.filter((m) => m.id !== message.id), message].sort(
+    (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+  );

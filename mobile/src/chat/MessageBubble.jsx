@@ -1,6 +1,6 @@
 // Bolhas do chat: usuário (gradiente), IA e atendente (superfície clara) e mensagem de sistema · API: nenhuma
 import { AUTHORS, CHAT_AGENTS, DELIVERY, MESSAGE_TYPES } from "@kira/shared/api/chatContract";
-import { formatTime } from "@kira/client/chat/chatMessages";
+import { formatTime } from "@kira/shared/utils/chatMessages";
 import { CircleAlert, Clock, RotateCw } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 import { GradientBox, Text } from "../components/primitives";

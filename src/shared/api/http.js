@@ -9,6 +9,9 @@ export const API_URL = (import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? "
 );
 const baseUrl = () => API_URL || globalThis.location?.origin || "http://localhost";
 
+// Mesmo endereço da API, trocando http por ws (e https por wss)
+export const webSocketUrl = () => `${baseUrl().replace(/^http/, "ws")}/ws`;
+
 const STORAGE_KEY = "kira.auth";
 
 // Sessão salva no navegador: { token, refreshToken, tipo, nome, email, id }
@@ -43,7 +46,12 @@ const toApiError = async (res) => {
   } catch {
     // corpo vazio ou não-JSON
   }
-  return new ApiError(body?.erro ?? `http_${res.status}`, body?.mensagem ?? res.statusText, res.status, body);
+  return new ApiError(
+    body?.erro ?? `http_${res.status}`,
+    body?.mensagem ?? "Não foi possível falar com o servidor.",
+    res.status,
+    body,
+  );
 };
 
 const send = (path, { method = "GET", body, query, auth = true } = {}) => {
@@ -58,7 +66,7 @@ const send = (path, { method = "GET", body, query, auth = true } = {}) => {
 
 // Uma renovação por vez, mesmo com várias requisições recebendo 401 juntas
 let refreshing = null;
-const refreshToken = () => {
+export const refreshToken = () => {
   refreshing ??= (async () => {
     const current = authStore.get();
     if (!current?.refreshToken) return false;

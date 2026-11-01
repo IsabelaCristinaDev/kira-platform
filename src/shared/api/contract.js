@@ -98,7 +98,7 @@
  * @property {string} senderName
  * @property {string} text
  * @property {boolean} read
- * @property {Date} sentAt
+ * @property {Date} createdAt
  * @property {boolean} mine                enviada pelo usuário logado
  */
 

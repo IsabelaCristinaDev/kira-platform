@@ -3,6 +3,7 @@ import ClientAccountSecurityScreen from "./client/screens/ClientAccountSecurityS
 import ClientAddressScreen from "./client/screens/ClientAddressScreen";
 import ClientAgendaDetailScreen from "./client/screens/ClientAgendaDetailScreen";
 import ClientRescheduleScreen from "./client/screens/ClientRescheduleScreen";
+import ClientConversationScreen from "./client/screens/ClientConversationScreen";
 import ClientAgendaScreen from "./client/screens/ClientAgendaScreen";
 import ClientBookingTrackingScreen from "./client/screens/ClientBookingTrackingScreen";
 import ClientChatScreen from "./client/screens/ClientChatScreen";
@@ -34,6 +35,7 @@ import ClientTryOnResultScreen from "./client/screens/ClientTryOnResultScreen";
 import ProAddressScreen from "./professional/screens/ProAddressScreen";
 import ProAgendaDashScreen from "./professional/screens/ProAgendaDashScreen";
 import ProRescheduleScreen from "./professional/screens/ProRescheduleScreen";
+import ProConversationScreen from "./professional/screens/ProConversationScreen";
 import ProAnalyticsScreen from "./professional/screens/ProAnalyticsScreen";
 import ProDocumentScreen from "./professional/screens/ProDocumentScreen";
 import ProDoneScreen from "./professional/screens/ProDoneScreen";
@@ -83,6 +85,7 @@ export const screens = {
   clientAgenda: ClientAgendaScreen,
   clientAgendaDetail: ClientAgendaDetailScreen,
   clientReschedule: ClientRescheduleScreen,
+  clientConversation: ClientConversationScreen,
   clientBookingTracking: ClientBookingTrackingScreen,
   clientProfile: ClientProfileScreen,
   clientProfileEdit: ClientProfileEditScreen,
@@ -111,6 +114,7 @@ export const screens = {
   proHome: ProHomeScreen,
   proAgendaDash: ProAgendaDashScreen,
   proReschedule: ProRescheduleScreen,
+  proConversation: ProConversationScreen,
   proProfileMenu: ProProfileMenuScreen,
   proFinance: ProFinanceScreen,
   proAnalytics: ProAnalyticsScreen,

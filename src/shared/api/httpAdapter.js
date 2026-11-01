@@ -22,6 +22,7 @@ import {
   toTimeBlockRequest,
 } from "./mappers";
 import { onlyDigits } from "../utils/format";
+import { subscribeToConversation } from "./messageSocket";
 
 // O backend recebe o id do usuário logado na URL (ex.: /api/agendamentos/cliente/{id})
 const currentUserId = () => {
@@ -263,6 +264,13 @@ export const httpAdapter = {
       );
     },
     markRead: (id) => request(`/api/mensagens/${id}/lida`, { method: "PATCH" }),
+    // Marca de uma vez o que o usuário logado recebeu na conversa
+    markAllRead: (appointmentId) => request(`/api/mensagens/agendamento/${appointmentId}/lidas`, { method: "PATCH" }),
+    subscribe: (appointmentId, { onMessage, onStatus }) =>
+      subscribeToConversation(appointmentId, {
+        onMessage: (m) => onMessage(toMessage(m, authStore.get()?.id ?? null)),
+        onStatus,
+      }),
   },
   // Painel pronto do backend; sem período, vale do dia 1º do mês até hoje
   dashboard: {

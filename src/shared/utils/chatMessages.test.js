@@ -1,6 +1,6 @@
 // Testes do agrupamento de mensagens por dia e dos rótulos de dia e hora · API: nenhuma
 import { describe, expect, it } from "vitest";
-import { dayLabel, formatTime, groupMessagesByDay } from "./chatMessages";
+import { dayLabel, formatTime, groupMessagesByDay, mergeMessage } from "./chatMessages";
 
 const now = new Date(2026, 9, 26, 15, 0);
 const at = (day, hour, minute = 0) => new Date(2026, 9, day, hour, minute).toISOString();
@@ -36,5 +36,19 @@ describe("groupMessagesByDay", () => {
     expect(groupMessagesByDay([], now)).toEqual([]);
     const groups = groupMessagesByDay([msg("a", at(25, 9)), msg("b", at(26, 9))], now);
     expect(new Set(groups.map((g) => g.key)).size).toBe(2);
+  });
+});
+
+describe("mergeMessage", () => {
+  const msg = (id, createdAt) => ({ id, createdAt: new Date(createdAt) });
+
+  it("acrescenta a mensagem nova na ordem de envio", () => {
+    const list = [msg("a", "2026-11-01T10:00:00"), msg("c", "2026-11-01T12:00:00")];
+    expect(mergeMessage(list, msg("b", "2026-11-01T11:00:00")).map((m) => m.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("não repete a mensagem que chega pelo envio e pelo tempo real", () => {
+    const list = [msg("a", "2026-11-01T10:00:00")];
+    expect(mergeMessage(list, msg("a", "2026-11-01T10:00:00"))).toHaveLength(1);
   });
 });

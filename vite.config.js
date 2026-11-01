@@ -15,6 +15,13 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           configure: (proxy) => proxy.on("proxyReq", (req) => req.removeHeader("origin")),
         },
+        // Chat em tempo real: mesma ideia, para o WebSocket
+        "/ws": {
+          target: env.VITE_API_PROXY || "http://localhost:8081",
+          changeOrigin: true,
+          ws: true,
+          configure: (proxy) => proxy.on("proxyReqWs", (req) => req.removeHeader("origin")),
+        },
       },
     },
   };
