@@ -98,10 +98,12 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 ### 7. Operação
 
 - [ ] **Painel com atendimentos concluídos:** correção na branch `fix/painel-concluidos`.
-- [ ] **Teste com banco de verdade:** os testes unitários usam dados simulados e não pegam erro de transação. Conferir com banco real os services sem `@Transactional` que leem relações (`FuncionariaService`, `ServicoService`, `EmailService`) e criar um teste de integração.
+- [ ] **Teste com banco de verdade:** `RotasComBancoRealTest`, na branch `test/integracao-banco`, percorre as rotas com um Postgres descartável (precisa de Docker; sem ele, o teste é ignorado). Falta acrescentar as rotas novas do chat e das notificações depois do merge dos PRs.
 - [ ] **Respostas de erro:** mensagens genéricas e o código certo para cada caso, na branch `fix/erro-interno-generico`. Falta o merge.
 - [ ] **E-mail:** testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a senha e entrar).
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
+- [ ] **SonarCloud do PR #17:** análise reprovada; resolver os apontamentos antes do merge.
+- [ ] **CI do backend:** confirmar que o teste com banco roda no CI, e não é ignorado por falta de Docker.
 
 ## O que falta no frontend
 
