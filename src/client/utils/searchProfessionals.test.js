@@ -16,6 +16,16 @@ describe("searchProfessionals", () => {
     expect(ids(searchProfessionals(professionals, { ...base, category: "unhas" }))).toEqual(["c"]);
     expect(ids(searchProfessionals(professionals, { ...base, category: "barba" }))).toEqual(["b"]);
   });
+  it("usa a categoria do serviço em vez das palavras", () => {
+    const pro = (id, name, services) => ({ id, name, role: "", description: "", services });
+    const lista = [
+      pro("spa", "Espaço Serena", [{ name: "Spa dos pés", category: "UNHAS" }]),
+      pro("nome", "Barbearia do Zé", [{ name: "Corte", category: "CABELO" }]),
+      pro("antigo", "Barbearia antiga", [{ name: "Navalha" }]),
+    ];
+    expect(ids(searchProfessionals(lista, { ...base, category: "unhas" }))).toEqual(["spa"]);
+    expect(ids(searchProfessionals(lista, { ...base, category: "barba" }))).toEqual(["antigo"]);
+  });
   it("busca no nome e nos serviços sem diferenciar maiúsculas", () => {
     expect(ids(searchProfessionals(professionals, { ...base, query: "STUDIO" }))).toEqual(["a"]);
     expect(ids(searchProfessionals(professionals, { ...base, query: "manicure" }))).toEqual(["c"]);

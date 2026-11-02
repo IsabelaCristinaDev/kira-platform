@@ -42,6 +42,7 @@ export const toService = (s) => ({
   description: s.descricao ?? "",
   durationMinutes: s.duracaoMinutos,
   price: Number(s.preco),
+  category: s.categoria ?? null,
 });
 
 export const formatAddress = (e) => {
@@ -67,7 +68,10 @@ export const toProfessional = (studio, services = [], reviews = null) => {
     rating: studio.mediaAvaliacoes != null ? Math.round(studio.mediaAvaliacoes * 10) / 10 : null,
     reviews: reviews ? reviews.length : null,
     price: prices.length > 0 ? Math.min(...prices) : null,
+    // A distância depende de onde a cliente está: é calculada em useProfessionals
     distance: null,
+    latitude: studio.latitude ?? null,
+    longitude: studio.longitude ?? null,
     services: active,
   };
 };
@@ -122,6 +126,8 @@ export const toServiceRequest = (s) => ({
   descricao: s.description?.trim() || null,
   duracaoMinutos: Number(s.durationMinutes),
   preco: Number(s.price),
+  // Sem categoria, o backend deduz pelo nome
+  categoria: s.category ?? null,
 });
 
 export const toStaff = (f) => ({
@@ -363,7 +369,12 @@ export const toProfessionalRegistration = (f) => {
     latitude: f.latitude ?? null,
     longitude: f.longitude ?? null,
     especialidades: f.specialties,
-    servicos: f.services.map((s) => ({ nome: s.name, preco: s.price, duracao: s.duration })),
+    servicos: f.services.map((s) => ({
+      nome: s.name,
+      preco: s.price,
+      duracao: s.duration,
+      categoria: s.category ?? null,
+    })),
     tipoEstabelecimento: isCompany ? "ESTABELECIMENTO" : "AUTONOMA",
   };
 };

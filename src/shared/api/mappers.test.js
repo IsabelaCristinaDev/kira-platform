@@ -184,7 +184,23 @@ describe("gestão do estúdio", () => {
       preco: "80.00",
       ativo: false,
     });
-    expect(s).toEqual({ id: "x", name: "Corte", description: "", durationMinutes: 45, price: 80, active: false });
+    expect(s).toEqual({
+      id: "x",
+      name: "Corte",
+      description: "",
+      durationMinutes: 45,
+      price: 80,
+      category: null,
+      active: false,
+    });
+  });
+  it("lê e envia a categoria do serviço", () => {
+    expect(
+      toBusinessService({ id: "x", nome: "Spa", preco: "50", duracaoMinutos: 30, categoria: "UNHAS" }).category,
+    ).toBe("UNHAS");
+    expect(toServiceRequest({ name: "Spa", durationMinutes: 30, price: 50, category: "UNHAS" }).categoria).toBe(
+      "UNHAS",
+    );
   });
   it("monta o request do serviço com números e descrição vazia como nula", () => {
     expect(toServiceRequest({ name: " Escova ", description: " ", durationMinutes: "30", price: "50" })).toEqual({
@@ -192,6 +208,7 @@ describe("gestão do estúdio", () => {
       descricao: null,
       duracaoMinutos: 30,
       preco: 50,
+      categoria: null,
     });
   });
   it("converte a funcionária e o request sem comissão", () => {

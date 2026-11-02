@@ -118,8 +118,8 @@ A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela 
 | **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                                  |
 | **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Pronta: `api.profile.getMine()` e `saveMine()`                                                       |
 | **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Pronta: a tela precisa trocar o salvamento por `api.profile.saveMine()`                              |
-| **Filtro por categoria e distância** (ajuste)       | Filtrar pela categoria do serviço e mostrar a distância na lista e no perfil                                                                               | Backend pronto; falta a conversão                                                                    |
-| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Backend pronto; falta enviar o campo                                                                 |
+| **Filtro por categoria e distância**                | Feito na integração: o filtro usa a categoria, e os cards já mostram a distância                                                                           | Pronta                                                                                               |
+| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Pronta: enviar `category` em cada serviço                                                            |
 | **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Backend pronto; falta a conversão                                                                    |
 | **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                                        |
 
@@ -190,10 +190,14 @@ Para a notificação chegar com o app fechado, como no Instagram.
 
 ### Categoria e distância (backend pronto no PR #14)
 
-- [ ] **Conversão:** ler `categoria` em cada serviço e `latitude`/`longitude` no estúdio (`mappers.js`), com teste.
-- [ ] **Filtro por categoria:** trocar as palavras de `client/utils/categories.js` pela `categoria` dos serviços. Valores do backend: `CABELO`, `BARBA`, `UNHAS`, `ESTETICA`, `MASSAGEM`, `CILIOS`, `SOBRANCELHAS`, `MAQUIAGEM` e `OUTRO`. As chaves `barbearia`, `pedicure` e `makeup` do app viram `BARBA`, `UNHAS` e `MAQUIAGEM`.
-- [ ] **Distância:** calcular a partir das coordenadas da cliente e do estúdio e mostrar na lista e no perfil. Estúdio sem coordenadas fica sem distância.
-- [ ] **Escolher a categoria no cadastro de serviços** (cadastro do profissional e, depois, a tela de gerenciar serviços): mandar `categoria` em cada serviço. Sem ela, o backend deduz pelo nome.
+- [x] **Conversão:** `category` em cada serviço e `latitude`/`longitude` no estúdio (`mappers.js`).
+- [x] **Filtro por categoria:** usa a categoria dos serviços (`client/utils/categories.js`). Serviços sem categoria continuam reconhecidos por palavras.
+- [x] **Distância:** `useProfessionals` calcula em linha reta entre a cliente (perfil) e o estúdio, e os cards já mostram. Sem coordenadas, fica sem distância.
+- [ ] **Escolher a categoria no cadastro de serviços** (tela): a integração já envia `category` no cadastro e em `api.services.*`; falta o campo na tela. Sem ela, o backend deduz pelo nome.
+- [ ] **Atualizar a distância depois de editar o perfil:** a tela que chamar `saveMine` deve invalidar a consulta `["profile", id]`.
+- [ ] **Formato da distância:** os cards mostram `1.6 km`, com ponto; no Brasil o certo é `1,6 km` (ajuste de tela).
+- [ ] **Distância por trajeto:** hoje é em linha reta, então a real costuma ser maior.
+- [ ] **Filtro de 30 km:** agora vale de verdade; estúdios mais longe somem da lista por padrão. Avaliar esse valor com dados reais.
 
 ### Depende do backend
 

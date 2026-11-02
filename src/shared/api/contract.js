@@ -14,7 +14,9 @@
  * @property {number|null} rating         média das avaliações (null sem avaliações)
  * @property {number|null} reviews        quantidade de avaliações (só no detalhe)
  * @property {number|null} price          menor preço entre os serviços ativos
- * @property {number|null} distance       km; o backend ainda não devolve coordenadas
+ * @property {number|null} distance       km até a cliente; nulo sem as coordenadas dos dois
+ * @property {number|null} latitude
+ * @property {number|null} longitude
  * @property {Service[]} services
  */
 
@@ -25,6 +27,7 @@
  * @property {string} description
  * @property {number} durationMinutes
  * @property {number} price
+ * @property {string|null} category        do backend ("CABELO", "UNHAS"…)
  */
 
 /**

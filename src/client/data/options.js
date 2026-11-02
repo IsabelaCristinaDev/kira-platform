@@ -104,8 +104,23 @@ export const bottomNavItems = [
   { label: "Perfil", icon: User, key: "clientProfile" },
 ];
 
-// O backend não guarda categoria no estúdio: a categoria é reconhecida por palavras
-// no nome, na descrição e nos serviços (ver utils/categories.js).
+// Categoria do filtro → categoria do serviço no backend (ver utils/categories.js)
+export const categoryToApi = {
+  cabelo: "CABELO",
+  barba: "BARBA",
+  barbearia: "BARBA",
+  unhas: "UNHAS",
+  pedicure: "UNHAS",
+  estetica: "ESTETICA",
+  massagem: "MASSAGEM",
+  cilios: "CILIOS",
+  sobrancelhas: "SOBRANCELHAS",
+  maquiagem: "MAQUIAGEM",
+  makeup: "MAQUIAGEM",
+};
+
+// Reserva para profissionais sem categoria nos serviços: reconhece por palavras no nome,
+// na descrição e nos serviços.
 export const categoryKeywords = {
   cabelo: ["cabel", "corte", "escova", "color", "hidrata", "penteado", "progressiva", "mecha", "luzes"],
   barba: ["barba", "barbear", "navalha"],
