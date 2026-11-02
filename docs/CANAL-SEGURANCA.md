@@ -4,7 +4,7 @@ Situação em 01/11/2026. Revisão do canal de denúncias no backend (branch `fe
 
 ## Backend (`feat/canal-seguranca`)
 
-A branch ainda não foi juntada e, em 01/11, estava 51 commits atrás da `main`. O worktree `kira-backend-canal-seguranca` tem um merge sem commit, feito quando a `main` tinha 241 testes (hoje são 322), e precisa ser refeito com a `main` atual. Naquele merge, passavam os 269 testes: os 241 da `main` mais os 28 das denúncias.
+A branch ainda não foi juntada e, em 01/11, estava 51 commits atrás da `main`. O worktree `kira-backend-canal-seguranca` tem um merge sem commit, feito quando a `main` tinha 241 testes (hoje são 400), e precisa ser refeito com a `main` atual. Naquele merge, passavam os 269 testes: os 241 da `main` mais os 28 das denúncias.
 
 ### O que está certo
 

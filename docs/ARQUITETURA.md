@@ -97,14 +97,34 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 ### 7. Operação
 
-- [ ] **Painel com atendimentos concluídos:** correção na branch `fix/painel-concluidos`.
-- [ ] **Teste com banco de verdade:** `RotasComBancoRealTest`, na branch `test/integracao-banco`, percorre as rotas com um Postgres descartável (precisa de Docker; sem ele, o teste é ignorado). Falta acrescentar as rotas novas do chat e das notificações depois do merge dos PRs.
-- [ ] **Respostas de erro:** mensagens genéricas e o código certo para cada caso, na branch `fix/erro-interno-generico`. Falta o merge.
+- [x] **Painel com atendimentos concluídos:** PR #18.
+- [ ] **Teste com banco de verdade:** `RotasComBancoRealTest` já está na `main` (PR #21) e percorre as rotas com um Postgres descartável (precisa de Docker; sem ele, o teste é ignorado). Falta acrescentar as rotas do chat e das notificações.
+- [x] **Respostas de erro:** mensagens genéricas e o código certo para cada caso, PR #19.
 - [ ] **E-mail:** testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a senha e entrar).
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
 - [x] **SonarCloud do PR #17:** análise aprovada em 02/11.
-- [ ] **PR #16 (`fix/disponibilidade-dono`):** dono do horário do estabelecimento. Falta o merge.
-- [ ] **CI do backend:** confirmar que o teste com banco roda no CI, e não é ignorado por falta de Docker.
+- [x] **Horário do estabelecimento só pelo dono:** PR #16.
+- [ ] **CI do backend:** o repositório não tem workflow, então nenhum teste roda nos PRs. Criar o CI, com Docker para o teste com banco não ser ignorado.
+
+## Ajustes da revisão dos PRs (02/11/2026)
+
+**Backend**
+
+- [x] **Avaliações da cliente:** `GET /api/avaliacoes/minhas` lista as feitas pela conta logada (PR #22).
+- [x] **Lista de avaliações recebidas:** exige login e responde só para a própria conta (PR #23).
+- [x] **PR #16:** responder com o erro certo quando a conta não for de empresa.
+- [x] **PR #15:** heartbeat de 10 s ligado. Falta testar com uma queda real de conexão.
+- [ ] **Conexão ao vivo:** rever a validade enquanto ela está aberta. Resolver antes de publicar.
+- [x] **PR #17:** `VAPID_SUBJECT` vazio usa o valor padrão. Falta testar a notificação no Safari e no iPhone.
+
+**App (PR #13)**
+
+- [ ] **Minhas avaliações:** `reviews.listMine` precisa usar `GET /api/avaliacoes/minhas`. Hoje a lista fica vazia, e a tela volta a oferecer "Avaliar atendimento".
+- [ ] **Agenda do profissional:** permitir abrir dias passados, para ver e concluir atendimentos antigos.
+- [ ] **Domingo no calendário:** seguir o horário de funcionamento em vez de bloquear o dia.
+- [ ] **Renovação da sessão:** limpar a sessão só quando o token for recusado, não em erro temporário do servidor, e tratar duas abas abertas.
+- [ ] **Sessão perdida:** levar ao login e limpar o cache, em vez de mostrar uma mensagem técnica.
+- [ ] **Chat:** não perder mensagem recebida ao vivo durante uma atualização da lista.
 
 ## O que falta no frontend
 
@@ -114,24 +134,24 @@ Telas e ajustes do app para usar o que o backend já tem.
 
 A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela só precisa cuidar do visual.
 
-| Tela                                                | O que precisa mostrar                                                                                                                                      | Integração                                                                                           |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Pronta: `useConversations()` traz `conversations`                                                    |
-| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Pronta: `useConversations()` traz `totalUnread`, ao vivo                                             |
-| **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Backend pronto na branch `feat/notificacao-web`; falta a integração (ver "Notificação do navegador") |
-| **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                     |
-| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | Pronta: `professionals.listStaff`, `availability.get` e `appointments.create` com `staffId`          |
-| **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                                  |
-| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Pronta: `api.profile.getMine()` e `saveMine()`                                                       |
-| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Pronta: a tela precisa trocar o salvamento por `api.profile.saveMine()`                              |
-| **Filtro por categoria e distância**                | Feito na integração: o filtro usa a categoria, e os cards já mostram a distância                                                                           | Pronta                                                                                               |
-| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Pronta: enviar `category` em cada serviço                                                            |
-| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Pronta: `useDashboard({ from, to })`                                                                 |
-| **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                                        |
+| Tela                                                | O que precisa mostrar                                                                                                                                      | Integração                                                                                  |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Lista de conversas** (cliente e profissional)     | Nome e foto da outra parte, serviço, última mensagem, horário e quantidade de não lidas. Tocar abre a conversa (`clientConversation` ou `proConversation`) | Pronta: `useConversations()` traz `conversations`                                           |
+| **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Pronta: `useConversations()` traz `totalUnread`, ao vivo                                    |
+| **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Backend pronto; falta a integração (ver "Notificação do navegador")                         |
+| **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                            |
+| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | Pronta: `professionals.listStaff`, `availability.get` e `appointments.create` com `staffId` |
+| **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                         |
+| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Pronta: `api.profile.getMine()` e `saveMine()`                                              |
+| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Pronta: a tela precisa trocar o salvamento por `api.profile.saveMine()`                     |
+| **Filtro por categoria e distância**                | Feito na integração: o filtro usa a categoria, e os cards já mostram a distância                                                                           | Pronta                                                                                      |
+| **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Pronta: enviar `category` em cada serviço                                                   |
+| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Pronta: `useDashboard({ from, to })`                                                        |
+| **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                               |
 
 **Telas já feitas, para revisar o visual:** remarcar (cliente e profissional), conversa do agendamento (cliente e profissional), botões "Remarcar" e "Conversar com…" na agenda do profissional e aviso de "Demonstração" no chat com IA e no acompanhamento.
 
-### Notificação do navegador (backend pronto na branch `feat/notificacao-web`)
+### Notificação do navegador (backend pronto no PR #17)
 
 Para a notificação chegar com o app fechado, como no Instagram.
 
@@ -217,7 +237,7 @@ Situação em 01/11/2026.
 
 **Integração**
 
-- [x] **Notificação com o app fechado, backend:** registro de navegadores e envio (`/api/notificacoes`), na branch `feat/notificacao-web`.
+- [x] **Notificação com o app fechado, backend:** registro de navegadores e envio (`/api/notificacoes`), PR #17.
 - [ ] **Notificação com o app fechado, integração:** ver "Notificação do navegador" em "O que falta no frontend".
 - [ ] **Áudio no chat:** depende do armazenamento de arquivos do backend. Fazer junto com o upload de fotos.
 
@@ -239,7 +259,8 @@ Situação em 01/11/2026.
 
 **Antes de publicar**
 
-- [ ] Fazer o merge dos PRs abertos do backend (#15, #17, #16, #18, #20 e #19, nessa ordem) e depois o do PR #13 do app.
+- [x] Merge dos PRs do backend, em 02/11 (#15 a #19 e #21 a #23).
+- [ ] Merge do PR #13 do app.
 - [ ] Colocar o domínio do site nas origens permitidas do backend e em `FRONTEND_URL`.
 - [ ] Trocar as chaves de notificação do `.env` local (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`), seguindo os passos passados à Isabela.
 - [ ] Gerar novas chaves de notificação para produção (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e definir `VAPID_SUBJECT` com um contato real.
