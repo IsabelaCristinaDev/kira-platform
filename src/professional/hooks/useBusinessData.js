@@ -21,5 +21,12 @@ export function useBusinessData() {
   };
 }
 
+// Painel pronto do backend. `from` e `to` são Date; sem eles, vale do dia 1º do mês até hoje.
+export const useDashboard = ({ from = null, to = null } = {}) =>
+  useQuery({
+    queryKey: ["dashboard", from?.toDateString() ?? null, to?.toDateString() ?? null],
+    queryFn: () => api.dashboard.getMine({ from, to }),
+  });
+
 // Horário de funcionamento do estúdio logado (semana inteira, segunda primeiro)
 export const useBusinessHours = () => useQuery({ queryKey: ["businessHours"], queryFn: api.businessHours.getMine });

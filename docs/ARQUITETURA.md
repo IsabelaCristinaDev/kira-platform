@@ -97,6 +97,9 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 ### 7. Operação
 
+- [ ] **Painel com atendimentos concluídos:** correção na branch `fix/painel-concluidos`.
+- [ ] **Teste com banco de verdade:** os testes unitários usam dados simulados e não pegam erro de transação. Conferir com banco real os services sem `@Transactional` que leem relações (`FuncionariaService`, `ServicoService`, `EmailService`) e criar um teste de integração.
+- [ ] **Erro interno genérico:** resposta de erro 500 só com mensagem genérica; o detalhe fica no log.
 - [ ] **E-mail:** testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a senha e entrar).
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
 
@@ -114,13 +117,13 @@ A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela 
 | **Número de não lidas no menu**                     | Total de mensagens não lidas                                                                                                                               | Pronta: `useConversations()` traz `totalUnread`, ao vivo                                             |
 | **Permitir notificações**                           | Botão para a pessoa autorizar as notificações do navegador                                                                                                 | Backend pronto na branch `feat/notificacao-web`; falta a integração (ver "Notificação do navegador") |
 | **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                     |
-| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | `professionals.listStaff` e `staffId` prontos; `availability.get` ainda não envia a funcionária      |
+| **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | Pronta: `professionals.listStaff`, `availability.get` e `appointments.create` com `staffId`          |
 | **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                                  |
 | **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Pronta: `api.profile.getMine()` e `saveMine()`                                                       |
 | **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Pronta: a tela precisa trocar o salvamento por `api.profile.saveMine()`                              |
 | **Filtro por categoria e distância**                | Feito na integração: o filtro usa a categoria, e os cards já mostram a distância                                                                           | Pronta                                                                                               |
 | **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Pronta: enviar `category` em cada serviço                                                            |
-| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Backend pronto; falta a conversão                                                                    |
+| **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Pronta: `useDashboard({ from, to })`                                                                 |
 | **Denúncia** (por último)                           | Envio real, ligado ao backend                                                                                                                              | Depende do canal de segurança                                                                        |
 
 **Telas já feitas, para revisar o visual:** remarcar (cliente e profissional), conversa do agendamento (cliente e profissional), botões "Remarcar" e "Conversar com…" na agenda do profissional e aviso de "Demonstração" no chat com IA e no acompanhamento.
@@ -151,21 +154,21 @@ Para a notificação chegar com o app fechado, como no Instagram.
 
 ### Painel do profissional (backend pronto no PR #12)
 
-- [ ] **Conversão:** acrescentar ao `toDashboard` (`mappers.js`) os campos novos (`ticketMedio`, `totalCancelados`, `taxaConclusao`, `faturamentoPeriodoAnterior`, `variacaoFaturamento`, `faturamentoPorDia`, `rankingServicos`, `avaliacoes`), com teste.
-- [ ] **Início, Analytics e Financeiro:** trocar os cálculos de `professional/utils/metrics.js` pelo `api.dashboard.getMine({ from, to })`:
-  - `weeklyRevenue` e `monthlyRevenue` → `faturamentoPorDia`
-  - `revenueDelta` → `variacaoFaturamento` (o backend compara com o período anterior de mesmo tamanho, não com a semana anterior fixa)
-  - `analyticsSummary` → `ticketMedio`, `percentualRecorrencia` e `taxaConclusao`
-  - `appointmentsByWeekday` → `movimentoPorDiaSemana`
-  - `serviceRanking` e `serviceClientBreakdown` → `rankingServicos`
-  - `averageRating` e `ratingBreakdown` → `avaliacoes` (o backend manda a quantidade por nota; a porcentagem sai da quantidade dividida pelo total)
+- [x] **Conversão:** `toDashboard` traz os campos novos (`averageTicket`, `cancelled`, `completionRate`, `previousRevenue`, `revenueChange`, `revenueByDay`, `serviceRanking`, `ratings`), e o hook `useDashboard({ from, to })` está pronto.
+- [ ] **Início, Analytics e Financeiro (telas):** trocar os cálculos de `professional/utils/metrics.js` por `useDashboard({ from, to })`:
+  - `weeklyRevenue` e `monthlyRevenue` → `revenueByDay`
+  - `revenueDelta` → `revenueChange` (o backend compara com o período anterior de mesmo tamanho, não com a semana anterior fixa)
+  - `analyticsSummary` → `averageTicket`, `returningPercent` e `completionRate`
+  - `appointmentsByWeekday` → `byWeekday`
+  - `serviceRanking` e `serviceClientBreakdown` → `serviceRanking`
+  - `averageRating` e `ratingBreakdown` → `ratings` (já traz a porcentagem por nota)
 - [ ] **Continua com a lista de agendamentos:** a agenda do dia (`appointmentsOn`) e os próximos atendimentos (`upcoming`), porque mostram cada atendimento.
 
 ### Funcionárias (backend pronto nos PRs #8, #9 e #10)
 
 - [ ] **Tela de funcionárias** no perfil do profissional: listar, criar, editar e desativar (`api.staff.*`), com a agenda do dia e da semana, os bloqueios de horário e o total de comissões.
 - [ ] **Escolher a funcionária no agendamento:** mostrar `professionals.listStaff` e mandar o `staffId` no `appointments.create`.
-- [ ] **Horários livres da funcionária escolhida:** `api.availability.get` precisa mandar `funcionariaId` para `/disponibilidade/slots` (ao remarcar, `forAppointment` já manda). Sem ele, a tela mostra os horários em que alguma funcionária está livre.
+- [x] **Horários livres da funcionária escolhida:** `api.availability.get({ proId, serviceId, staffId, date })`. A tela precisa incluir a funcionária na chave da consulta.
 
 ### Outras telas com a chamada já pronta
 

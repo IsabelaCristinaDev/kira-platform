@@ -12,6 +12,21 @@ const urls = (fetch) => fetch.mock.calls.map(([url]) => String(url));
 
 afterEach(() => vi.unstubAllGlobals());
 
+describe("availability.get", () => {
+  it("com a funcionária escolhida, pede só os horários dela", async () => {
+    const fetch = vi.fn().mockResolvedValue(json(200, [slot("09:00")]));
+    vi.stubGlobal("fetch", fetch);
+    await api.availability.get({ proId: "e1", serviceId: "s1", staffId: "f1", date });
+    expect(urls(fetch)[0]).toContain("funcionariaId=f1");
+  });
+  it("sem funcionária, não manda o parâmetro", async () => {
+    const fetch = vi.fn().mockResolvedValue(json(200, [slot("09:00")]));
+    vi.stubGlobal("fetch", fetch);
+    await api.availability.get({ proId: "e1", serviceId: "s1", date });
+    expect(urls(fetch)[0]).not.toContain("funcionariaId");
+  });
+});
+
 describe("availability.forAppointment", () => {
   it("pede os horários da funcionária do atendimento", async () => {
     const fetch = vi.fn().mockResolvedValue(json(200, [slot("09:00")]));

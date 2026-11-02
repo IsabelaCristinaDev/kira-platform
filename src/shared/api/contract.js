@@ -154,6 +154,14 @@
  * @property {{clientId: string, name: string, appointments: number, revenue: number}[]} topClients
  * @property {{hour: number, appointments: number}[]} byHour
  * @property {{day: string, appointments: number}[]} byWeekday   chaves de `weekDays` ("SEGUNDA"…)
+ * @property {number} averageTicket
+ * @property {number} cancelled
+ * @property {number} completionRate
+ * @property {number} previousRevenue      período anterior de mesmo tamanho
+ * @property {number|null} revenueChange   nula sem faturamento no período anterior
+ * @property {{date: Date, revenue: number, appointments: number}[]} revenueByDay
+ * @property {{serviceId: string, name: string, appointments: number, revenue: number, clients: {clientId: string, name: string, appointments: number, spent: number, lastAppointment: Date}[]}[]} serviceRanking
+ * @property {{average: number|null, total: number, breakdown: {stars: number, count: number, percent: number}[]}} ratings
  */
 
 export class ApiError extends Error {

@@ -5,6 +5,9 @@ const pad = (n) => String(n).padStart(2, "0");
 
 // LocalDateTime do backend ("2026-10-15T14:30:00") é horário local, sem fuso
 export const parseLocalDateTime = (value) => (value ? new Date(value) : null);
+
+// LocalDate ("2026-10-15"): sem o horário, o JavaScript leria como UTC, e no Brasil viraria o dia anterior
+const parseLocalDate = (value) => (value ? new Date(`${value}T00:00:00`) : null);
 export const toLocalDateTime = (date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
 export const toLocalDate = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -199,6 +202,19 @@ const dayOfWeekToKey = {
 };
 
 // Painel: só atendimentos concluídos no período; funcionária nula = atendido pelo próprio estúdio
+const toRatingSummary = (a) => {
+  const total = a?.total ?? 0;
+  return {
+    average: a?.media ?? null,
+    total,
+    breakdown: (a?.distribuicao ?? []).map((n) => ({
+      stars: n.nota,
+      count: n.quantidade,
+      percent: total > 0 ? Math.round((n.quantidade / total) * 100) : 0,
+    })),
+  };
+};
+
 export const toDashboard = (d) => ({
   revenue: Number(d.faturamentoTotal ?? 0),
   appointments: d.totalAtendimentos,
@@ -222,6 +238,31 @@ export const toDashboard = (d) => ({
     day: dayOfWeekToKey[w.diaSemana] ?? w.diaSemana,
     appointments: w.totalAtendimentos,
   })),
+  averageTicket: Number(d.ticketMedio ?? 0),
+  cancelled: d.totalCancelados ?? 0,
+  completionRate: d.taxaConclusao ?? 0,
+  previousRevenue: Number(d.faturamentoPeriodoAnterior ?? 0),
+  // Nula quando o período anterior não teve faturamento: não há com o que comparar
+  revenueChange: d.variacaoFaturamento ?? null,
+  revenueByDay: (d.faturamentoPorDia ?? []).map((f) => ({
+    date: parseLocalDate(f.data),
+    revenue: Number(f.faturamento ?? 0),
+    appointments: f.totalAtendimentos,
+  })),
+  serviceRanking: (d.rankingServicos ?? []).map((s) => ({
+    serviceId: s.servicoId,
+    name: s.nome,
+    appointments: s.totalAtendimentos,
+    revenue: Number(s.faturamento ?? 0),
+    clients: (s.clientes ?? []).map((c) => ({
+      clientId: c.clienteId,
+      name: c.nome,
+      appointments: c.totalAtendimentos,
+      spent: Number(c.totalGasto ?? 0),
+      lastAppointment: parseLocalDateTime(c.ultimoAtendimento),
+    })),
+  })),
+  ratings: toRatingSummary(d.avaliacoes),
 });
 
 // ---------- Horário de funcionamento: DisponibilidadeResponse[] ↔ semana da tela ----------

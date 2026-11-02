@@ -366,4 +366,61 @@ describe("gestão do estúdio", () => {
     expect(d.byHour).toEqual([{ hour: 14, appointments: 2 }]);
     expect(d.byWeekday).toEqual([{ day: "SEGUNDA", appointments: 2 }]);
   });
+  it("converte os campos completos do painel", () => {
+    const d = toDashboard({
+      ticketMedio: "75.25",
+      totalCancelados: 1,
+      taxaConclusao: 66.67,
+      faturamentoPeriodoAnterior: "100.00",
+      variacaoFaturamento: 50.5,
+      faturamentoPorDia: [{ data: "2026-11-01", faturamento: "150.50", totalAtendimentos: 2 }],
+      rankingServicos: [
+        {
+          servicoId: "s1",
+          nome: "Corte",
+          totalAtendimentos: 2,
+          faturamento: "150.50",
+          clientes: [
+            {
+              clienteId: "c1",
+              nome: "Ana",
+              totalAtendimentos: 2,
+              totalGasto: "150.50",
+              ultimoAtendimento: "2026-11-01T14:00:00",
+            },
+          ],
+        },
+      ],
+      avaliacoes: {
+        media: 4.5,
+        total: 4,
+        distribuicao: [
+          { nota: 5, quantidade: 3 },
+          { nota: 3, quantidade: 1 },
+        ],
+      },
+    });
+    expect(d).toMatchObject({
+      averageTicket: 75.25,
+      cancelled: 1,
+      completionRate: 66.67,
+      previousRevenue: 100,
+      revenueChange: 50.5,
+    });
+    // Dia certo no horário local: lido como UTC, viraria 31/10 no Brasil
+    const dia = d.revenueByDay[0].date;
+    expect([dia.getFullYear(), dia.getMonth(), dia.getDate()]).toEqual([2026, 10, 1]);
+    expect(d.revenueByDay[0]).toMatchObject({ revenue: 150.5, appointments: 2 });
+    expect(d.serviceRanking[0].clients[0]).toMatchObject({ clientId: "c1", spent: 150.5 });
+    expect(d.ratings.average).toBe(4.5);
+    expect(d.ratings.breakdown).toEqual([
+      { stars: 5, count: 3, percent: 75 },
+      { stars: 3, count: 1, percent: 25 },
+    ]);
+  });
+  it("painel sem dados não quebra e não inventa comparação", () => {
+    const d = toDashboard({ faturamentoTotal: "0", variacaoFaturamento: null, avaliacoes: { media: null, total: 0 } });
+    expect(d).toMatchObject({ revenueChange: null, revenueByDay: [], serviceRanking: [] });
+    expect(d.ratings).toEqual({ average: null, total: 0, breakdown: [] });
+  });
 });

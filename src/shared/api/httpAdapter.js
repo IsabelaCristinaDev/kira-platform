@@ -141,7 +141,9 @@ export const httpAdapter = {
     },
   },
   availability: {
-    get: ({ proId, serviceId, date }) => availableSlots({ proId, serviceId, date }).catch(noSlotsOnBusinessRule),
+    // Com `staffId`, só os horários em que aquela funcionária está livre
+    get: ({ proId, serviceId, staffId, date }) =>
+      availableSlots({ proId, serviceId, staffId, date }).catch(noSlotsOnBusinessRule),
     // Para remarcar: a funcionária continua a mesma. Se ela foi desativada, o backend recusa os horários dela,
     // mas remarca com quem estiver livre, então a lista passa a ser a do estúdio.
     forAppointment: ({ appointment: { proId, serviceId, staffId }, date }) =>
