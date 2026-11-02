@@ -41,17 +41,17 @@ Front-end em Vite + React que consome o kira-backend (Spring Boot). Em desenvolv
 
 ### Ainda sem backend ou sem tela
 
-| Recurso                                             | Situação no app                                                                                                             |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Edição do perfil                                    | Salva só na sessão atual; o backend já tem o `PUT` (PR #13), falta a tela usar                                              |
-| Fotos (perfil, documentos, portfólio)               | Ficam no navegador; o cadastro não envia imagens                                                                            |
-| Categoria e distância do estúdio                    | O backend já devolve a categoria do serviço e as coordenadas (PR #14); o app ainda usa as palavras e não mostra a distância |
-| Favoritas                                           | Guardadas só na sessão atual                                                                                                |
-| Denúncia e emergência                               | Só a interface (futura `POST /api/denuncias`)                                                                               |
-| Verificação facial                                  | Só a interface, nenhum dado biométrico é salvo                                                                              |
-| Gift cards, fidelidade, cupons, formas de pagamento | Telas sem dados                                                                                                             |
-| Saldo e repasse                                     | Dependem de gateway de pagamento                                                                                            |
-| Similaridade visual do Provador                     | O ranking usa procedimento e avaliação; não há análise de imagem                                                            |
+| Recurso                                             | Situação no app                                                                                                  |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Edição do perfil                                    | Salva só na sessão atual; `api.profile.saveMine` está pronta, falta a tela usar                                  |
+| Fotos (perfil, documentos, portfólio)               | Ficam no navegador; o cadastro não envia imagens                                                                 |
+| Categoria do serviço                                | O filtro e os cards de distância já usam os dados do backend; falta o campo de categoria no cadastro de serviços |
+| Favoritas                                           | Guardadas só na sessão atual                                                                                     |
+| Denúncia e emergência                               | Só a interface (futura `POST /api/denuncias`)                                                                    |
+| Verificação facial                                  | Só a interface, nenhum dado biométrico é salvo                                                                   |
+| Gift cards, fidelidade, cupons, formas de pagamento | Telas sem dados                                                                                                  |
+| Saldo e repasse                                     | Dependem de gateway de pagamento                                                                                 |
+| Similaridade visual do Provador                     | O ranking usa procedimento e avaliação; não há análise de imagem                                                 |
 
 ## O que falta no backend
 
@@ -102,7 +102,8 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [ ] **Respostas de erro:** mensagens genéricas e o código certo para cada caso, na branch `fix/erro-interno-generico`. Falta o merge.
 - [ ] **E-mail:** testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a senha e entrar).
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
-- [ ] **SonarCloud do PR #17:** análise reprovada; resolver os apontamentos antes do merge.
+- [x] **SonarCloud do PR #17:** análise aprovada em 02/11.
+- [ ] **PR #16 (`fix/disponibilidade-dono`):** dono do horário do estabelecimento. Falta o merge.
 - [ ] **CI do backend:** confirmar que o teste com banco roda no CI, e não é ignorado por falta de Docker.
 
 ## O que falta no frontend
@@ -179,6 +180,7 @@ Para a notificação chegar com o app fechado, como no Instagram.
 - [ ] **Notificação de mensagem nova, como no Instagram:** lista de conversas, contador ao vivo e notificação com o app fechado (web push no web; push do celular quando o mobile chegar). E-mail não faz parte do chat.
 - [ ] **Conversa de agendamento cancelado no profissional:** a agenda do dia esconde os cancelados, então o estúdio não abre esse histórico.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
+- [ ] **PR #12 do app (`feat/tela-processamento-pagamento`):** aberto desde 26/10 e 32 commits atrás desta branch. Decidir se entra agora ou espera o gateway de pagamento.
 - [x] **Profissional remarcar:** botão na agenda abre `ProRescheduleScreen`, que divide o fluxo com a cliente (`shared/components/RescheduleScreen.jsx`).
 
 ### Perfil (backend pronto no PR #13)
@@ -237,7 +239,7 @@ Situação em 01/11/2026.
 
 **Antes de publicar**
 
-- [ ] Fazer o merge dos PRs do backend e do PR #13, nessa ordem.
+- [ ] Fazer o merge dos PRs abertos do backend (#15, #17, #16, #18, #20 e #19, nessa ordem) e depois o do PR #13 do app.
 - [ ] Colocar o domínio do site nas origens permitidas do backend e em `FRONTEND_URL`.
 - [ ] Trocar as chaves de notificação do `.env` local (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`), seguindo os passos passados à Isabela.
 - [ ] Gerar novas chaves de notificação para produção (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e definir `VAPID_SUBJECT` com um contato real.

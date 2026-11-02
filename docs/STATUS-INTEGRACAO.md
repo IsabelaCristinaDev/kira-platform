@@ -1,6 +1,6 @@
 # Integração do Kira: frontend e backend
 
-Situação em 01/11/2026. Lista do que o app web (kira-platform) já usa do backend (kira-backend). O sistema será web e mobile: a prioridade agora é terminar o web, e o app Expo (`mobile/`) será ligado ao backend depois (ver "Mobile" no `ARQUITETURA.md`).
+Situação em 02/11/2026. Lista do que o app web (kira-platform) já usa do backend (kira-backend). O sistema será web e mobile: a prioridade agora é terminar o web, e o app Expo (`mobile/`) será ligado ao backend depois (ver "Mobile" no `ARQUITETURA.md`).
 
 ## Funcionando: frontend ligado ao backend
 
@@ -47,14 +47,16 @@ Situação em 01/11/2026. Lista do que o app web (kira-platform) já usa do back
 
 ## Integrado na API, mas ainda sem tela
 
-As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e, nos casos marcados, completar a chamada ou a conversão.
+As chamadas e as conversões já existem em `src/shared/api/httpAdapter.js` e `mappers.js`. Falta a tela usar.
 
-| Função                                | Chamadas (`api.…`)                                                                                                                                    | Situação na tela                                                                            |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Gerenciar serviços depois do cadastro | `services.create`, `update`, `deactivate`                                                                                                             | Os serviços só são definidos no cadastro do profissional                                    |
-| Funcionárias                          | `staff.listForMyBusiness`, `create`, `update`, `deactivate`, `agendaDay`, `agendaWeek`, `listBlocks`, `createBlock`, `removeBlock`, `commissionTotal` | Não há tela de funcionárias                                                                 |
-| Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha; os horários livres ainda não enviam `funcionariaId`     |
-| Painel pronto do backend              | `dashboard.getMine({ from, to })`                                                                                                                     | O app ainda calcula os números no navegador; `toDashboard` ainda não lê os campos do PR #12 |
+| Função                                | Chamadas (`api.…`)                                                                                                                                    | Situação na tela                                                                                                  |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Gerenciar serviços depois do cadastro | `services.create`, `update`, `deactivate`                                                                                                             | Os serviços só são definidos no cadastro do profissional                                                          |
+| Funcionárias                          | `staff.listForMyBusiness`, `create`, `update`, `deactivate`, `agendaDay`, `agendaWeek`, `listBlocks`, `createBlock`, `removeBlock`, `commissionTotal` | Não há tela de funcionárias                                                                                       |
+| Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha; os horários livres já aceitam a funcionária (`availability.get({ staffId })`) |
+| Painel pronto do backend              | `dashboard.getMine({ from, to })`, pelo hook `useDashboard`                                                                                           | As telas ainda calculam os números no navegador (`metrics.js`)                                                    |
+| Editar perfil                         | `profile.getMine`, `saveMine`                                                                                                                         | A edição da cliente salva só na sessão, e o profissional não tem tela                                             |
+| Categoria do serviço                  | `services.create`, `update` e cadastro do profissional, com `category`                                                                                | Falta o campo na tela; sem ele, o backend deduz pelo nome                                                         |
 
 ### Problemas no backend encontrados na integração
 
@@ -82,7 +84,7 @@ As chamadas já existem em `src/shared/api/httpAdapter.js`. Falta a tela usar e,
 
 ## Situação do backend
 
-Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os PRs #8, #9, #10, #11, #12, #13 e #14 (funcionária, comissões, horário por funcionária, rota de admin, conta desativada, painel completo, editar perfil, categoria no serviço e coordenadas do estúdio). A edição de perfil, a categoria e a distância ainda não têm tela no app. O [PR #7](https://github.com/IsabelaCristinaDev/kira-backend/pull/7) juntou a pilha de branches que faltava:
+A `main` do backend ainda não tem tudo o que o app usa: o chat em tempo real e a resposta 401 que faz a sessão renovar estão no PR #15, e a lista de conversas e as notificações, no PR #17. Os dois estão abertos, junto com os PRs #16, #18, #19 e #20. Em 29/10 entraram os PRs #8, #9, #10, #11, #12, #13 e #14 (funcionária, comissões, horário por funcionária, rota de admin, conta desativada, painel completo, editar perfil, categoria no serviço e coordenadas do estúdio). O filtro por categoria e a distância já funcionam no app; a edição de perfil e o campo de categoria ainda não têm tela. O [PR #7](https://github.com/IsabelaCristinaDev/kira-backend/pull/7) juntou a pilha de branches que faltava:
 
 - Só o estúdio dono conclui ou cancela, sem erro 500 ao cancelar
 - Confere o dono nas rotas de agendamento e o estúdio dono nas rotas do estabelecimento
@@ -91,11 +93,12 @@ Desde 27/10, a `main` do backend tem tudo o que o app usa. Em 29/10 entraram os 
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 123 testes passam.
+Testes do backend: passam os 322 (o `contextLoads` precisa do banco local no ar). No app, os 144 testes passam.
 
 ## Para tudo funcionar de verdade
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
-2. **Telas que faltam no app:** gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, categoria e distância, e usar o painel do backend.
-3. **Chamadas e conversões que faltam:** as rotas de perfil, o `funcionariaId` nos horários livres, a `categoria` e as coordenadas nos mappers e os campos novos do `toDashboard`.
-4. **Hospedar o backend e o web:** hoje tudo roda só local.
+2. **Merge dos PRs abertos:** no backend, #15, #17, #16, #18, #20 e #19, nessa ordem; depois, o PR #13 do app.
+3. **Telas que faltam no app:** lista de conversas e não lidas no menu, gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, campo de categoria e usar o painel do backend.
+4. **Integração que falta:** notificação do navegador e áudio no chat (ver "O que falta no frontend" no `ARQUITETURA.md`).
+5. **Hospedar o backend e o web:** hoje tudo roda só local.
