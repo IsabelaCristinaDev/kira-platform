@@ -1,5 +1,6 @@
-// Testes do adaptador HTTP: horários livres por funcionária e conversa como lida · fetch simulado
+// Testes do adaptador HTTP: horários livres por funcionária, conversa como lida e perfil · fetch simulado
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { authStore } from "./http";
 import { httpAdapter as api } from "./httpAdapter";
 
 const json = (status, body) => new Response(JSON.stringify(body), { status });
@@ -64,5 +65,84 @@ describe("messages.markAllRead", () => {
     const [url, init] = fetch.mock.calls[0];
     expect(String(url)).toContain("/api/mensagens/agendamento/a1/lidas");
     expect(init.method).toBe("PATCH");
+  });
+});
+
+describe("profile", () => {
+  const perfil = {
+    id: "c1",
+    nome: "Ana",
+    email: "ana@example.com",
+    telefone: "62999990000",
+    cpf: "52998224725",
+    dataNascimento: "1995-01-01",
+    genero: "FEMININO",
+    endereco: { cep: "74000000", logradouro: "Rua A", numero: "1", bairro: "Centro", cidade: "Goiânia", estado: "GO" },
+    latitude: -16.6,
+    longitude: -49.2,
+    fotoUrl: null,
+  };
+
+  const entrar = (tipo, id) => {
+    const store = new Map();
+    vi.stubGlobal("localStorage", {
+      getItem: (k) => store.get(k) ?? null,
+      setItem: (k, v) => store.set(k, v),
+      removeItem: (k) => store.delete(k),
+    });
+    authStore.set({ token: "t", refreshToken: "r", tipo, nome: "Ana", id });
+  };
+
+  it("usa a rota do tipo da conta", async () => {
+    entrar("EMPRESA", "e1");
+    const fetch = vi.fn().mockResolvedValue(json(200, { ...perfil, tipoEstabelecimento: "AUTONOMA" }));
+    vi.stubGlobal("fetch", fetch);
+    await api.profile.getMine();
+    expect(urls(fetch)[0]).toContain("/api/empresas/e1/perfil");
+  });
+
+  it("salvar só o nome não apaga endereço nem coordenadas", async () => {
+    entrar("CLIENTE", "c1");
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(json(200, perfil))
+      .mockResolvedValueOnce(json(200, { ...perfil, nome: "Ana Lima" }));
+    vi.stubGlobal("fetch", fetch);
+    const salvo = await api.profile.saveMine({ name: "Ana Lima" });
+    const [url, init] = fetch.mock.calls[1];
+    const corpo = JSON.parse(init.body);
+    expect(String(url)).toContain("/api/clientes/c1/perfil");
+    expect(init.method).toBe("PUT");
+    expect(corpo).toMatchObject({ nome: "Ana Lima", genero: "FEMININO", latitude: -16.6, longitude: -49.2 });
+    expect(corpo.endereco.logradouro).toBe("Rua A");
+    expect(corpo.email).toBeUndefined();
+    expect(corpo.cpf).toBeUndefined();
+    expect(salvo.name).toBe("Ana Lima");
+  });
+
+  it("atualiza o nome da sessão depois de salvar", async () => {
+    entrar("CLIENTE", "c1");
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(json(200, perfil))
+        .mockResolvedValueOnce(json(200, { ...perfil, nome: "Ana Lima" })),
+    );
+    await api.profile.saveMine({ name: "Ana Lima" });
+    expect(authStore.get()).toMatchObject({ nome: "Ana Lima", token: "t" });
+  });
+
+  it("recusa do backend mantém o nome da sessão", async () => {
+    entrar("CLIENTE", "c1");
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(json(200, perfil))
+        .mockResolvedValueOnce(json(400, { erro: "VALIDACAO", mensagem: "Telefone é obrigatório" })),
+    );
+    await expect(api.profile.saveMine({ name: "Outra" })).rejects.toMatchObject({ status: 400 });
+    expect(authStore.get().nome).toBe("Ana");
   });
 });

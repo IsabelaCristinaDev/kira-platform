@@ -9,6 +9,10 @@ import {
   toClientRegistration,
   toDashboard,
   toLocalDateTime,
+  toBusinessProfile,
+  toBusinessProfileRequest,
+  toClientProfile,
+  toClientProfileRequest,
   toConversation,
   toMessage,
   toProfessional,
@@ -236,6 +240,71 @@ describe("gestão do estúdio", () => {
     };
     expect(toMessage(m, "c1")).toMatchObject({ mine: true, read: false, text: "Oi", senderName: "Ana" });
     expect(toMessage(m, "s1").mine).toBe(false);
+  });
+  it("o perfil da cliente vai e volta sem perder dados", () => {
+    const api = {
+      id: "c1",
+      nome: "Ana Lima",
+      email: "ana@example.com",
+      telefone: "62999990000",
+      cpf: "52998224725",
+      dataNascimento: "1995-01-01",
+      genero: "NAO_BINARIO",
+      endereco: {
+        cep: "74000000",
+        logradouro: "Rua A",
+        numero: "1",
+        complemento: null,
+        bairro: "Centro",
+        cidade: "Goiânia",
+        estado: "GO",
+      },
+      latitude: -16.6,
+      longitude: -49.2,
+      fotoUrl: null,
+    };
+    const profile = toClientProfile(api);
+    expect(profile).toMatchObject({ name: "Ana Lima", gender: "nao_binario", cpf: "52998224725" });
+    expect(profile.address.street).toBe("Rua A");
+    expect(toClientProfileRequest(profile)).toEqual({
+      nome: "Ana Lima",
+      telefone: "62999990000",
+      dataNascimento: "1995-01-01",
+      genero: "NAO_BINARIO",
+      endereco: api.endereco,
+      latitude: -16.6,
+      longitude: -49.2,
+    });
+  });
+  it("o perfil do estúdio vai e volta, sem endereço e sem data", () => {
+    const profile = toBusinessProfile({
+      id: "e1",
+      nome: "Studio",
+      email: "s@example.com",
+      telefone: "62999990001",
+      cnpj: "11222333000181",
+      cpf: null,
+      descricao: null,
+      especialidades: ["Corte"],
+      dataNascimento: null,
+      endereco: null,
+      latitude: null,
+      longitude: null,
+      tipoEstabelecimento: "AUTONOMA",
+      fotoUrl: null,
+    });
+    expect(profile).toMatchObject({ address: null, description: "", specialties: ["Corte"] });
+    expect(toBusinessProfileRequest({ ...profile, phone: "(62) 99999-0001" })).toEqual({
+      nome: "Studio",
+      telefone: "62999990001",
+      dataNascimento: null,
+      descricao: null,
+      especialidades: ["Corte"],
+      endereco: null,
+      latitude: null,
+      longitude: null,
+      tipoEstabelecimento: "AUTONOMA",
+    });
   });
   it("converte a linha da lista de conversas", () => {
     const c = toConversation({

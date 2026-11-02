@@ -269,6 +269,72 @@ const toAddressRequest = (f) => ({
   estado: f.state,
 });
 
+const genderFromApi = Object.fromEntries(Object.entries(genderToApi).map(([key, value]) => [value, key]));
+
+const toProfileAddress = (e) =>
+  e && {
+    cep: e.cep ?? "",
+    street: e.logradouro ?? "",
+    number: e.numero ?? "",
+    complement: e.complemento ?? "",
+    neighborhood: e.bairro ?? "",
+    city: e.cidade ?? "",
+    state: e.estado ?? "",
+  };
+
+// Perfil da conta logada. E-mail e documentos vêm só para leitura: o backend não os troca por aqui.
+const toProfileBase = (p) => ({
+  id: p.id,
+  name: p.nome,
+  email: p.email,
+  phone: p.telefone,
+  birth: p.dataNascimento ?? "",
+  address: toProfileAddress(p.endereco),
+  latitude: p.latitude ?? null,
+  longitude: p.longitude ?? null,
+  photo: p.fotoUrl ?? null,
+});
+
+/** @returns {import("./contract").ClientProfile} */
+export const toClientProfile = (p) => ({
+  ...toProfileBase(p),
+  cpf: p.cpf,
+  gender: genderFromApi[p.genero] ?? "",
+});
+
+/** @returns {import("./contract").BusinessProfile} */
+export const toBusinessProfile = (p) => ({
+  ...toProfileBase(p),
+  cnpj: p.cnpj ?? null,
+  cpf: p.cpf ?? null,
+  description: p.descricao ?? "",
+  specialties: p.especialidades ?? [],
+  establishmentType: p.tipoEstabelecimento,
+});
+
+// O PUT troca todos os campos: o que não vier aqui é apagado no backend
+const toProfileRequestBase = (p) => ({
+  nome: p.name.trim(),
+  telefone: onlyDigits(p.phone),
+  endereco: p.address ? toAddressRequest(p.address) : null,
+  latitude: p.latitude ?? null,
+  longitude: p.longitude ?? null,
+});
+
+export const toClientProfileRequest = (p) => ({
+  ...toProfileRequestBase(p),
+  dataNascimento: p.birth,
+  genero: genderToApi[p.gender],
+});
+
+export const toBusinessProfileRequest = (p) => ({
+  ...toProfileRequestBase(p),
+  dataNascimento: p.birth || null,
+  descricao: p.description || null,
+  especialidades: p.specialties,
+  tipoEstabelecimento: p.establishmentType,
+});
+
 export const toClientRegistration = (f) => ({
   nome: f.name.trim(),
   email: f.email.trim(),

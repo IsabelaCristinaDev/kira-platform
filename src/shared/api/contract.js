@@ -103,6 +103,28 @@
  */
 
 /**
+ * Campos comuns do perfil da conta logada. `email` e os documentos são só para leitura.
+ * @typedef {Object} ProfileBase
+ * @property {string} id
+ * @property {string} name
+ * @property {string} email
+ * @property {string} phone
+ * @property {string} birth                "YYYY-MM-DD"
+ * @property {{cep: string, street: string, number: string, complement: string, neighborhood: string, city: string, state: string}|null} address
+ * @property {number|null} latitude
+ * @property {number|null} longitude
+ * @property {string|null} photo
+ */
+
+/**
+ * @typedef {ProfileBase & { cpf: string, gender: string }} ClientProfile
+ */
+
+/**
+ * @typedef {ProfileBase & { cnpj: string|null, cpf: string|null, description: string, specialties: string[], establishmentType: string }} BusinessProfile
+ */
+
+/**
  * Conversa da lista, da mais recente para a mais antiga.
  * @typedef {Object} Conversation
  * @property {string} appointmentId

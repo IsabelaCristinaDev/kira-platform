@@ -10,6 +10,10 @@ import {
   toDashboard,
   toLocalDate,
   toLocalDateTime,
+  toBusinessProfile,
+  toBusinessProfileRequest,
+  toClientProfile,
+  toClientProfileRequest,
   toConversation,
   toMessage,
   toProfessional,
@@ -54,6 +58,12 @@ const noSlotsOnBusinessRule = (e) => {
   if (isBusinessRule(e)) return [];
   throw e;
 };
+
+// A rota, a conversão e o formato de envio do perfil dependem do tipo da conta logada
+const profileRoute = () =>
+  authStore.get()?.tipo === "EMPRESA"
+    ? { path: `/api/empresas/${currentUserId()}/perfil`, from: toBusinessProfile, to: toBusinessProfileRequest }
+    : { path: `/api/clientes/${currentUserId()}/perfil`, from: toClientProfile, to: toClientProfileRequest };
 
 export const httpAdapter = {
   auth: {
@@ -302,6 +312,22 @@ export const httpAdapter = {
           body: toBusinessHoursRequest(week),
         }),
       ),
+  },
+  profile: {
+    getMine: async () => {
+      const { path, from } = profileRoute();
+      return from(await request(path));
+    },
+    // Recebe só o que mudou: o restante vem do perfil atual, para o PUT não apagar endereço e coordenadas
+    saveMine: async (changes) => {
+      const { path, from, to } = profileRoute();
+      const current = from(await request(path));
+      const saved = from(await request(path, { method: "PUT", body: to({ ...current, ...changes }) }));
+      // O nome da sessão vem do login: sem isso, o app mostraria o nome antigo até entrar de novo
+      const auth = authStore.get();
+      if (auth && auth.nome !== saved.name) authStore.set({ ...auth, nome: saved.name });
+      return saved;
+    },
   },
   address: {
     // ViaCEP: serviço público de CEP, sem chave

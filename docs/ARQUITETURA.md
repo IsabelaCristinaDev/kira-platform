@@ -116,8 +116,8 @@ A integração (chamadas e hooks) fica pronta para a tela usar. Quem faz a tela 
 | **Funcionárias** (profissional)                     | Listar, criar, editar e desativar, com agenda, bloqueios e comissões                                                                                       | Chamadas prontas (`api.staff.*`)                                                                     |
 | **Escolher a funcionária no agendamento** (cliente) | Lista de funcionárias e os horários livres da escolhida                                                                                                    | `professionals.listStaff` e `staffId` prontos; `availability.get` ainda não envia a funcionária      |
 | **Gerenciar serviços** (profissional)               | Criar, editar e desativar serviços depois do cadastro                                                                                                      | Chamadas prontas (`api.services.*`)                                                                  |
-| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Backend pronto; falta a chamada                                                                      |
-| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Backend pronto; falta a chamada                                                                      |
+| **Editar perfil do profissional**                   | Nome, telefone, descrição, especialidades, endereço e tipo de estabelecimento                                                                              | Pronta: `api.profile.getMine()` e `saveMine()`                                                       |
+| **Editar perfil da cliente** (ajuste)               | A tela existe, mas salva só na sessão, e o e-mail deve ficar só leitura                                                                                    | Pronta: a tela precisa trocar o salvamento por `api.profile.saveMine()`                              |
 | **Filtro por categoria e distância** (ajuste)       | Filtrar pela categoria do serviço e mostrar a distância na lista e no perfil                                                                               | Backend pronto; falta a conversão                                                                    |
 | **Escolher a categoria do serviço** (ajuste)        | Campo de categoria no cadastro de serviços                                                                                                                 | Backend pronto; falta enviar o campo                                                                 |
 | **Painel, Analytics e Financeiro** (ajuste)         | Ticket médio, comparação com o período anterior, ranking e avaliações                                                                                      | Backend pronto; falta a conversão                                                                    |
@@ -178,11 +178,12 @@ Para a notificação chegar com o app fechado, como no Instagram.
 
 ### Perfil (backend pronto no PR #13)
 
-- [ ] **Chamadas de perfil:** criar em `httpAdapter.js`, com conversão e teste. Ainda não existem.
+- [x] **Chamadas de perfil:** `api.profile.getMine()` e `api.profile.saveMine(mudancas)`, pela conta logada. Salvar recebe só o que mudou, e o restante vem do perfil atual, então endereço e coordenadas não são apagados. O nome da sessão é atualizado junto.
 - [ ] **Editar perfil da cliente** (`ClientProfileEditScreen`): carregar com `GET /api/clientes/{id}/perfil` e salvar com `PUT`. Hoje salva só na sessão. O `PUT` exige nome, telefone, data de nascimento e gênero, e troca todos os campos: mandar de volta o endereço e as coordenadas que vieram no `GET`, senão eles são apagados.
 - [ ] **E-mail na edição da cliente:** a tela tem o campo, mas o backend não troca o e-mail. Deixar só leitura ou tirar o campo.
 - [ ] **Editar perfil do profissional:** não há tela. Usar `GET` e `PUT /api/empresas/{id}/perfil` (nome, telefone, descrição, especialidades, endereço, coordenadas e tipo de estabelecimento).
-- [ ] **Nome na sessão:** depois de salvar, atualizar o `nome` guardado no `authStore`, que vem do login.
+- [x] **Nome na sessão:** `saveMine` atualiza o `nome` do `authStore`.
+- [ ] **Trocar o endereço:** a tela deve mandar o endereço completo (o CEP preenche rua, bairro, cidade e estado), porque `saveMine` não confere se os campos combinam. Decidir o que fazer com as coordenadas antigas quando o endereço muda: hoje elas continuam e podem deixar a distância errada.
 
 ### Categoria e distância (backend pronto no PR #14)
 
@@ -226,6 +227,7 @@ Situação em 01/11/2026.
 
 - [ ] Fazer o merge dos PRs do backend e do PR #13, nessa ordem.
 - [ ] Colocar o domínio do site nas origens permitidas do backend e em `FRONTEND_URL`.
+- [ ] Trocar as chaves de notificação do `.env` local (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`), seguindo os passos passados à Isabela.
 - [ ] Gerar novas chaves de notificação para produção (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e definir `VAPID_SUBJECT` com um contato real.
 - [ ] Fazer uma revisão de segurança completa.
 
