@@ -59,6 +59,25 @@ const noSlotsOnBusinessRule = (e) => {
   throw e;
 };
 
+const sameAddress = (a, b) => JSON.stringify(toAddressKey(a)) === JSON.stringify(toAddressKey(b));
+const toAddressKey = (a) =>
+  a && {
+    cep: onlyDigits(a.cep ?? ""),
+    street: a.street ?? "",
+    number: a.number ?? "",
+    complement: a.complement ?? "",
+    neighborhood: a.neighborhood ?? "",
+    city: a.city ?? "",
+    state: a.state ?? "",
+  };
+
+// As coordenadas apontam para o endereço antigo: sem novas, é melhor ficar sem distância do que mostrar uma errada
+const withoutStaleCoordinates = (current, changes) => {
+  const moved = "address" in changes && !sameAddress(current.address, changes.address);
+  const hasNewCoordinates = "latitude" in changes || "longitude" in changes;
+  return moved && !hasNewCoordinates ? { ...changes, latitude: null, longitude: null } : changes;
+};
+
 // A rota, a conversão e o formato de envio do perfil dependem do tipo da conta logada
 const profileRoute = () =>
   authStore.get()?.tipo === "EMPRESA"
@@ -322,7 +341,8 @@ export const httpAdapter = {
     saveMine: async (changes) => {
       const { path, from, to } = profileRoute();
       const current = from(await request(path));
-      const saved = from(await request(path, { method: "PUT", body: to({ ...current, ...changes }) }));
+      const body = to({ ...current, ...withoutStaleCoordinates(current, changes) });
+      const saved = from(await request(path, { method: "PUT", body }));
       // O nome da sessão vem do login: sem isso, o app mostraria o nome antigo até entrar de novo
       const auth = authStore.get();
       if (auth && auth.nome !== saved.name) authStore.set({ ...auth, nome: saved.name });

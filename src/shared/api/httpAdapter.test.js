@@ -120,6 +120,43 @@ describe("profile", () => {
     expect(salvo.name).toBe("Ana Lima");
   });
 
+  const corpoAoSalvar = async (mudancas) => {
+    entrar("CLIENTE", "c1");
+    const fetch = vi.fn().mockResolvedValueOnce(json(200, perfil)).mockResolvedValueOnce(json(200, perfil));
+    vi.stubGlobal("fetch", fetch);
+    await api.profile.saveMine(mudancas);
+    return JSON.parse(fetch.mock.calls[1][1].body);
+  };
+  const enderecoAtual = {
+    cep: "74000000",
+    street: "Rua A",
+    number: "1",
+    complement: "",
+    neighborhood: "Centro",
+    city: "Goiânia",
+    state: "GO",
+  };
+
+  it("mudar o endereço apaga as coordenadas antigas", async () => {
+    const corpo = await corpoAoSalvar({ address: { ...enderecoAtual, cep: "01001000", city: "São Paulo" } });
+    expect(corpo.endereco.cidade).toBe("São Paulo");
+    expect(corpo).toMatchObject({ latitude: null, longitude: null });
+  });
+
+  it("mudar o endereço com coordenadas novas usa as novas", async () => {
+    const corpo = await corpoAoSalvar({
+      address: { ...enderecoAtual, city: "São Paulo" },
+      latitude: -23.5,
+      longitude: -46.6,
+    });
+    expect(corpo).toMatchObject({ latitude: -23.5, longitude: -46.6 });
+  });
+
+  it("mandar o mesmo endereço mantém as coordenadas, mesmo com o CEP formatado", async () => {
+    const corpo = await corpoAoSalvar({ address: { ...enderecoAtual, cep: "74000-000" } });
+    expect(corpo).toMatchObject({ latitude: -16.6, longitude: -49.2 });
+  });
+
   it("atualiza o nome da sessão depois de salvar", async () => {
     entrar("CLIENTE", "c1");
     vi.stubGlobal(

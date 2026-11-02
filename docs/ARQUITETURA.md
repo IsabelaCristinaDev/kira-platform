@@ -183,7 +183,10 @@ Para a notificação chegar com o app fechado, como no Instagram.
 - [ ] **E-mail na edição da cliente:** a tela tem o campo, mas o backend não troca o e-mail. Deixar só leitura ou tirar o campo.
 - [ ] **Editar perfil do profissional:** não há tela. Usar `GET` e `PUT /api/empresas/{id}/perfil` (nome, telefone, descrição, especialidades, endereço, coordenadas e tipo de estabelecimento).
 - [x] **Nome na sessão:** `saveMine` atualiza o `nome` do `authStore`.
-- [ ] **Trocar o endereço:** a tela deve mandar o endereço completo (o CEP preenche rua, bairro, cidade e estado), porque `saveMine` não confere se os campos combinam. Decidir o que fazer com as coordenadas antigas quando o endereço muda: hoje elas continuam e podem deixar a distância errada.
+- [ ] **Trocar o endereço:** a tela deve mandar o endereço completo (o CEP preenche rua, bairro, cidade e estado), porque `saveMine` não confere se os campos combinam.
+- [ ] **Aviso em vermelho ao mudar a cidade:** na tela de editar perfil, mostrar uma mensagem em vermelho avisando a pessoa para atualizar o restante do endereço depois de mudar a cidade.
+- [x] **Coordenadas ao mudar o endereço:** `saveMine` apaga as antigas se o endereço mudar e não vierem novas. A pessoa ou o estúdio fica sem distância até atualizar a localização.
+- [ ] **Futuro, calcular as coordenadas pelo CEP:** usar um serviço de geocodificação para a distância continuar certa depois de mudar o endereço, sem depender do celular. Ver "Coordenadas a partir do CEP" em "O que falta no backend".
 
 ### Categoria e distância (backend pronto no PR #14)
 
