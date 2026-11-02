@@ -99,7 +99,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 - [ ] **Painel com atendimentos concluídos:** correção na branch `fix/painel-concluidos`.
 - [ ] **Teste com banco de verdade:** os testes unitários usam dados simulados e não pegam erro de transação. Conferir com banco real os services sem `@Transactional` que leem relações (`FuncionariaService`, `ServicoService`, `EmailService`) e criar um teste de integração.
-- [ ] **Erro interno genérico:** resposta de erro 500 só com mensagem genérica; o detalhe fica no log.
+- [ ] **Respostas de erro:** mensagens genéricas e o código certo para cada caso, na branch `fix/erro-interno-generico`. Falta o merge.
 - [ ] **E-mail:** testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a senha e entrar).
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
 
