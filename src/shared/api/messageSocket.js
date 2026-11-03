@@ -5,21 +5,24 @@ import { authStore, refreshToken, webSocketUrl } from "./http";
 // Devolve a função que encerra a conexão. `onStatus(true)` a cada conexão aberta: quem usa busca os
 // dados de novo para pegar o que chegou enquanto estava desconectado.
 const subscribeTo = (destination, { onData, onStatus }) => {
+  let usedToken = null;
   const client = new Client({
     brokerURL: webSocketUrl(),
     reconnectDelay: 3000,
     beforeConnect: () => {
-      client.connectHeaders = { Authorization: `Bearer ${authStore.get()?.token}` };
+      usedToken = authStore.get()?.token;
+      client.connectHeaders = { Authorization: `Bearer ${usedToken}` };
     },
     onConnect: () => {
       client.subscribe(destination, (frame) => onData(JSON.parse(frame.body)));
       onStatus(true);
     },
     onWebSocketClose: () => onStatus(false),
-    // Token vencido: renova, e a próxima tentativa já usa o novo. Outra recusa não adianta repetir.
+    // Token vencido (ao conectar ou com a conexão aberta): renova, e a próxima tentativa já usa o novo.
+    // Se as chamadas HTTP já renovaram, não renova de novo. Outra recusa não adianta repetir.
     onStompError: async (frame) => {
       const expired = frame.headers.message?.startsWith("Token");
-      const canRetry = expired && (await refreshToken().catch(() => true));
+      const canRetry = expired && (await refreshToken(usedToken).catch(() => true));
       if (!canRetry) client.deactivate();
     },
   });
