@@ -1,5 +1,5 @@
 // Adaptador HTTP: cada função chama o kira-backend (e o ViaCEP) e devolve dados no formato das telas · API: kira-backend, ViaCEP
-import { ApiError } from "./contract";
+import { ApiError, SESSION_ENDED, SESSION_ENDED_MESSAGE } from "./contract";
 import { authStore, request } from "./http";
 import {
   toAppointment,
@@ -33,10 +33,7 @@ import { subscribeToConversation, subscribeToUserChannel } from "./messageSocket
 const currentUserId = () => {
   const id = authStore.get()?.id;
   if (!id) {
-    throw new ApiError(
-      "sem_id_usuario",
-      "Sua sessão não tem o id do usuário. Entre de novo; se continuar, o login do backend precisa devolver o campo id.",
-    );
+    throw new ApiError(SESSION_ENDED, SESSION_ENDED_MESSAGE);
   }
   return id;
 };
@@ -209,10 +206,7 @@ export const httpAdapter = {
           body: { agendamentoId: appointmentId, nota: rating, comentario: text.trim() || null },
         }),
       ),
-    listMine: async () => {
-      const list = await request(`/api/avaliacoes/cliente/${currentUserId()}`);
-      return list.map(toReview).filter((r) => r.author === "CLIENTE");
-    },
+    listMine: async () => (await request("/api/avaliacoes/minhas")).map(toReview),
     listForMyBusiness: async () => {
       const list = await request(`/api/avaliacoes/empresa/${currentUserId()}`, { auth: false });
       return list.map(toReview).filter((r) => r.author === "CLIENTE");

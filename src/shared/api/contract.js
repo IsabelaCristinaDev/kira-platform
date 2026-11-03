@@ -174,9 +174,14 @@ export class ApiError extends Error {
   }
 }
 
+// Sem sessão válida: diferente do 401 do login, que significa e-mail ou senha errados
+export const SESSION_ENDED = "sessao_encerrada";
+export const SESSION_ENDED_MESSAGE = "Sua sessão terminou. Entre de novo para continuar.";
+
 // Mensagem para mostrar na tela a partir de qualquer erro de requisição
 export const errorMessage = (error, fallback = "Algo deu errado. Tente novamente.") => {
   if (!(error instanceof ApiError)) return fallback;
+  if (error.code === SESSION_ENDED) return error.message;
   const fields = error.details?.erros ? Object.values(error.details.erros) : [];
   if (fields.length > 0) return fields.join(" ");
   if (error.status === 401 || error.code === "CREDENCIAIS_INVALIDAS") return "E-mail ou senha incorretos.";

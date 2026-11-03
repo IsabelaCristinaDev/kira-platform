@@ -1,5 +1,5 @@
 // Sessão: tela atual (vem da URL), login no backend, tipo de conta e atalhos de navegação · API: kira-backend (auth)
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { bottomNavItems } from "../client/data/options";
@@ -23,7 +23,27 @@ export function SessionProvider({ children }) {
   // auth = { token, refreshToken, tipo, nome, email, id } salvo pelo cliente HTTP
   const [auth, setAuth] = useState(() => authStore.get());
   const [chosenAccountType, setAccountType] = useState(null);
-  useEffect(() => authStore.subscribe(setAuth), []);
+  const lastAuth = useRef(auth);
+  const loggingOut = useRef(false);
+
+  // Sessão perdida sem a pessoa sair (refresh recusado ou saída em outra aba): limpa os dados e volta ao
+  // login. Outra conta entrando em outra aba também limpa, para não mostrar os dados da anterior.
+  useEffect(
+    () =>
+      authStore.subscribe((next) => {
+        const previous = lastAuth.current;
+        lastAuth.current = next;
+        setAuth(next);
+        if (!previous) return;
+        const lost = !next && !loggingOut.current;
+        if (lost || (next && next.id !== previous.id)) queryClient.clear();
+        if (lost) {
+          setAccountType(null);
+          navigate(pathFor("login"), { replace: true });
+        }
+      }),
+    [navigate, queryClient],
+  );
 
   const login = useCallback(
     async (credentials) => {
@@ -35,7 +55,12 @@ export function SessionProvider({ children }) {
     [queryClient],
   );
   const logout = useCallback(async () => {
-    await api.auth.logout();
+    loggingOut.current = true;
+    try {
+      await api.auth.logout();
+    } finally {
+      loggingOut.current = false;
+    }
     queryClient.clear();
     setAccountType(null);
     navigate(pathFor("splash"));

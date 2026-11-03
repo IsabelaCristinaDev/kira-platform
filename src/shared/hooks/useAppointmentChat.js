@@ -7,6 +7,16 @@ import { mergeMessage } from "../utils/chatMessages";
 // Sem conexão em tempo real, a conversa continua atualizando por consulta
 const FALLBACK_REFETCH_MS = 10000;
 
+// Uma busca em andamento pode ter saído antes desta mensagem e apagá-la ao terminar, e com a conexão
+// aberta não há outra consulta para trazê-la de volta. Por isso a busca recomeça já com a mensagem salva.
+export const addMessageToChat = (queryClient, appointmentId, message) => {
+  const queryKey = ["messages", appointmentId];
+  const fetching = queryClient.isFetching({ queryKey }) > 0;
+  // Na primeira carga ainda não há lista, e a busca só recomeça se a consulta já tiver dados
+  queryClient.setQueryData(queryKey, (list) => (list || fetching ? mergeMessage(list ?? [], message) : undefined));
+  if (fetching) queryClient.invalidateQueries({ queryKey });
+};
+
 export function useAppointmentChat(appointmentId) {
   const queryClient = useQueryClient();
   // null: ainda abrindo a primeira conexão, sem motivo para avisar
@@ -19,7 +29,7 @@ export function useAppointmentChat(appointmentId) {
   });
 
   const addMessage = useCallback(
-    (message) => queryClient.setQueryData(["messages", appointmentId], (list) => list && mergeMessage(list, message)),
+    (message) => addMessageToChat(queryClient, appointmentId, message),
     [appointmentId, queryClient],
   );
 

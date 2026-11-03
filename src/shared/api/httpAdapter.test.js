@@ -198,3 +198,14 @@ describe("profile", () => {
     expect(authStore.get().nome).toBe("Ana");
   });
 });
+
+describe("reviews.listMine", () => {
+  it("pede as avaliações feitas pela conta logada", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(json(200, [{ id: "r1", agendamentoId: "a1", nota: 5, tipoAvaliador: "CLIENTE" }]));
+    vi.stubGlobal("fetch", fetch);
+    expect(await api.reviews.listMine()).toMatchObject([{ id: "r1", appointmentId: "a1", rating: 5 }]);
+    expect(urls(fetch)[0]).toMatch(/\/api\/avaliacoes\/minhas$/);
+  });
+});
