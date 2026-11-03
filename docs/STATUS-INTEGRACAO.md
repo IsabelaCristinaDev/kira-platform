@@ -84,7 +84,7 @@ As chamadas e as conversões já existem em `src/shared/api/httpAdapter.js` e `m
 
 ## Situação do backend
 
-Desde 02/11, a `main` do backend tem tudo o que o app usa, e não há PR aberto. Nesse dia entraram os PRs #15 a #19 e #21 a #23 (chat em tempo real, resposta 401 que faz a sessão renovar, lista de conversas, notificações, horário só pelo dono, painel com concluídos, respostas de erro, teste com banco e rotas de avaliações). Em 29/10 entraram os PRs #8, #9, #10, #11, #12, #13 e #14 (funcionária, comissões, horário por funcionária, rota de admin, conta desativada, painel completo, editar perfil, categoria no serviço e coordenadas do estúdio). O filtro por categoria e a distância já funcionam no app; a edição de perfil e o campo de categoria ainda não têm tela. O [PR #7](https://github.com/IsabelaCristinaDev/kira-backend/pull/7) juntou a pilha de branches que faltava:
+Desde 02/11, a `main` do backend tem tudo o que o app usa. O único PR aberto é o #24, que cria o CI. Em 02/11 entraram os PRs #15 a #19 e #21 a #23 (chat em tempo real, resposta 401 que faz a sessão renovar, lista de conversas, notificações, horário só pelo dono, painel com concluídos, respostas de erro, teste com banco e rotas de avaliações). Em 29/10 entraram os PRs #8, #9, #10, #11, #12, #13 e #14 (funcionária, comissões, horário por funcionária, rota de admin, conta desativada, painel completo, editar perfil, categoria no serviço e coordenadas do estúdio). O filtro por categoria e a distância já funcionam no app; a edição de perfil e o campo de categoria ainda não têm tela. O [PR #7](https://github.com/IsabelaCristinaDev/kira-backend/pull/7) juntou a pilha de branches que faltava:
 
 - Só o estúdio dono conclui ou cancela, sem erro 500 ao cancelar
 - Confere o dono nas rotas de agendamento e o estúdio dono nas rotas do estabelecimento
@@ -93,12 +93,12 @@ Desde 02/11, a `main` do backend tem tudo o que o app usa, e não há PR aberto.
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 400, com o Docker e o banco local no ar. No app, os 144 testes passam.
+Testes do backend: passam os 400, com o Docker e o banco local no ar. No app, os 155 testes passam.
 
 ## Para tudo funcionar de verdade
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
-2. **Merge do PR #13 do app:** antes, trocar `reviews.listMine` para `GET /api/avaliacoes/minhas` e resolver os ajustes da revisão (ver `ARQUITETURA.md`).
+2. **Merge do PR #13 do app:** antes, resolver os ajustes da revisão que faltam: agenda com dias passados e domingo no calendário (ver `ARQUITETURA.md`).
 3. **Telas que faltam no app:** lista de conversas e não lidas no menu, gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, campo de categoria e usar o painel do backend.
 4. **Integração que falta:** notificação do navegador e áudio no chat (ver "O que falta no frontend" no `ARQUITETURA.md`).
 5. **Hospedar o backend e o web:** hoje tudo roda só local.

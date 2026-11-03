@@ -27,7 +27,7 @@ Front-end em Vite + React que consome o kira-backend (Spring Boot). Em desenvolv
 | Remarcar                                               | `ClientRescheduleScreen`                                          | `PATCH /api/agendamentos/{id}/reagendar/cliente`                                                                                             |
 | Chat cliente–empresa                                   | `AppointmentChatScreen`, `useAppointmentChat`, `messageSocket.js` | `GET` e `POST /api/mensagens/...`, `PATCH /agendamento/{id}/lidas`; tempo real em `/ws` (STOMP), tópico `/topic/agendamentos/{id}/mensagens` |
 | Agenda, histórico, pagamentos                          | telas da agenda e do perfil do cliente                            | `GET /api/agendamentos/cliente/{id}`                                                                                                         |
-| Avaliações da cliente                                  | `ClientReviewsScreen`, detalhe do agendamento                     | `GET /api/avaliacoes/cliente/{id}`, `POST /api/avaliacoes/cliente` (`ReviewForm`)                                                            |
+| Avaliações da cliente                                  | `ClientReviewsScreen`, detalhe do agendamento                     | `GET /api/avaliacoes/minhas`, `POST /api/avaliacoes/cliente` (`ReviewForm`)                                                                  |
 | Painel, agenda, financeiro e analytics do profissional | `useBusinessData` + `professional/utils/metrics.js`               | `GET /api/agendamentos/empresa/{id}`, `/api/empresas/{id}/servicos`, `/api/avaliacoes/empresa/{id}`                                          |
 | Concluir e cancelar (profissional)                     | `ProAgendaDashScreen`                                             | `PATCH /api/agendamentos/{id}/concluir`, `/cancelar/empresa`                                                                                 |
 | Remarcar (profissional)                                | `ProRescheduleScreen`                                             | `PATCH /api/agendamentos/{id}/reagendar/empresa`                                                                                             |
@@ -91,20 +91,20 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 - [ ] **Login de conta suspensa:** mensagem própria em vez de "Usuário inexistente ou senha inválida".
 - [ ] **Primeiro admin:** criar ao subir a aplicação, a partir de variáveis do `.env`. Sem admin, ninguém analisa denúncias nem recebe o e-mail de risco imediato.
-- [ ] **Juntar a `feat/canal-seguranca`:** em 01/11 estava 51 commits atrás da `main`. Refazer o merge com a `main` atual, rodar os testes, commit, push e PR.
+- [ ] **Juntar a `feat/canal-seguranca`:** em 03/11 estava 77 commits atrás da `main`. A pasta `kira-backend-canal-seguranca` tem um merge sem commit, com os conflitos resolvidos: conferir se ainda serve ou refazer com a `main` atual, rodar os testes, commit, push e PR.
 - [ ] **Acompanhar a própria denúncia:** rota para quem denunciou ver o andamento.
 - [ ] **Suspensão separada do `ativo`:** campo próprio, para revogar a suspensão não reativar uma conta desativada por outro motivo.
 
 ### 7. Operação
 
 - [x] **Painel com atendimentos concluídos:** PR #18.
-- [ ] **Teste com banco de verdade:** `RotasComBancoRealTest` já está na `main` (PR #21) e percorre as rotas com um Postgres descartável (precisa de Docker; sem ele, o teste é ignorado). Falta acrescentar as rotas do chat e das notificações.
+- [ ] **Teste com banco de verdade:** `RotasComBancoRealTest` já está na `main` (PR #21) e percorre as rotas com um Postgres descartável (precisa de Docker; sem ele, o teste é ignorado). O chat já tem enviar, listar e marcar uma mensagem como lida. Falta acrescentar a lista de conversas, marcar todas como lidas e as rotas das notificações.
 - [x] **Respostas de erro:** mensagens genéricas e o código certo para cada caso, PR #19.
 - [ ] **E-mail:** testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a senha e entrar).
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
 - [x] **SonarCloud do PR #17:** análise aprovada em 02/11.
 - [x] **Horário do estabelecimento só pelo dono:** PR #16.
-- [ ] **CI do backend:** o repositório não tem workflow, então nenhum teste roda nos PRs. Criar o CI, com Docker para o teste com banco não ser ignorado.
+- [ ] **CI do backend:** a `main` ainda não tem workflow, então nenhum teste roda nos PRs. O PR #24 cria o CI e está com as verificações aprovadas em 03/11; falta o merge e conferir se o teste com banco roda em vez de ser ignorado.
 
 ## Ajustes da revisão dos PRs (02/11/2026)
 
@@ -119,12 +119,12 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 **App (PR #13)**
 
-- [ ] **Minhas avaliações:** `reviews.listMine` precisa usar `GET /api/avaliacoes/minhas`. Hoje a lista fica vazia, e a tela volta a oferecer "Avaliar atendimento".
+- [x] **Minhas avaliações:** `reviews.listMine` usa `GET /api/avaliacoes/minhas`.
 - [ ] **Agenda do profissional:** permitir abrir dias passados, para ver e concluir atendimentos antigos.
 - [ ] **Domingo no calendário:** seguir o horário de funcionamento em vez de bloquear o dia.
-- [ ] **Renovação da sessão:** limpar a sessão só quando o token for recusado, não em erro temporário do servidor, e tratar duas abas abertas.
-- [ ] **Sessão perdida:** levar ao login e limpar o cache, em vez de mostrar uma mensagem técnica.
-- [ ] **Chat:** não perder mensagem recebida ao vivo durante uma atualização da lista.
+- [x] **Renovação da sessão:** limpa a sessão só quando o backend recusa o token, não em erro temporário. Com duas abas, uma renova por vez, e sair ou renovar em uma vale para as outras.
+- [x] **Sessão perdida:** limpa o cache e leva ao login, e as telas mostram "Sua sessão terminou" em vez de "E-mail ou senha incorretos". Falta testar no navegador (ver "Testes que faltam").
+- [x] **Chat:** mensagem recebida ao vivo durante uma atualização da lista não se perde.
 
 ## O que falta no frontend
 
@@ -200,7 +200,7 @@ Para a notificação chegar com o app fechado, como no Instagram.
 - [ ] **Notificação de mensagem nova, como no Instagram:** lista de conversas, contador ao vivo e notificação com o app fechado (web push no web; push do celular quando o mobile chegar). E-mail não faz parte do chat.
 - [ ] **Conversa de agendamento cancelado no profissional:** a agenda do dia esconde os cancelados, então o estúdio não abre esse histórico.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
-- [ ] **PR #12 do app (`feat/tela-processamento-pagamento`):** aberto desde 26/10 e 32 commits atrás desta branch. Decidir se entra agora ou espera o gateway de pagamento.
+- [ ] **PR #12 do app (`feat/tela-processamento-pagamento`):** aberto desde 26/10 e 34 commits atrás desta branch. Decidir se entra agora ou espera o gateway de pagamento.
 - [x] **Profissional remarcar:** botão na agenda abre `ProRescheduleScreen`, que divide o fluxo com a cliente (`shared/components/RescheduleScreen.jsx`).
 
 ### Perfil (backend pronto no PR #13)
@@ -244,6 +244,7 @@ Situação em 01/11/2026.
 **Testes que faltam**
 
 - [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`).
+- [ ] Sessão no navegador: token recusado leva ao login; backend fora do ar mantém a sessão; duas abas abertas renovando juntas; sair em uma aba leva a outra ao login. Só há teste automático do cliente HTTP, porque o projeto não tem como testar componentes React.
 - [ ] Encerrar a conexão ao vivo quando a pessoa sai da conta.
 - [ ] Notificação chegando de verdade em um navegador real. O envio só foi testado com um servidor local.
 - [ ] Notificação no iPhone: só funciona com o site adicionado à tela inicial.
