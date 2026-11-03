@@ -14,6 +14,7 @@ import {
 import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { CategoryChip, Header, PrimaryButton, SecondaryButton } from "../../shared/components/ui";
 import { api, errorMessage } from "../../shared/api";
+import { useBookableDays } from "../../shared/hooks/useBookableDays";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { startOfDay } from "../../shared/utils/date";
 import { useProfessional } from "../hooks/useProfessionals";
@@ -39,6 +40,7 @@ export default function ClientSchedulingScreen() {
   const queryClient = useQueryClient();
   const proQuery = useProfessional(selectedProId);
   const pro = proQuery.data;
+  const isDayAvailable = useBookableDays(selectedProId);
   const service = pro?.services.find((s) => s.id === selectedServiceId) ?? null;
   // Horários livres do dia escolhido para o serviço escolhido
   const availability = useQuery({
@@ -202,6 +204,7 @@ export default function ClientSchedulingScreen() {
                 today={today}
                 monthKey={monthAnimKey}
                 onSelect={selectScheduleDate}
+                isDayAvailable={isDayAvailable}
               />
             </div>
 

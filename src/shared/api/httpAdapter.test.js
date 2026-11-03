@@ -209,3 +209,16 @@ describe("reviews.listMine", () => {
     expect(urls(fetch)[0]).toMatch(/\/api\/avaliacoes\/minhas$/);
   });
 });
+
+describe("businessHours.get", () => {
+  it("pede o horário do estúdio informado, sem login", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(json(200, [{ diaSemana: "DOMINGO", horaInicio: "09:00:00", horaFim: "13:00:00" }]));
+    vi.stubGlobal("fetch", fetch);
+    const week = await api.businessHours.get("e1");
+    expect(week.find((d) => d.day === "DOMINGO").open).toBe(true);
+    expect(urls(fetch)[0]).toMatch(/\/api\/empresas\/e1\/disponibilidade$/);
+    expect(fetch.mock.calls[0][1].headers.Authorization).toBeUndefined();
+  });
+});

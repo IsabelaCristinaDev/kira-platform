@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { api, errorMessage } from "../api";
+import { useBookableDays } from "../hooks/useBookableDays";
 import { colors, fontBody, fontDisplay, gradientKira } from "../theme";
 import { startOfDay } from "../utils/date";
 import { CalendarHeader, CalendarMonth, EmptySchedule, LoadingSchedule, TimeSlotGrid } from "./Calendar";
@@ -24,6 +25,7 @@ export function RescheduleScreen({
 }) {
   const queryClient = useQueryClient();
   const appointment = appointments.data?.find((a) => a.id === appointmentId);
+  const isDayAvailable = useBookableDays(appointment?.proId);
   const today = startOfDay(new Date());
   const [viewMonth, setViewMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [monthAnimKey, setMonthAnimKey] = useState(0);
@@ -179,6 +181,7 @@ export function RescheduleScreen({
             today={today}
             monthKey={monthAnimKey}
             onSelect={selectDate}
+            isDayAvailable={isDayAvailable}
           />
         </div>
 

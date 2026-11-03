@@ -319,6 +319,7 @@ export const httpAdapter = {
   businessHours: {
     // Dia que não vem na lista está fechado
     getMine: async () => toBusinessHours(await request(`/api/empresas/${currentUserId()}/disponibilidade`)),
+    get: async (proId) => toBusinessHours(await request(`/api/empresas/${proId}/disponibilidade`, { auth: false })),
     // PUT troca a semana inteira de uma vez
     saveMine: async (week) =>
       toBusinessHours(

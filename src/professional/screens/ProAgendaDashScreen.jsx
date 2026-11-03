@@ -15,6 +15,9 @@ import { statusOf } from "../../shared/data/appointments";
 import { useBusinessData } from "../hooks/useBusinessData";
 import { appointmentsOn } from "../utils/metrics";
 
+// O profissional abre qualquer dia, inclusive passado, para ver e concluir atendimentos antigos
+const allDaysAvailable = () => true;
+
 // "Minha agenda" do profissional — reaproveita o CalendarHeader/CalendarMonth
 // já existentes (genéricos, recebidos por props), só com estado próprio.
 export default function ProAgendaDashScreen() {
@@ -28,9 +31,6 @@ export default function ProAgendaDashScreen() {
   };
   const business = useBusinessData();
   const dayAppointments = appointmentsOn(business.appointments, proSelectedDate);
-  const canGoPrev =
-    proViewMonth.getFullYear() > today.getFullYear() ||
-    (proViewMonth.getFullYear() === today.getFullYear() && proViewMonth.getMonth() > today.getMonth());
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <div style={{ padding: "var(--space-20) var(--space-24) var(--space-4)" }}>
@@ -61,7 +61,7 @@ export default function ProAgendaDashScreen() {
           monthDate={proViewMonth}
           onPrev={() => handleChangeMonth(-1)}
           onNext={() => handleChangeMonth(1)}
-          canGoPrev={canGoPrev}
+          canGoPrev
         />
         <div style={{ marginBottom: "var(--space-20)" }}>
           <CalendarMonth
@@ -70,6 +70,7 @@ export default function ProAgendaDashScreen() {
             today={today}
             monthKey={proMonthAnimKey}
             onSelect={setProSelectedDate}
+            isDayAvailable={allDaysAvailable}
           />
         </div>
         <h2
