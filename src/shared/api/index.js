@@ -3,7 +3,7 @@ import { httpAdapter } from "./httpAdapter";
 import { createMockBookings } from "./mockBookings";
 import { mockChat } from "./mockChat";
 
-export { ApiError, errorMessage } from "./contract";
+export { ApiError, errorMessage, PUSH_STATUS } from "./contract";
 export { authStore } from "./http";
 
 export const api = {
