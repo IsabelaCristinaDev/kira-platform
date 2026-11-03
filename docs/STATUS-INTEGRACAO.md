@@ -93,12 +93,12 @@ Desde 02/11, a `main` do backend tem tudo o que o app usa. O único PR aberto é
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 400, com o Docker e o banco local no ar. No app, os 155 testes passam.
+Testes do backend: passam os 400, com o Docker e o banco local no ar. No app, os 159 testes passam.
 
 ## Para tudo funcionar de verdade
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
-2. **Merge do PR #13 do app:** antes, resolver os ajustes da revisão que faltam: agenda com dias passados e domingo no calendário (ver `ARQUITETURA.md`).
+2. **Merge do PR #13 do app:** os ajustes da revisão estão feitos; antes, testar a sessão e o calendário no navegador (ver `ARQUITETURA.md`).
 3. **Telas que faltam no app:** lista de conversas e não lidas no menu, gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, campo de categoria e usar o painel do backend.
 4. **Integração que falta:** notificação do navegador e áudio no chat (ver "O que falta no frontend" no `ARQUITETURA.md`).
 5. **Hospedar o backend e o web:** hoje tudo roda só local.

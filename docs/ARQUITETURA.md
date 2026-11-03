@@ -120,8 +120,8 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 **App (PR #13)**
 
 - [x] **Minhas avaliações:** `reviews.listMine` usa `GET /api/avaliacoes/minhas`.
-- [ ] **Agenda do profissional:** permitir abrir dias passados, para ver e concluir atendimentos antigos.
-- [ ] **Domingo no calendário:** seguir o horário de funcionamento em vez de bloquear o dia.
+- [x] **Agenda do profissional:** abre dias e meses passados, para ver e concluir atendimentos antigos.
+- [x] **Domingo no calendário:** ao agendar e remarcar, o calendário segue o horário de funcionamento do estúdio, em qualquer dia da semana. Na agenda do profissional, nenhum dia fica bloqueado.
 - [x] **Renovação da sessão:** limpa a sessão só quando o backend recusa o token, não em erro temporário. Com duas abas, uma renova por vez, e sair ou renovar em uma vale para as outras.
 - [x] **Sessão perdida:** limpa o cache e leva ao login, e as telas mostram "Sua sessão terminou" em vez de "E-mail ou senha incorretos". Falta testar no navegador (ver "Testes que faltam").
 - [x] **Chat:** mensagem recebida ao vivo durante uma atualização da lista não se perde.
@@ -244,6 +244,7 @@ Situação em 01/11/2026.
 **Testes que faltam**
 
 - [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`).
+- [ ] Calendário no navegador: estúdio aberto no domingo e fechado em outro dia, ao agendar e ao remarcar; na agenda do profissional, abrir um mês passado e concluir um atendimento antigo.
 - [ ] Sessão no navegador: token recusado leva ao login; backend fora do ar mantém a sessão; duas abas abertas renovando juntas; sair em uma aba leva a outra ao login. Só há teste automático do cliente HTTP, porque o projeto não tem como testar componentes React.
 - [ ] Encerrar a conexão ao vivo quando a pessoa sai da conta.
 - [ ] Notificação chegando de verdade em um navegador real. O envio só foi testado com um servidor local.
