@@ -117,6 +117,8 @@ export const httpAdapter = {
         auth: false,
       }),
     logout: async () => {
+      // Antes de apagar a sessão: tirar o navegador da conta precisa do token
+      await disableWebPush(pushCalls);
       const refreshToken = authStore.get()?.refreshToken;
       authStore.set(null);
       if (refreshToken) {
