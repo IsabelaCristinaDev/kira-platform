@@ -105,7 +105,8 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [x] **SonarCloud do PR #17:** análise aprovada em 02/11.
 - [x] **Horário do estabelecimento só pelo dono:** PR #16.
 - [x] **CI do backend:** PR #24, em 03/11. Roda todos os testes nos PRs e na `main`, inclusive o teste com banco.
-- [ ] **Exigir o CI na `main`:** a branch não tem proteção, então um PR com teste falhando ainda pode entrar. Definir a verificação `testes` como obrigatória (o PR #24 já entrou).
+- [x] **Exigir o CI na `main`:** em 03/11, a `main` do backend exige a verificação `testes`, também para admin. Não exige revisão nem SonarCloud.
+- [ ] **Confirmar que o CI barra um PR:** ainda não vimos um PR ser barrado. Conferir no próximo PR com teste falhando.
 - [ ] **Branch `feat/provador-cloudflare` do backend:** tem o provador virtual com consentimento LGPD e geração via Cloudflare, em 1 commit, 2 atrás da `main` e sem PR. Decidir se entra e como o app passa a usar.
 - [ ] **Versões das actions do CI:** o GitHub avisa que `setup-java@v4` e `checkout@v4` estão ficando desatualizadas. Não impede nada hoje.
 
@@ -117,7 +118,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [x] **Lista de avaliações recebidas:** exige login e responde só para a própria conta (PR #23).
 - [x] **PR #16:** responder com o erro certo quando a conta não for de empresa.
 - [x] **PR #15:** heartbeat de 10 s ligado. Falta testar com uma queda real de conexão.
-- [ ] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 na `main` do backend e `messageSocket.js` no PR #13 do app. Reconexão testada no navegador em 03/11, com token de 60 s.
+- [x] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 na `main` do backend e `messageSocket.js` na `main` do app (PR #13). Reconexão testada no navegador em 03/11, com token de 60 s.
 - [x] **PR #17:** `VAPID_SUBJECT` vazio usa o valor padrão. Falta testar a notificação no Safari e no iPhone.
 
 **App (PR #13)**
@@ -203,7 +204,7 @@ Para a notificação chegar com o app fechado, como no Instagram.
 - [ ] **Notificação de mensagem nova, como no Instagram:** lista de conversas, contador ao vivo e notificação com o app fechado (web push no web; push do celular quando o mobile chegar). E-mail não faz parte do chat.
 - [ ] **Conversa de agendamento cancelado no profissional:** a agenda do dia esconde os cancelados, então o estúdio não abre esse histórico.
 - [ ] **Gerenciar serviços** depois do cadastro: criar, editar e desativar (`api.services.*`).
-- [ ] **PR #12 do app (`feat/tela-processamento-pagamento`):** aberto desde 26/10 e 34 commits atrás desta branch. Decidir se entra agora ou espera o gateway de pagamento.
+- [ ] **PR #12 do app (`feat/tela-processamento-pagamento`):** aberto desde 26/10 e, em 03/11, 43 commits atrás da `main`. Decidir se entra agora ou espera o gateway de pagamento.
 - [x] **Profissional remarcar:** botão na agenda abre `ProRescheduleScreen`, que divide o fluxo com a cliente (`shared/components/RescheduleScreen.jsx`).
 
 ### Perfil (backend pronto no PR #13)
@@ -273,7 +274,7 @@ Situação em 01/11/2026.
 **Antes de publicar**
 
 - [x] Merge dos PRs do backend, em 02/11 (#15 a #19 e #21 a #23).
-- [ ] Merge do PR #13 do app.
+- [x] Merge do PR #13 do app, em 03/11.
 - [ ] Colocar o domínio do site nas origens permitidas do backend e em `FRONTEND_URL`.
 - [ ] Trocar as chaves de notificação do `.env` local (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`), seguindo os passos passados à Isabela.
 - [ ] Gerar novas chaves de notificação para produção (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e definir `VAPID_SUBJECT` com um contato real.
