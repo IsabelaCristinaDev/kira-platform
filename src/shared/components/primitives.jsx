@@ -98,6 +98,7 @@ export const Chip = ({ active, style, children, ...rest }) => (
   <button
     type="button"
     className="k-chip"
+    aria-pressed={active === undefined ? undefined : Boolean(active)}
     style={{
       padding: "var(--space-9) var(--space-16)",
       borderRadius: "var(--radius-pill)",

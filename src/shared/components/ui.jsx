@@ -61,17 +61,34 @@ export const Field = ({ label, error, children }) => {
   );
 };
 
-export const PrimaryButton = ({ children, onClick, disabled, pill, type = "button" }) => (
-  <Button
-    type={type}
-    disabled={disabled}
-    onClick={onClick}
-    radius={pill ? "pill" : "2xl"}
-    style={{ marginTop: "var(--space-4)" }}
-  >
-    {children}
-  </Button>
-);
+// sticky: em formulários longos mantém a ação principal visível no rodapé da área rolável
+export const PrimaryButton = ({ children, onClick, disabled, pill, type = "button", sticky }) => {
+  const button = (
+    <Button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      radius={pill ? "pill" : "2xl"}
+      style={{ marginTop: sticky ? 0 : "var(--space-4)" }}
+    >
+      {children}
+    </Button>
+  );
+  if (!sticky) return button;
+  return (
+    <div
+      style={{
+        position: "sticky",
+        bottom: "calc(-1 * var(--space-32))",
+        zIndex: 1,
+        padding: "var(--space-16) 0 var(--space-12)",
+        background: `linear-gradient(to top, ${colors.background} 75%, transparent)`,
+      }}
+    >
+      {button}
+    </div>
+  );
+};
 
 export const SecondaryButton = ({ children, onClick }) => (
   <Button
@@ -176,6 +193,7 @@ export const SearchBar = ({ value, onChange, onFilterClick }) => (
     <div
       style={{
         flex: 1,
+        minWidth: 0,
         display: "flex",
         alignItems: "center",
         gap: "var(--space-10)",

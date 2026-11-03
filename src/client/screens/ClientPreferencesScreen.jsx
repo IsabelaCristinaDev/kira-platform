@@ -91,7 +91,9 @@ export default function ClientPreferencesScreen() {
           })}
         </div>
 
-        <PrimaryButton onClick={() => setScreen("clientHome")}>Continuar</PrimaryButton>
+        <PrimaryButton sticky onClick={() => setScreen("clientHome")}>
+          Continuar
+        </PrimaryButton>
       </div>
     </div>
   );

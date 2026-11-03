@@ -248,7 +248,9 @@ export default function ClientPersonalScreen() {
           </div>
         </Field>
 
-        <PrimaryButton onClick={() => validateClientPersonal() && setScreen("clientAddress")}>Continuar</PrimaryButton>
+        <PrimaryButton sticky onClick={() => validateClientPersonal() && setScreen("clientAddress")}>
+          Continuar
+        </PrimaryButton>
       </div>
     </div>
   );

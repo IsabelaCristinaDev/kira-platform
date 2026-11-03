@@ -10,8 +10,8 @@ function Prototype() {
   const { screen, setScreen, setAccountType } = useSession();
 
   const phoneFrame = {
-    width: 390,
-    minHeight: 780,
+    width: "min(390px, 100%)",
+    height: "clamp(640px, calc(100dvh - 2 * var(--space-32)), 844px)",
     background: colors.background,
     borderRadius: "var(--radius-phone)",
     overflow: "hidden",
@@ -109,17 +109,28 @@ function Prototype() {
   ];
 
   return (
-    <div style={outer}>
+    <div style={outer} className="k-outer">
       <style>
         {
-          "body, html { margin: 0; padding: 0; } .spin { animation: kiraspin 1s linear infinite; } @keyframes kiraspin { to { transform: rotate(360deg); } }"
+          "body, html { margin: 0; padding: 0; } .k-frame > * { min-height: 0; } @media (max-width: 480px) { .k-outer { padding: 0 !important; } .k-frame { width: 100% !important; height: 100dvh !important; border-radius: 0 !important; box-shadow: none !important; } .k-dock { padding: var(--space-12) !important; box-sizing: border-box; } } .spin { animation: kiraspin 1s linear infinite; } @keyframes kiraspin { to { transform: rotate(360deg); } }"
         }
       </style>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-16)" }}>
-        <div style={phoneFrame} data-testid="phone-frame">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "var(--space-16)",
+          width: "100%",
+        }}
+      >
+        <div style={phoneFrame} className="k-frame" data-testid="phone-frame">
           <AppRoutes />
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)", maxWidth: 390 }}>
+        <div
+          className="k-dock"
+          style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)", maxWidth: 390 }}
+        >
           {navGroups.map((group) => (
             <div
               key={group.label}

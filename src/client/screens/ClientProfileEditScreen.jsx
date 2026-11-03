@@ -210,7 +210,17 @@ export default function ClientProfileEditScreen() {
           </div>
         )}
 
-        <div style={{ display: "flex", gap: "var(--space-10)" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "var(--space-10)",
+            position: "sticky",
+            bottom: "calc(-1 * var(--space-32))",
+            zIndex: 1,
+            padding: "var(--space-16) 0 var(--space-12)",
+            background: `linear-gradient(to top, ${colors.background} 75%, transparent)`,
+          }}
+        >
           <div style={{ flex: 1 }}>
             <SecondaryButton onClick={() => setScreen("clientProfile")}>
               <X size={15} /> Cancelar

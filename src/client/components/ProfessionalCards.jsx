@@ -23,7 +23,14 @@ export const ProfessionalCard = ({ pro, onClick }) => (
     <img
       src={pro.photo}
       alt={pro.name}
-      style={{ width: 56, height: 56, borderRadius: "var(--radius-xl)", objectFit: "cover", flexShrink: 0 }}
+      style={{
+        width: 56,
+        height: 56,
+        borderRadius: "var(--radius-xl)",
+        objectFit: "cover",
+        objectPosition: "center 25%",
+        flexShrink: 0,
+      }}
     />
     <div style={{ flex: 1, minWidth: 0 }}>
       <p
@@ -33,6 +40,7 @@ export const ProfessionalCard = ({ pro, onClick }) => (
           fontSize: "var(--font-size-sm)",
           color: colors.foreground,
           margin: 0,
+          overflowWrap: "anywhere",
         }}
       >
         {pro.name}
@@ -43,6 +51,7 @@ export const ProfessionalCard = ({ pro, onClick }) => (
           fontSize: "var(--font-size-xs)",
           color: colors.mutedForeground,
           margin: "var(--space-1) 0 var(--space-4)",
+          overflowWrap: "anywhere",
         }}
       >
         {pro.role}
@@ -122,6 +131,7 @@ export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
         background: colors.card,
         overflow: "hidden",
         cursor: "pointer",
+        flexShrink: 0,
       }}
     >
       <div style={{ padding: "var(--space-12) var(--space-14) 0" }}>
@@ -131,7 +141,14 @@ export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
         <img
           src={pro.photo}
           alt={pro.name}
-          style={{ width: 64, height: 64, borderRadius: "var(--radius-2xl)", objectFit: "cover", flexShrink: 0 }}
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: "var(--radius-2xl)",
+            objectFit: "cover",
+            objectPosition: "center 25%",
+            flexShrink: 0,
+          }}
         />
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
@@ -317,7 +334,14 @@ export const RankingCard = ({ pro, rank, onClick }) => {
       <img
         src={pro.photo}
         alt={pro.name}
-        style={{ width: 52, height: 52, borderRadius: "var(--radius-xl)", objectFit: "cover", flexShrink: 0 }}
+        style={{
+          width: 52,
+          height: 52,
+          borderRadius: "var(--radius-xl)",
+          objectFit: "cover",
+          objectPosition: "center 25%",
+          flexShrink: 0,
+        }}
       />
       <div style={{ flex: 1, minWidth: 0 }}>
         <p
@@ -380,7 +404,14 @@ export const AppointmentCard = ({ appointment, pro, onClick }) => {
         <img
           src={pro.photo}
           alt={pro.name}
-          style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", objectFit: "cover", flexShrink: 0 }}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: "var(--radius-lg)",
+            objectFit: "cover",
+            objectPosition: "center 25%",
+            flexShrink: 0,
+          }}
         />
         <div style={{ flex: 1, minWidth: 0 }}>
           <p

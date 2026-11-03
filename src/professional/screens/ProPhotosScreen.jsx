@@ -89,7 +89,7 @@ export default function ProPhotosScreen() {
               fontSize: "var(--font-size-xs)",
               color: colors.destructiveText,
               fontFamily: fontBody,
-              margin: "-var(--space-8) 0 var(--space-10)",
+              margin: "calc(-1 * var(--space-8)) 0 var(--space-10)",
             }}
           >
             {pErrors.workPhotos}

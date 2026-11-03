@@ -62,6 +62,7 @@ export default function ClientDocumentScreen() {
           Aceitamos RG, CNH ou outro documento oficial com foto.
         </p>
         <PrimaryButton
+          sticky
           onClick={() => {
             const e = {};
             if (!cForm.docFront) e.docFront = "Adicione a foto da frente do documento";

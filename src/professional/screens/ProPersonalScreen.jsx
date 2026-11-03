@@ -258,7 +258,9 @@ export default function ProPersonalScreen() {
           </div>
         </Field>
 
-        <PrimaryButton onClick={() => validateProPersonal() && setScreen("proAddress")}>Continuar</PrimaryButton>
+        <PrimaryButton sticky onClick={() => validateProPersonal() && setScreen("proAddress")}>
+          Continuar
+        </PrimaryButton>
       </div>
     </div>
   );

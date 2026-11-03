@@ -33,8 +33,8 @@ export default function ClientChatScreen() {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: 780,
-        maxHeight: "100dvh",
+        flex: 1,
+        minHeight: 0,
         background: colors.background,
       }}
     >

@@ -109,7 +109,7 @@ export default function ProAddressScreen() {
             />
           </Field>
         </div>
-        <PrimaryButton onClick={() => validateAddress(pForm, setPErrors) && setScreen("proLocation")}>
+        <PrimaryButton sticky onClick={() => validateAddress(pForm, setPErrors) && setScreen("proLocation")}>
           Continuar
         </PrimaryButton>
       </div>

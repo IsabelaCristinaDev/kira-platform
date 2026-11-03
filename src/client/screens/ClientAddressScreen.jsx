@@ -109,7 +109,7 @@ export default function ClientAddressScreen() {
             />
           </Field>
         </div>
-        <PrimaryButton onClick={() => validateAddress(cForm, setCErrors) && setScreen("clientLocation")}>
+        <PrimaryButton sticky onClick={() => validateAddress(cForm, setCErrors) && setScreen("clientLocation")}>
           Continuar
         </PrimaryButton>
       </div>

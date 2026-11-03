@@ -69,7 +69,7 @@ export default function ClientProfessionalProfileScreen() {
             />
           </button>
         </div>
-        <div style={{ padding: "0 var(--space-24) var(--space-24)", marginTop: -40 }}>
+        <div style={{ padding: "0 var(--space-24) var(--space-24)", marginTop: -40, position: "relative" }}>
           <img
             src={pro.photo}
             alt={pro.name}
@@ -78,6 +78,8 @@ export default function ClientProfessionalProfileScreen() {
               height: 84,
               borderRadius: "var(--radius-4xl)",
               objectFit: "cover",
+              objectPosition: "center 25%",
+              display: "block",
               border: `3px solid ${colors.card}`,
               boxShadow: "var(--shadow-md)",
             }}
@@ -242,7 +244,14 @@ export default function ClientProfessionalProfileScreen() {
                 key={photo}
                 src={photo}
                 alt={`Trabalho ${i + 1} de ${pro.name}`}
-                style={{ width: "100%", aspectRatio: "1/1", borderRadius: "var(--radius-lg)", objectFit: "cover" }}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  minWidth: 0,
+                  aspectRatio: "1/1",
+                  borderRadius: "var(--radius-lg)",
+                  objectFit: "cover",
+                }}
               />
             ))}
           </div>
