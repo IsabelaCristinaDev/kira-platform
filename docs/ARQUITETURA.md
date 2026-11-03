@@ -117,7 +117,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [x] **Lista de avaliações recebidas:** exige login e responde só para a própria conta (PR #23).
 - [x] **PR #16:** responder com o erro certo quando a conta não for de empresa.
 - [x] **PR #15:** heartbeat de 10 s ligado. Falta testar com uma queda real de conexão.
-- [ ] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 no backend e `messageSocket.js` no PR #13 do app. Falta o merge do PR #25 e testar a reconexão no navegador.
+- [ ] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 na `main` do backend e `messageSocket.js` no PR #13 do app. Falta testar a reconexão no navegador.
 - [x] **PR #17:** `VAPID_SUBJECT` vazio usa o valor padrão. Falta testar a notificação no Safari e no iPhone.
 
 **App (PR #13)**
