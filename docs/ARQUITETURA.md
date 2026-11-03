@@ -91,7 +91,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 - [ ] **Login de conta suspensa:** mensagem própria em vez de "Usuário inexistente ou senha inválida".
 - [ ] **Primeiro admin:** criar ao subir a aplicação, a partir de variáveis do `.env`. Sem admin, ninguém analisa denúncias nem recebe o e-mail de risco imediato.
-- [ ] **Juntar a `feat/canal-seguranca`:** em 03/11 estava 77 commits atrás da `main`. A pasta `kira-backend-canal-seguranca` tem um merge sem commit, com os conflitos resolvidos: conferir se ainda serve ou refazer com a `main` atual, rodar os testes, commit, push e PR.
+- [ ] **Juntar a `feat/canal-seguranca`:** em 03/11 estava 79 commits atrás da `main`. A pasta `kira-backend-canal-seguranca` tem um merge sem commit, com os conflitos resolvidos: conferir se ainda serve ou refazer com a `main` atual, rodar os testes, commit, push e PR.
 - [ ] **Acompanhar a própria denúncia:** rota para quem denunciou ver o andamento.
 - [ ] **Suspensão separada do `ativo`:** campo próprio, para revogar a suspensão não reativar uma conta desativada por outro motivo.
 
@@ -104,7 +104,10 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [ ] **Teste `contextLoads`:** rodar sem depender de um banco local (por exemplo, Testcontainers).
 - [x] **SonarCloud do PR #17:** análise aprovada em 02/11.
 - [x] **Horário do estabelecimento só pelo dono:** PR #16.
-- [ ] **CI do backend:** a `main` ainda não tem workflow, então nenhum teste roda nos PRs. O PR #24 cria o CI e está com as verificações aprovadas em 03/11; falta o merge e conferir se o teste com banco roda em vez de ser ignorado.
+- [x] **CI do backend:** PR #24, em 03/11. Roda todos os testes nos PRs e na `main`, inclusive o teste com banco.
+- [ ] **Exigir o CI na `main`:** a branch não tem proteção, então um PR com teste falhando ainda pode entrar. Definir a verificação `testes` como obrigatória (o PR #24 já entrou).
+- [ ] **Branch `feat/provador-cloudflare` do backend:** tem o provador virtual com consentimento LGPD e geração via Cloudflare, em 1 commit, 2 atrás da `main` e sem PR. Decidir se entra e como o app passa a usar.
+- [ ] **Versões das actions do CI:** o GitHub avisa que `setup-java@v4` e `checkout@v4` estão ficando desatualizadas. Não impede nada hoje.
 
 ## Ajustes da revisão dos PRs (02/11/2026)
 
@@ -114,7 +117,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [x] **Lista de avaliações recebidas:** exige login e responde só para a própria conta (PR #23).
 - [x] **PR #16:** responder com o erro certo quando a conta não for de empresa.
 - [x] **PR #15:** heartbeat de 10 s ligado. Falta testar com uma queda real de conexão.
-- [ ] **Conexão ao vivo:** rever a validade enquanto ela está aberta. Resolver antes de publicar.
+- [ ] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 no backend e `messageSocket.js` no PR #13 do app. Falta o merge do PR #25 e testar a reconexão no navegador.
 - [x] **PR #17:** `VAPID_SUBJECT` vazio usa o valor padrão. Falta testar a notificação no Safari e no iPhone.
 
 **App (PR #13)**
@@ -244,6 +247,7 @@ Situação em 01/11/2026.
 **Testes que faltam**
 
 - [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`).
+- [ ] Chat aberto por mais de 1 hora: a conexão é encerrada quando o token vence, o app reconecta sozinho, e as mensagens continuam chegando.
 - [ ] Calendário no navegador: estúdio aberto no domingo e fechado em outro dia, ao agendar e ao remarcar; na agenda do profissional, abrir um mês passado e concluir um atendimento antigo.
 - [ ] Sessão no navegador: token recusado leva ao login; backend fora do ar mantém a sessão; duas abas abertas renovando juntas; sair em uma aba leva a outra ao login. Só há teste automático do cliente HTTP, porque o projeto não tem como testar componentes React.
 - [ ] Encerrar a conexão ao vivo quando a pessoa sai da conta.
@@ -255,7 +259,6 @@ Situação em 01/11/2026.
 **Limitações conhecidas**
 
 - [ ] Notificação no celular: fica para quando o app mobile for ligado ao backend.
-- [ ] Token que vence com a conexão aberta: a conexão continua ativa até cair.
 - [ ] Broker em memória: funciona com uma instância do backend.
 - [ ] O `lastReceived` também recebe mensagens da conversa aberta: a tela decide se mostra o aviso.
 
