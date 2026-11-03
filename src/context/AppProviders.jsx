@@ -8,6 +8,7 @@ import { SearchProvider } from "./SearchContext";
 import { SessionProvider } from "./SessionContext";
 import { SignupProvider } from "./SignupContext";
 import { TryOnProvider } from "./TryOnContext";
+import { WebPushBridge } from "./WebPushBridge";
 
 // Dados valem 30 s entre telas (a lista de estúdios faz uma chamada por estúdio) e não recarregam ao
 // focar a janela. Erros não repetem sozinhos (há botão "Tentar de novo").
@@ -27,6 +28,7 @@ export function AppProviders({ children }) {
           <SignupProvider>
             <SearchProvider>
               <SchedulingProvider>
+                <WebPushBridge />
                 <TryOnProvider>
                   <ProDashboardProvider>{children}</ProDashboardProvider>
                 </TryOnProvider>

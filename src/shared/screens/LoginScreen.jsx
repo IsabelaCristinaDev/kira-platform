@@ -1,6 +1,7 @@
 // Login com e-mail e senha e atalho para "esqueci a senha" · API: kira-backend (POST /api/auth/login)
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useSession } from "../../context/SessionContext";
 import { errorMessage } from "../api";
@@ -9,12 +10,18 @@ import { colors, fontBody, fontDisplay } from "../theme";
 
 export default function LoginScreen() {
   const { login, setScreen } = useSession();
+  const navigate = useNavigate();
+  // Veio de uma notificação sem sessão: depois de entrar, continua para a conversa
+  const returnTo = useLocation().state?.returnTo;
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const submit = useMutation({
     mutationFn: () => login({ email: loginEmail, password: loginPassword }),
-    onSuccess: (session) => setScreen(session.tipo === "EMPRESA" ? "proHome" : "clientHome"),
+    onSuccess: (session) => {
+      if (returnTo) navigate(returnTo, { replace: true });
+      else setScreen(session.tipo === "EMPRESA" ? "proHome" : "clientHome");
+    },
   });
   const canSubmit = loginEmail.trim() && loginPassword && !submit.isPending;
   return (
