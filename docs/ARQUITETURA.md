@@ -117,7 +117,7 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 - [x] **Lista de avaliações recebidas:** exige login e responde só para a própria conta (PR #23).
 - [x] **PR #16:** responder com o erro certo quando a conta não for de empresa.
 - [x] **PR #15:** heartbeat de 10 s ligado. Falta testar com uma queda real de conexão.
-- [ ] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 na `main` do backend e `messageSocket.js` no PR #13 do app. Falta testar a reconexão no navegador.
+- [ ] **Conexão ao vivo:** o servidor encerra a conexão quando o token vence ou a conta é desativada, e o app renova e reconecta. PR #25 na `main` do backend e `messageSocket.js` no PR #13 do app. Reconexão testada no navegador em 03/11, com token de 60 s.
 - [x] **PR #17:** `VAPID_SUBJECT` vazio usa o valor padrão. Falta testar a notificação no Safari e no iPhone.
 
 **App (PR #13)**
@@ -246,15 +246,23 @@ Situação em 01/11/2026.
 
 **Testes que faltam**
 
-- [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`).
-- [ ] Chat aberto por mais de 1 hora: a conexão é encerrada quando o token vence, o app reconecta sozinho, e as mensagens continuam chegando.
-- [ ] Calendário no navegador: estúdio aberto no domingo e fechado em outro dia, ao agendar e ao remarcar; na agenda do profissional, abrir um mês passado e concluir um atendimento antigo.
-- [ ] Sessão no navegador: token recusado leva ao login; backend fora do ar mantém a sessão; duas abas abertas renovando juntas; sair em uma aba leva a outra ao login. Só há teste automático do cliente HTTP, porque o projeto não tem como testar componentes React.
-- [ ] Encerrar a conexão ao vivo quando a pessoa sai da conta.
+- [ ] Sessão renovando sozinha depois de 1 hora real (cenário 1.5 do `CENARIOS-DE-TESTE.md`). Em 03/11 passou no Playwright com token de 60 s.
+- [x] Chat com o token vencendo: a conexão é encerrada, o app renova e reconecta, e as mensagens continuam chegando. Testado no Playwright em 03/11, com token de 60 s; ainda vale repetir com 1 hora real.
+- [x] Calendário no navegador: estúdio aberto no domingo e fechado na segunda, ao agendar e ao remarcar; na agenda do profissional, abrir um mês passado e concluir um atendimento antigo. Testado no Playwright em 03/11.
+- [x] Sessão no navegador: token recusado leva ao login; backend fora do ar mantém a sessão; duas abas abertas renovando juntas; sair em uma aba leva a outra ao login. Testado no Playwright em 03/11, só no Chromium. Os testes não ficam no repositório.
+- [x] Encerrar a conexão ao vivo quando a pessoa sai da conta. Testado no Playwright em 03/11.
+- [x] Backend caindo e voltando com o chat aberto: aparece "Reconectando...", o aviso some e as mensagens voltam. Testado no Playwright em 03/11, parando o processo. Falta uma queda de rede, em que a conexão não fecha sozinha (heartbeat).
+- [ ] Mensagem "Sua sessão terminou" na tela: o teste de 03/11 confirmou o login e que não aparece "E-mail ou senha incorretos", mas não viu essa mensagem.
 - [ ] Notificação chegando de verdade em um navegador real. O envio só foi testado com um servidor local.
 - [ ] Notificação no iPhone: só funciona com o site adicionado à tela inicial.
 - [ ] `useConversations()` em uma tela de verdade, quando a lista de conversas e o número do menu existirem.
-- [ ] Chat com contas reais no banco local (seção 7 do `CENARIOS-DE-TESTE.md`).
+- [ ] Chat com contas reais no banco local (seção 7 do `CENARIOS-DE-TESTE.md`). Falta a conversa de agendamento cancelado; o resto da seção passou em 03/11, com banco de teste.
+
+**Encontrado nos testes de 03/11 (ajustes de tela)**
+
+- [ ] **Painel de navegação do protótipo:** `App.jsx` mostra sempre os botões de todas as telas (Splash, Login, Cadastro…) e a moldura de celular, sem condição de ambiente. Tirar antes de publicar.
+- [ ] **Saudação da cliente:** depois do login, a Home mostra "Olá, bem-vinda", porque usa o nome do cadastro (`cForm.name`) em vez do nome da sessão.
+- [ ] **Preço no agendamento:** aparece `R$ 50.00`, com ponto; no Brasil o certo é `R$ 50,00`.
 
 **Limitações conhecidas**
 
