@@ -2,7 +2,7 @@
 import { useScheduling } from "@kira/context/SchedulingContext";
 import { api } from "@kira/shared/api";
 import { mockProfessionals } from "@kira/shared/data/professionals";
-import { searchProfessionals } from "@kira/client/utils/searchProfessionals";
+import { searchProfessionals } from "../../src/utils/searchProfessionals";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { SearchX, Search } from "lucide-react-native";

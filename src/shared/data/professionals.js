@@ -1,4 +1,4 @@
-// Profissionais usados na busca, home e ranking · mock · backend futuro
+// Profissionais de exemplo: só para os recursos em mock (chat de IA) e o app Expo · mock · no web, a lista real vem do backend
 export const nearbyProfessionals = [
   {
     id: 1,

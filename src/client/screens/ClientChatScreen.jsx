@@ -1,13 +1,13 @@
 // Atendimento: chat com a nossa inteligência artificial e transferência para atendente · mock (api.chat)
 import { CHAT_AGENTS, CHAT_STATUS, HANDOFF_STATES } from "../../shared/api/chatContract";
-import { ErrorState } from "../../shared/components/states";
+import { ChatInput } from "../../shared/components/ChatInput";
+import { DemoNotice, ErrorState } from "../../shared/components/states";
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
 import { colors } from "../../shared/theme";
-import { chatMotionCss } from "../chat/chatStyles";
+import { chatMotionCss } from "../../shared/components/chatStyles";
 import { inputPlaceholder } from "../chat/chatContent";
 import { ChatHeader } from "../components/chat/ChatHeader";
-import { ChatInput } from "../components/chat/ChatInput";
 import { ChatSkeleton, ChatWelcome, ConnectionBanner } from "../components/chat/ChatStates";
 import { HandoffButton } from "../components/chat/HandoffBanner";
 import { MessageList } from "../components/chat/MessageList";
@@ -46,6 +46,7 @@ export default function ClientChatScreen() {
         online={online}
         onBack={() => setScreen("clientHelpSupport")}
       />
+      <DemoNotice>as respostas são simuladas e nada é agendado por aqui.</DemoNotice>
       {!online && <ConnectionBanner />}
       {status === CHAT_STATUS.LOADING && <ChatSkeleton />}
       {status === CHAT_STATUS.ERROR && (

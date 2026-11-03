@@ -1,6 +1,6 @@
 // Lista de mensagens do chat: agrupada por dia, com rolagem automática para a última mensagem · API: nenhuma
 import { HANDOFF_STATES, MESSAGE_TYPES } from "@kira/shared/api/chatContract";
-import { groupMessagesByDay } from "@kira/client/chat/chatMessages";
+import { groupMessagesByDay } from "@kira/shared/utils/chatMessages";
 import { Fragment, useMemo, useRef } from "react";
 import { ScrollView, View } from "react-native";
 import { Text } from "../components/primitives";

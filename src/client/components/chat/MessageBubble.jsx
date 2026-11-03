@@ -3,8 +3,8 @@ import { CircleAlert, Clock, RotateCw } from "lucide-react";
 import { AUTHORS, CHAT_AGENTS, DELIVERY, MESSAGE_TYPES } from "../../../shared/api/chatContract";
 import { Chip, Text } from "../../../shared/components/primitives";
 import { colors, gradientKira } from "../../../shared/theme";
-import { formatTime } from "../../chat/chatMessages";
-import { ASSISTANT_INDENT, bubbleText, ON_GRADIENT } from "../../chat/chatStyles";
+import { formatTime } from "../../../shared/utils/chatMessages";
+import { ASSISTANT_INDENT, bubbleText, ON_GRADIENT } from "../../../shared/components/chatStyles";
 import { AgentAvatar } from "./AgentAvatar";
 
 const muted = { size: "xs", color: colors.mutedForeground };

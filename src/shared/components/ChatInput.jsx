@@ -1,10 +1,10 @@
-// Campo de texto do chat: arredondado, envia com Enter ou pelo botão com gradiente · API: nenhuma
+// Campo de texto dos chats: arredondado, envia com Enter ou pelo botão com gradiente · API: nenhuma
 import { Send } from "lucide-react";
 import { useId, useState } from "react";
-import { colors, fontBody, gradientKira } from "../../../shared/theme";
-import { ON_GRADIENT } from "../../chat/chatStyles";
+import { colors, fontBody, gradientKira } from "../theme";
+import { ON_GRADIENT } from "./chatStyles";
 
-export const ChatInput = ({ onSend, disabled, placeholder }) => {
+export const ChatInput = ({ onSend, disabled, placeholder, maxLength }) => {
   const [value, setValue] = useState("");
   const id = useId();
   const empty = !value.trim();
@@ -43,6 +43,7 @@ export const ChatInput = ({ onSend, disabled, placeholder }) => {
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
+        maxLength={maxLength}
         style={{
           flex: 1,
           minWidth: 0,

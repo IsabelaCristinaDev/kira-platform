@@ -1,4 +1,4 @@
-// Provador: resultado e botão Encontrar profissionais · mock de recomendação
+// Provador: resultado e botão Encontrar profissionais · ranking sobre os estúdios do kira-backend
 import { Sparkles } from "lucide-react";
 import { useRanking, useTryOn } from "../../context/TryOnContext";
 import { useScheduling } from "../../context/SchedulingContext";

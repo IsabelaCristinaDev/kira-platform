@@ -2,6 +2,8 @@
 import ClientAccountSecurityScreen from "./client/screens/ClientAccountSecurityScreen";
 import ClientAddressScreen from "./client/screens/ClientAddressScreen";
 import ClientAgendaDetailScreen from "./client/screens/ClientAgendaDetailScreen";
+import ClientRescheduleScreen from "./client/screens/ClientRescheduleScreen";
+import ClientConversationScreen from "./client/screens/ClientConversationScreen";
 import ClientAgendaScreen from "./client/screens/ClientAgendaScreen";
 import ClientBookingTrackingScreen from "./client/screens/ClientBookingTrackingScreen";
 import ClientChatScreen from "./client/screens/ClientChatScreen";
@@ -32,11 +34,14 @@ import ClientTryOnReferenceScreen from "./client/screens/ClientTryOnReferenceScr
 import ClientTryOnResultScreen from "./client/screens/ClientTryOnResultScreen";
 import ProAddressScreen from "./professional/screens/ProAddressScreen";
 import ProAgendaDashScreen from "./professional/screens/ProAgendaDashScreen";
+import ProRescheduleScreen from "./professional/screens/ProRescheduleScreen";
+import ProConversationScreen from "./professional/screens/ProConversationScreen";
 import ProAnalyticsScreen from "./professional/screens/ProAnalyticsScreen";
 import ProDocumentScreen from "./professional/screens/ProDocumentScreen";
 import ProDoneScreen from "./professional/screens/ProDoneScreen";
 import ProFinanceScreen from "./professional/screens/ProFinanceScreen";
 import ProGiftCardsScreen from "./professional/screens/ProGiftCardsScreen";
+import ProBusinessHoursScreen from "./professional/screens/ProBusinessHoursScreen";
 import ProHelpScreen from "./professional/screens/ProHelpScreen";
 import ProHomeScreen from "./professional/screens/ProHomeScreen";
 import ProLocationScreen from "./professional/screens/ProLocationScreen";
@@ -51,7 +56,9 @@ import ProSpecialtiesScreen from "./professional/screens/ProSpecialtiesScreen";
 import ProTermsScreen from "./professional/screens/ProTermsScreen";
 import FaceScreen from "./shared/screens/FaceScreen";
 import HomeScreen from "./shared/screens/HomeScreen";
+import ForgotPasswordScreen from "./shared/screens/ForgotPasswordScreen";
 import LoginScreen from "./shared/screens/LoginScreen";
+import ResetPasswordScreen from "./shared/screens/ResetPasswordScreen";
 import SignupScreen from "./shared/screens/SignupScreen";
 import SplashScreen from "./shared/screens/SplashScreen";
 
@@ -59,6 +66,8 @@ import SplashScreen from "./shared/screens/SplashScreen";
 export const screens = {
   splash: SplashScreen,
   login: LoginScreen,
+  forgotPassword: ForgotPasswordScreen,
+  resetPassword: ResetPasswordScreen,
   signup: SignupScreen,
   clientPersonal: ClientPersonalScreen,
   clientAddress: ClientAddressScreen,
@@ -75,6 +84,8 @@ export const screens = {
   clientTryOnResult: ClientTryOnResultScreen,
   clientAgenda: ClientAgendaScreen,
   clientAgendaDetail: ClientAgendaDetailScreen,
+  clientReschedule: ClientRescheduleScreen,
+  clientConversation: ClientConversationScreen,
   clientBookingTracking: ClientBookingTrackingScreen,
   clientProfile: ClientProfileScreen,
   clientProfileEdit: ClientProfileEditScreen,
@@ -102,12 +113,15 @@ export const screens = {
   proDone: ProDoneScreen,
   proHome: ProHomeScreen,
   proAgendaDash: ProAgendaDashScreen,
+  proReschedule: ProRescheduleScreen,
+  proConversation: ProConversationScreen,
   proProfileMenu: ProProfileMenuScreen,
   proFinance: ProFinanceScreen,
   proAnalytics: ProAnalyticsScreen,
   proGiftCards: ProGiftCardsScreen,
   proLoyalty: ProLoyaltyScreen,
   proSecurity: ProSecurityScreen,
+  proBusinessHours: ProBusinessHoursScreen,
   proHelp: ProHelpScreen,
   proSearch: ProSearchScreen,
   face: FaceScreen,

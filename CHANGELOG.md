@@ -6,6 +6,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ### Adicionado
 
+- Tela de horário de funcionamento do profissional (dias e horas em que atende), com aviso no painel enquanto nenhum dia estiver aberto.
+- Na agenda do profissional, concluir atendimento (depois do horário de início) e cancelar com confirmação.
+- Avaliar atendimento concluído (nota de 1 a 5 e comentário) pelo detalhe do agendamento.
+- Esqueci a senha: link no login, pedido por e-mail e tela de nova senha (abre pelo link do e-mail ou com o código).
+- Remarcar horário pelo detalhe do agendamento: mesmo serviço e profissional, novo dia e horário livre.
+- Chat entre cliente e estúdio no agendamento, em tempo real (WebSocket), com reconexão automática. Agendamento cancelado fica só para leitura.
+- O profissional remarca pela agenda, sem o limite de 2 horas da cliente. Os horários oferecidos são os da funcionária do atendimento.
 - Chat de atendimento em `/cliente/atendimento` com dados simulados: respostas da nossa inteligência artificial,
   cartão de profissional, sugestão de horário, transferência para atendente, falha de envio e modo sem conexão.
 - Contrato `api.chat` pronto para conectar ao n8n (mensagens, transferência e eventos).
@@ -18,6 +25,19 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 - Acompanhamento do agendamento em `/cliente/agenda/acompanhar`, no estilo de acompanhar um pedido: status no topo,
   linha do tempo (pedido enviado, profissional confirmou, pagamento confirmado, quase na hora, em atendimento,
   concluído) e Pix com copiar código, aviso de pagamento e conferência. Contrato `api.bookings` pronto para a API real.
+
+### Alterado
+
+- Os dados falsos saíram do app: telas do cliente e do profissional usam o kira-backend (`VITE_API_URL`).
+- Login, cadastro de cliente e de profissional, agendamento e cancelamento chamam a API de verdade, com renovação do token.
+- Busca, Home, ranking e perfil do profissional usam os estúdios, serviços e avaliações do backend.
+- Painel, agenda, financeiro e analytics do profissional são calculados a partir dos agendamentos reais.
+- CEP consultado no ViaCEP.
+
+### Removido
+
+- Adaptador de mock e dados de exemplo no web (ficam só para o app Expo e os recursos ainda simulados), arquivos `data/mocks.js` e o mapa ilustrativo da Home.
+- Saldo, próximo repasse e gift cards de exemplo, que não têm backend.
 
 ## [0.6.0] - 2026-10-14
 

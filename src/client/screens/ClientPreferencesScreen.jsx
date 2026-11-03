@@ -3,7 +3,7 @@ import { useSignup } from "../../context/SignupContext";
 import { useSession } from "../../context/SessionContext";
 import { Header, PrimaryButton } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
-import { preferenceCategories } from "../data/mocks";
+import { preferenceCategories } from "../data/options";
 
 export default function ClientPreferencesScreen() {
   const { cPreferences, toggleCPreference } = useSignup();

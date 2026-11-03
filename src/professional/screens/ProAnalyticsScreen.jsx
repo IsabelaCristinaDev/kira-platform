@@ -1,17 +1,20 @@
-// Analytics: serviços mais agendados, avaliações e retorno · mock
+// Analytics: serviços mais agendados, avaliações e retorno · API: kira-backend (agendamentos, serviços e avaliações)
 import { useEffect, useState } from "react";
 import { CheckCircle2, ChevronRight, CreditCard, Star, TrendingUp, User, X } from "lucide-react";
 import { useSession } from "../../context/SessionContext";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { ProBottomNav } from "../components/ProBottomNav";
 import { ProStatCard, RevenueBarChart } from "../components/ProWidgets";
+import { errorMessage } from "../../shared/api";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
+import { useBusinessData } from "../hooks/useBusinessData";
 import {
-  getServiceClientBreakdown,
-  proAnalyticsSummary,
-  proAppointmentsWeekMock,
-  proRatingBreakdownMock,
-  proServiceRankingMock,
-} from "../data/mocks";
+  analyticsSummary,
+  appointmentsByWeekday,
+  ratingBreakdown,
+  serviceClientBreakdown,
+  serviceRanking,
+} from "../utils/metrics";
 import { EscapeKey } from "../../shared/components/primitives";
 
 // "Analytics" — painel de desempenho do profissional: atendimentos por
@@ -28,7 +31,12 @@ export default function ProAnalyticsScreen() {
       document.body.style.overflow = "";
     };
   }, [proServiceDetail]);
-  const maxServiceCount = Math.max(...proServiceRankingMock.map((s) => s.count));
+  const business = useBusinessData();
+  const proAnalyticsSummary = analyticsSummary(business.appointments);
+  const proAppointmentsWeek = appointmentsByWeekday(business.appointments);
+  const proServiceRanking = serviceRanking(business.appointments);
+  const proRatingBreakdown = ratingBreakdown(business.reviews);
+  const maxServiceCount = Math.max(1, ...proServiceRanking.map((s) => s.count));
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <div style={{ padding: "var(--space-20) var(--space-24) var(--space-4)" }}>
@@ -55,200 +63,232 @@ export default function ProAnalyticsScreen() {
         </p>
       </div>
       <div style={{ flex: 1, padding: "var(--space-8) var(--space-24) var(--space-24)", overflowY: "auto" }}>
-        <div style={{ display: "flex", gap: "var(--space-10)", marginBottom: "var(--space-20)" }}>
-          <ProStatCard label="Ticket médio" value={`R$ ${proAnalyticsSummary.avgTicket}`} icon={CreditCard} />
-          <ProStatCard label="Retorno de clientes" value={`${proAnalyticsSummary.retentionRate}%`} icon={TrendingUp} />
-          <ProStatCard label="Conclusão" value={`${proAnalyticsSummary.completionRate}%`} icon={CheckCircle2} />
-        </div>
-
-        <div
-          style={{
-            borderRadius: "var(--radius-3xl)",
-            border: `1px solid ${colors.border}`,
-            background: colors.card,
-            padding: "var(--space-16)",
-            marginBottom: "var(--space-20)",
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: fontDisplay,
-              fontWeight: 700,
-              fontSize: "var(--font-size-base)",
-              color: colors.foreground,
-              margin: "0 0 var(--space-14)",
-            }}
-          >
-            Atendimentos por dia
-          </h2>
-          <RevenueBarChart
-            data={proAppointmentsWeekMock}
-            selectedIndex={proAnalyticsSel}
-            onSelect={setProAnalyticsSel}
+        {business.loading ? (
+          <SkeletonLoading count={3} />
+        ) : business.error ? (
+          <ErrorState
+            onRetry={business.retry}
+            message={errorMessage(business.error, "Não foi possível carregar o analytics.")}
           />
-          <p
-            style={{
-              fontFamily: fontBody,
-              fontSize: "var(--font-size-xs)",
-              color: colors.mutedForeground,
-              margin: "var(--space-12) 0 0",
-            }}
-          >
-            {proAnalyticsSel !== null
-              ? `${proAppointmentsWeekMock[proAnalyticsSel].label} · ${proAppointmentsWeekMock[proAnalyticsSel].value} atendimento(s)`
-              : "Toque em um dia para ver o total"}
-          </p>
-        </div>
+        ) : (
+          <>
+            <div style={{ display: "flex", gap: "var(--space-10)", marginBottom: "var(--space-20)" }}>
+              <ProStatCard label="Ticket médio" value={`R$ ${proAnalyticsSummary.avgTicket}`} icon={CreditCard} />
+              <ProStatCard
+                label="Retorno de clientes"
+                value={`${proAnalyticsSummary.retentionRate}%`}
+                icon={TrendingUp}
+              />
+              <ProStatCard label="Conclusão" value={`${proAnalyticsSummary.completionRate}%`} icon={CheckCircle2} />
+            </div>
 
-        <h2
-          style={{
-            fontFamily: fontDisplay,
-            fontWeight: 700,
-            fontSize: "var(--font-size-base)",
-            color: colors.foreground,
-            margin: "0 0 var(--space-10)",
-          }}
-        >
-          Serviços mais procurados
-        </h2>
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "var(--space-10)", marginBottom: "var(--space-20)" }}
-        >
-          {proServiceRankingMock.map((s) => (
-            <button
-              key={s.service}
-              onClick={() => setProServiceDetail(s)}
+            <div
               style={{
-                padding: "var(--space-12) var(--space-14)",
-                borderRadius: "var(--radius-xl)",
+                borderRadius: "var(--radius-3xl)",
                 border: `1px solid ${colors.border}`,
                 background: colors.card,
-                width: "100%",
-                textAlign: "left",
-                cursor: "pointer",
+                padding: "var(--space-16)",
+                marginBottom: "var(--space-20)",
               }}
             >
-              <div
+              <h2
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "var(--space-8)",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: fontBody,
-                    fontSize: "var(--font-size-xs)",
-                    fontWeight: 700,
-                    color: colors.foreground,
-                  }}
-                >
-                  {s.service}
-                </span>
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "var(--space-4)",
-                    fontFamily: fontBody,
-                    fontSize: "var(--font-size-xs)",
-                    color: colors.mutedForeground,
-                  }}
-                >
-                  {s.count}x · R$ {s.revenue} <ChevronRight size={13} color={colors.mutedForeground} />
-                </span>
-              </div>
-              <div
-                style={{
-                  width: "100%",
-                  height: 6,
-                  borderRadius: "var(--radius-pill)",
-                  background: colors.muted,
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    width: `${(s.count / maxServiceCount) * 100}%`,
-                    height: "100%",
-                    borderRadius: "var(--radius-pill)",
-                    background: gradientKira,
-                  }}
-                />
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <h2
-          style={{
-            fontFamily: fontDisplay,
-            fontWeight: 700,
-            fontSize: "var(--font-size-base)",
-            color: colors.foreground,
-            margin: "0 0 var(--space-10)",
-          }}
-        >
-          Distribuição de avaliações
-        </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
-          {proRatingBreakdownMock.map((r) => (
-            <div key={r.stars} style={{ display: "flex", alignItems: "center", gap: "var(--space-8)" }}>
-              <span
-                style={{
-                  fontFamily: fontBody,
-                  fontSize: "var(--font-size-xs)",
-                  fontWeight: 600,
+                  fontFamily: fontDisplay,
+                  fontWeight: 700,
+                  fontSize: "var(--font-size-base)",
                   color: colors.foreground,
-                  width: 34,
-                  flexShrink: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "var(--space-2)",
+                  margin: "0 0 var(--space-14)",
                 }}
               >
-                {r.stars} <Star size={11} color={colors.primary} fill={colors.primary} />
-              </span>
-              <div
-                style={{
-                  flex: 1,
-                  height: 6,
-                  borderRadius: "var(--radius-pill)",
-                  background: colors.muted,
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    width: `${r.percent}%`,
-                    height: "100%",
-                    borderRadius: "var(--radius-pill)",
-                    background: gradientKira,
-                  }}
-                />
-              </div>
-              <span
+                Atendimentos por dia
+              </h2>
+              <RevenueBarChart
+                data={proAppointmentsWeek}
+                selectedIndex={proAnalyticsSel}
+                onSelect={setProAnalyticsSel}
+              />
+              <p
                 style={{
                   fontFamily: fontBody,
                   fontSize: "var(--font-size-xs)",
                   color: colors.mutedForeground,
-                  width: 32,
-                  textAlign: "right",
-                  flexShrink: 0,
+                  margin: "var(--space-12) 0 0",
                 }}
               >
-                {r.percent}%
-              </span>
+                {proAnalyticsSel !== null
+                  ? `${proAppointmentsWeek[proAnalyticsSel].label} · ${proAppointmentsWeek[proAnalyticsSel].value} atendimento(s) concluído(s)`
+                  : "Atendimentos concluídos por dia da semana. Toque em um dia para ver o total"}
+              </p>
             </div>
-          ))}
-        </div>
+
+            <h2
+              style={{
+                fontFamily: fontDisplay,
+                fontWeight: 700,
+                fontSize: "var(--font-size-base)",
+                color: colors.foreground,
+                margin: "0 0 var(--space-10)",
+              }}
+            >
+              Serviços mais procurados
+            </h2>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--space-10)",
+                marginBottom: "var(--space-20)",
+              }}
+            >
+              {proServiceRanking.length === 0 && (
+                <p
+                  style={{
+                    fontFamily: fontBody,
+                    fontSize: "var(--font-size-xs)",
+                    color: colors.mutedForeground,
+                    margin: 0,
+                  }}
+                >
+                  Nenhum atendimento concluído ainda.
+                </p>
+              )}
+              {proServiceRanking.map((s) => (
+                <button
+                  key={s.service}
+                  onClick={() => setProServiceDetail(s)}
+                  style={{
+                    padding: "var(--space-12) var(--space-14)",
+                    borderRadius: "var(--radius-xl)",
+                    border: `1px solid ${colors.border}`,
+                    background: colors.card,
+                    width: "100%",
+                    textAlign: "left",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "var(--space-8)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: fontBody,
+                        fontSize: "var(--font-size-xs)",
+                        fontWeight: 700,
+                        color: colors.foreground,
+                      }}
+                    >
+                      {s.service}
+                    </span>
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "var(--space-4)",
+                        fontFamily: fontBody,
+                        fontSize: "var(--font-size-xs)",
+                        color: colors.mutedForeground,
+                      }}
+                    >
+                      {s.count}x · R$ {s.revenue} <ChevronRight size={13} color={colors.mutedForeground} />
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: 6,
+                      borderRadius: "var(--radius-pill)",
+                      background: colors.muted,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(s.count / maxServiceCount) * 100}%`,
+                        height: "100%",
+                        borderRadius: "var(--radius-pill)",
+                        background: gradientKira,
+                      }}
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <h2
+              style={{
+                fontFamily: fontDisplay,
+                fontWeight: 700,
+                fontSize: "var(--font-size-base)",
+                color: colors.foreground,
+                margin: "0 0 var(--space-10)",
+              }}
+            >
+              Distribuição de avaliações
+            </h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
+              {proRatingBreakdown.map((r) => (
+                <div key={r.stars} style={{ display: "flex", alignItems: "center", gap: "var(--space-8)" }}>
+                  <span
+                    style={{
+                      fontFamily: fontBody,
+                      fontSize: "var(--font-size-xs)",
+                      fontWeight: 600,
+                      color: colors.foreground,
+                      width: 34,
+                      flexShrink: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "var(--space-2)",
+                    }}
+                  >
+                    {r.stars} <Star size={11} color={colors.primary} fill={colors.primary} />
+                  </span>
+                  <div
+                    style={{
+                      flex: 1,
+                      height: 6,
+                      borderRadius: "var(--radius-pill)",
+                      background: colors.muted,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${r.percent}%`,
+                        height: "100%",
+                        borderRadius: "var(--radius-pill)",
+                        background: gradientKira,
+                      }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      fontFamily: fontBody,
+                      fontSize: "var(--font-size-xs)",
+                      color: colors.mutedForeground,
+                      width: 32,
+                      textAlign: "right",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {r.percent}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <ProBottomNav active="proAnalytics" onNavigate={goToProTab} />
 
       {proServiceDetail &&
         (() => {
-          const clients = getServiceClientBreakdown(proServiceDetail);
+          const clients = serviceClientBreakdown(proServiceDetail);
           const uniqueClients = clients.length;
           return (
             <div
@@ -350,7 +390,7 @@ export default function ProAnalyticsScreen() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
                   {clients.map((c) => (
                     <div
-                      key={c.name}
+                      key={`${c.name}-${c.lastDate}`}
                       style={{
                         display: "flex",
                         alignItems: "center",

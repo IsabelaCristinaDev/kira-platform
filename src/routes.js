@@ -6,6 +6,8 @@ export const sharedPaths = {
   splash: "/",
   login: "/entrar",
   signup: "/criar-conta",
+  forgotPassword: "/esqueci-a-senha",
+  resetPassword: "/redefinir-senha",
   home: "/inicio",
 };
 
@@ -27,6 +29,8 @@ export const clientPaths = area("/cliente", [
   ["clientTryOnResult", "provador/resultado"],
   ["clientAgenda", "agenda"],
   ["clientAgendaDetail", "agenda/detalhe"],
+  ["clientReschedule", "agenda/remarcar"],
+  ["clientConversation", "agenda/conversa"],
   ["clientBookingTracking", "agenda/acompanhar"],
   ["clientProfile", "perfil"],
   ["clientProfileEdit", "perfil/editar"],
@@ -56,12 +60,15 @@ export const professionalPaths = area("/profissional", [
   ["proDone", "cadastro/concluido"],
   ["proHome", "painel"],
   ["proAgendaDash", "agenda"],
+  ["proReschedule", "agenda/remarcar"],
+  ["proConversation", "agenda/conversa"],
   ["proProfileMenu", "perfil"],
   ["proFinance", "financeiro"],
   ["proAnalytics", "analytics"],
   ["proGiftCards", "gift-cards"],
   ["proLoyalty", "fidelidade"],
   ["proSecurity", "seguranca"],
+  ["proBusinessHours", "horario"],
   ["proHelp", "ajuda"],
   ["proSearch", "buscar"],
 ]);

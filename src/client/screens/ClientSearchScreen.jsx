@@ -1,4 +1,4 @@
-// Busca com filtros, scroll infinito e pull-to-refresh · mock com latência simulada
+// Busca com filtros, scroll infinito e pull-to-refresh · API: kira-backend (estúdios)
 import { Loader2 } from "lucide-react";
 import { useSearch } from "../../context/SearchContext";
 import { useSession } from "../../context/SessionContext";
@@ -10,7 +10,7 @@ import { BottomNav } from "../components/BottomNav";
 import { FilterModal } from "../components/FilterModal";
 import { ProfessionalCard } from "../components/ProfessionalCards";
 import { useSearchScreen } from "../hooks/useSearchScreen";
-import { categoryOptions } from "../data/mocks";
+import { categoryOptions } from "../data/options";
 
 export default function ClientSearchScreen() {
   const { categoryFilter, searchQuery, setCategoryFilter, setSearchQuery } = useSearch();

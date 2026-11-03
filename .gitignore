@@ -32,3 +32,6 @@ dist/
 !.env.example
 npm-debug.log*
 .DS_Store
+
+# IDE (JetBrains)
+.idea/

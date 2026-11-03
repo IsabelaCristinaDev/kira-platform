@@ -1,6 +1,6 @@
-// Busca: texto, categoria, filtros aplicados e favoritas · dados: mock · API: nenhuma (a lista vem de api.professionals)
+// Busca: texto, categoria, filtros aplicados e favoritas · API: nenhuma (a lista vem de api.professionals)
 import { createContext, useContext, useState } from "react";
-import { defaultSearchFilters } from "../client/data/mocks";
+import { defaultSearchFilters } from "../client/data/options";
 
 const SearchContext = createContext(null);
 

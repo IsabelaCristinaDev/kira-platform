@@ -1,7 +1,7 @@
 // Respostas rápidas do chat: chips que enviam o texto ao toque · API: nenhuma
 import { Chip } from "../../../shared/components/primitives";
 import { colors } from "../../../shared/theme";
-import { ASSISTANT_INDENT } from "../../chat/chatStyles";
+import { ASSISTANT_INDENT } from "../../../shared/components/chatStyles";
 
 export const QuickReplies = ({ options, onPick, indent = true }) => (
   <div

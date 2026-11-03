@@ -1,25 +1,40 @@
-// Perfil da profissional (serviços, portfólio, avaliações) · mock
-import { ArrowLeft, BadgeCheck, Bookmark, Clock, MapPin } from "lucide-react";
+// Perfil da profissional (serviços, avaliações, endereço) · API: kira-backend (estúdio, serviços e avaliações)
+import { ArrowLeft, Bookmark, MapPin } from "lucide-react";
 import { useSearch } from "../../context/SearchContext";
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
-import { PrimaryButton } from "../../shared/components/ui";
-import { mockProfessionals } from "../../shared/data/professionals";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
+import { Header, PrimaryButton } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
-import { RatingStars } from "../components/ProfessionalCards";
-import { getProfileExtras, getRankingExtras } from "../data/mocks";
+import { ProPhoto, RatingStars, ratingLabel } from "../components/ProfessionalCards";
+import { useProfessional } from "../hooks/useProfessionals";
 
 export default function ClientProfessionalProfileScreen() {
   const { favoriteProIds, toggleFavoriteProfessional } = useSearch();
   const { selectedProId, resetScheduling } = useScheduling();
   const { setScreen } = useSession();
-  const pro = mockProfessionals.find((p) => p.id === selectedProId) || mockProfessionals[0];
-  const extras = getProfileExtras(pro);
-  const nextSlots = getRankingExtras(pro).nextSlot;
+  const query = useProfessional(selectedProId);
   const goToScheduling = () => {
     resetScheduling();
     setScreen("clientScheduling");
   };
+  if (!query.data) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
+        <Header onBack={() => setScreen("clientSearch")} />
+        <div style={{ padding: "0 var(--space-24) var(--space-24)" }}>
+          {!selectedProId ? (
+            <ErrorState onRetry={() => setScreen("clientSearch")} message="Escolha um profissional na busca." />
+          ) : query.isError ? (
+            <ErrorState onRetry={query.refetch} message="Não foi possível carregar este perfil." />
+          ) : (
+            <SkeletonLoading count={3} />
+          )}
+        </div>
+      </div>
+    );
+  }
+  const pro = query.data;
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <div style={{ flex: 1, overflowY: "auto" }}>
@@ -70,17 +85,11 @@ export default function ClientProfessionalProfileScreen() {
           </button>
         </div>
         <div style={{ padding: "0 var(--space-24) var(--space-24)", marginTop: -40 }}>
-          <img
-            src={pro.photo}
-            alt={pro.name}
-            style={{
-              width: 84,
-              height: 84,
-              borderRadius: "var(--radius-4xl)",
-              objectFit: "cover",
-              border: `3px solid ${colors.card}`,
-              boxShadow: "var(--shadow-md)",
-            }}
+          <ProPhoto
+            pro={pro}
+            size={84}
+            radius="var(--radius-4xl)"
+            style={{ border: `3px solid ${colors.card}`, boxShadow: "var(--shadow-md)" }}
           />
           <h1
             style={{
@@ -103,22 +112,6 @@ export default function ClientProfessionalProfileScreen() {
           >
             {pro.role}
           </p>
-          {extras.verified && (
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--space-4)",
-                fontFamily: fontBody,
-                fontSize: "var(--font-size-xs)",
-                fontWeight: 700,
-                color: colors.primaryText,
-                margin: "0 0 var(--space-10)",
-              }}
-            >
-              <BadgeCheck size={14} /> Profissional verificado
-            </span>
-          )}
           <div
             style={{ display: "flex", alignItems: "center", gap: "var(--space-12)", marginBottom: "var(--space-18)" }}
           >
@@ -133,7 +126,7 @@ export default function ClientProfessionalProfileScreen() {
                 fontWeight: 600,
               }}
             >
-              <RatingStars value={pro.rating} size={13} /> {pro.rating}{" "}
+              <RatingStars value={pro.rating} size={13} /> {ratingLabel(pro)}{" "}
               <span style={{ color: colors.mutedForeground, fontWeight: 400 }}>({pro.reviews})</span>
             </span>
           </div>
@@ -157,7 +150,7 @@ export default function ClientProfessionalProfileScreen() {
               margin: "0 0 var(--space-18)",
             }}
           >
-            {pro.description}
+            {pro.description || "Este profissional ainda não escreveu uma descrição."}
           </p>
 
           <h2
@@ -174,9 +167,21 @@ export default function ClientProfessionalProfileScreen() {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)", marginBottom: "var(--space-20)" }}
           >
+            {pro.services.length === 0 && (
+              <p
+                style={{
+                  fontFamily: fontBody,
+                  fontSize: "var(--font-size-xs)",
+                  color: colors.mutedForeground,
+                  margin: 0,
+                }}
+              >
+                Nenhum serviço cadastrado ainda.
+              </p>
+            )}
             {pro.services.map((s) => (
               <div
-                key={s}
+                key={s.id}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -196,12 +201,12 @@ export default function ClientProfessionalProfileScreen() {
                       display: "block",
                     }}
                   >
-                    {s}
+                    {s.name}
                   </span>
                   <span
                     style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}
                   >
-                    ≈ 45 min
+                    {s.durationMinutes} min
                   </span>
                 </div>
                 <span
@@ -212,38 +217,9 @@ export default function ClientProfessionalProfileScreen() {
                     color: colors.primaryText,
                   }}
                 >
-                  R$ {pro.price}
+                  R$ {s.price.toFixed(2)}
                 </span>
               </div>
-            ))}
-          </div>
-
-          <h2
-            style={{
-              fontFamily: fontDisplay,
-              fontWeight: 700,
-              fontSize: "var(--font-size-base)",
-              color: colors.foreground,
-              margin: "0 0 var(--space-10)",
-            }}
-          >
-            Portfólio
-          </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: "var(--space-8)",
-              marginBottom: "var(--space-20)",
-            }}
-          >
-            {extras.portfolio.map((photo, i) => (
-              <img
-                key={photo}
-                src={photo}
-                alt={`Trabalho ${i + 1} de ${pro.name}`}
-                style={{ width: "100%", aspectRatio: "1/1", borderRadius: "var(--radius-lg)", objectFit: "cover" }}
-              />
             ))}
           </div>
 
@@ -267,7 +243,7 @@ export default function ClientProfessionalProfileScreen() {
               borderRadius: "var(--radius-xl)",
               border: `1px solid ${colors.border}`,
               background: colors.card,
-              marginBottom: extras.reviewComments.length > 0 ? 10 : 20,
+              marginBottom: pro.reviewList.length > 0 ? 10 : 20,
             }}
           >
             <RatingStars value={pro.rating} size={15} />
@@ -279,13 +255,13 @@ export default function ClientProfessionalProfileScreen() {
                 fontWeight: 700,
               }}
             >
-              {pro.rating}
+              {ratingLabel(pro)}
             </span>
             <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
-              com base em {pro.reviews} avaliações
+              {pro.reviews > 0 ? `com base em ${pro.reviews} avaliações` : "ainda sem avaliações"}
             </span>
           </div>
-          {extras.reviewComments.length > 0 && (
+          {pro.reviewList.length > 0 && (
             <div
               style={{
                 display: "flex",
@@ -294,9 +270,9 @@ export default function ClientProfessionalProfileScreen() {
                 marginBottom: "var(--space-20)",
               }}
             >
-              {extras.reviewComments.map((r) => (
+              {pro.reviewList.map((r) => (
                 <div
-                  key={`${r.author}-${r.text}`}
+                  key={r.id}
                   style={{
                     padding: "var(--space-12) var(--space-14)",
                     borderRadius: "var(--radius-xl)",
@@ -320,9 +296,9 @@ export default function ClientProfessionalProfileScreen() {
                         color: colors.foreground,
                       }}
                     >
-                      {r.author}
+                      {r.clientName}
                     </span>
-                    <RatingStars value={r.stars} size={10} />
+                    <RatingStars value={r.rating} size={10} />
                   </div>
                   <p
                     style={{
@@ -365,47 +341,9 @@ export default function ClientProfessionalProfileScreen() {
             <MapPin size={16} color={colors.primary} />
             <div>
               <p style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.foreground, margin: 0 }}>
-                {extras.address}
-              </p>
-              <p
-                style={{
-                  fontFamily: fontBody,
-                  fontSize: "var(--font-size-xs)",
-                  color: colors.mutedForeground,
-                  margin: "var(--space-1) 0 0",
-                }}
-              >
-                {pro.distance} km de você
+                {pro.address || "Endereço não informado"}
               </p>
             </div>
-          </div>
-
-          <h2
-            style={{
-              fontFamily: fontDisplay,
-              fontWeight: 700,
-              fontSize: "var(--font-size-base)",
-              color: colors.foreground,
-              margin: "0 0 var(--space-10)",
-            }}
-          >
-            Disponibilidade
-          </h2>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--space-8)",
-              padding: "var(--space-12) var(--space-14)",
-              borderRadius: "var(--radius-xl)",
-              border: `1px solid ${colors.border}`,
-              background: colors.card,
-            }}
-          >
-            <Clock size={16} color={colors.primary} />
-            <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.foreground }}>
-              Próximo horário: {nextSlots}
-            </span>
           </div>
         </div>
       </div>
@@ -417,7 +355,9 @@ export default function ClientProfessionalProfileScreen() {
           flexShrink: 0,
         }}
       >
-        <PrimaryButton onClick={goToScheduling}>Agendar</PrimaryButton>
+        <PrimaryButton disabled={pro.services.length === 0} onClick={goToScheduling}>
+          Agendar
+        </PrimaryButton>
       </div>
     </div>
   );

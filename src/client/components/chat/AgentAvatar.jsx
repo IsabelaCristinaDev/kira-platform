@@ -2,7 +2,7 @@
 import { Headset, Sparkles } from "lucide-react";
 import { CHAT_AGENTS } from "../../../shared/api/chatContract";
 import { colors, gradientKira } from "../../../shared/theme";
-import { ON_GRADIENT } from "../../chat/chatStyles";
+import { ON_GRADIENT } from "../../../shared/components/chatStyles";
 
 export const AgentAvatar = ({ agent, size = 44 }) => {
   const human = agent === CHAT_AGENTS.HUMAN;

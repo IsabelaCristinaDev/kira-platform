@@ -1,19 +1,26 @@
-// Agenda do cliente por abas · mock
+// Agenda do cliente por abas · API: kira-backend (GET /api/agendamentos/cliente/{id})
 import { Calendar } from "lucide-react";
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
+import { errorMessage } from "../../shared/api";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header } from "../../shared/components/ui";
-import { mockProfessionals } from "../../shared/data/professionals";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { BottomNav } from "../components/BottomNav";
 import { AppointmentCard } from "../components/ProfessionalCards";
-import { appointmentTabs, appointmentsMock } from "../data/mocks";
+import { appointmentTabs } from "../data/options";
+import { useMyAppointments } from "../hooks/useProfessionals";
 
 // ---------- Agenda ----------
 export default function ClientAgendaScreen() {
   const { agendaTab, setAgendaTab, setSelectedAppointmentId } = useScheduling();
   const { goToTab, setScreen } = useSession();
-  const filtered = appointmentsMock.filter((a) => a.status === agendaTab);
+  const appointments = useMyAppointments();
+  const list = appointments.data ?? [];
+  // Próximos em ordem de data; concluídos e cancelados do mais recente para o mais antigo
+  const filtered = list
+    .filter((a) => a.status === agendaTab)
+    .sort((a, b) => (agendaTab === "proximo" ? a.start - b.start : b.start - a.start));
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientHome")} />
@@ -63,7 +70,14 @@ export default function ClientAgendaScreen() {
         </div>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-16) var(--space-24) var(--space-24)" }}>
-        {filtered.length === 0 ? (
+        {appointments.isLoading ? (
+          <SkeletonLoading count={3} />
+        ) : appointments.isError ? (
+          <ErrorState
+            onRetry={appointments.refetch}
+            message={errorMessage(appointments.error, "Não foi possível carregar sua agenda.")}
+          />
+        ) : filtered.length === 0 ? (
           <div
             style={{
               display: "flex",
@@ -88,20 +102,16 @@ export default function ClientAgendaScreen() {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-10)" }}>
-            {filtered.map((a) => {
-              const pro = mockProfessionals.find((p) => p.id === a.proId) || mockProfessionals[0];
-              return (
-                <AppointmentCard
-                  key={a.id}
-                  appointment={a}
-                  pro={pro}
-                  onClick={() => {
-                    setSelectedAppointmentId(a.id);
-                    setScreen("clientAgendaDetail");
-                  }}
-                />
-              );
-            })}
+            {filtered.map((a) => (
+              <AppointmentCard
+                key={a.id}
+                appointment={a}
+                onClick={() => {
+                  setSelectedAppointmentId(a.id);
+                  setScreen("clientAgendaDetail");
+                }}
+              />
+            ))}
           </div>
         )}
       </div>

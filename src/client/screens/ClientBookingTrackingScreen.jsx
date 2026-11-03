@@ -1,23 +1,47 @@
-// Acompanhar agendamento: status em tempo real, linha do tempo e Pix, no estilo de acompanhar um pedido · mock (api.bookings)
+// Acompanhar agendamento: linha do tempo e Pix, no estilo de acompanhar um pedido · API: kira-backend (agendamento) · etapas e Pix: mock (api.bookings)
 import { MessageCircle } from "lucide-react";
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
+import { errorMessage } from "../../shared/api";
 import { BOOKING_STEPS, PAYMENT_STATES } from "../../shared/api/bookingContract";
-import { ErrorState, SkeletonLoading } from "../../shared/components/states";
+import { DemoNotice, ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header, SecondaryButton } from "../../shared/components/ui";
-import { mockProfessionals } from "../../shared/data/professionals";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { headline, progressOf } from "../booking/bookingContent";
 import { BookingTimeline } from "../components/booking/BookingTimeline";
 import { PaymentPanel } from "../components/booking/PaymentPanel";
-import { appointmentsMock } from "../data/mocks";
 import { useBookingTracking } from "../hooks/useBookingTracking";
+import { useMyAppointments } from "../hooks/useProfessionals";
 
 export default function ClientBookingTrackingScreen() {
   const { selectedAppointmentId } = useScheduling();
   const { setScreen } = useSession();
-  const appointment = appointmentsMock.find((a) => a.id === selectedAppointmentId) || appointmentsMock[0];
-  const pro = mockProfessionals.find((p) => p.id === appointment.proId) || mockProfessionals[0];
+  const appointments = useMyAppointments();
+  const appointment = appointments.data?.find((a) => a.id === selectedAppointmentId);
+  if (appointment) return <BookingTracking appointment={appointment} />;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
+      <Header onBack={() => setScreen("clientAgenda")} />
+      <div style={{ padding: "0 var(--space-24) var(--space-32)" }}>
+        {appointments.isLoading ? (
+          <SkeletonLoading count={3} />
+        ) : (
+          <ErrorState
+            onRetry={appointments.isError ? appointments.refetch : () => setScreen("clientAgenda")}
+            message={
+              appointments.isError
+                ? errorMessage(appointments.error, "Não foi possível carregar o agendamento.")
+                : "Agendamento não encontrado."
+            }
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BookingTracking({ appointment }) {
+  const { setScreen } = useSession();
   const { status, booking, reload, reportPayment, paying, payError } = useBookingTracking(appointment.id);
   const awaitingPayment =
     booking && booking.step === BOOKING_STEPS.CONFIRMED && booking.payment.state !== PAYMENT_STATES.CONFIRMED;
@@ -50,7 +74,8 @@ export default function ClientBookingTrackingScreen() {
                   color: colors.mutedForeground,
                 }}
               >
-                {appointment.service} com {pro.name} · {appointment.date}, {appointment.time}
+                {appointment.service} com {appointment.proName} · {appointment.start.toLocaleDateString("pt-BR")},{" "}
+                {appointment.time}
               </p>
               <h1
                 style={{
@@ -80,6 +105,7 @@ export default function ClientBookingTrackingScreen() {
                 />
               </div>
             </div>
+            <DemoNotice>as etapas e o Pix são simulados e não mudam seu agendamento. Não faça pagamentos.</DemoNotice>
             {awaitingPayment && (
               <PaymentPanel payment={booking.payment} paying={paying} error={payError} onReport={reportPayment} />
             )}

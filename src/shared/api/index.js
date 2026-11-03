@@ -1,7 +1,13 @@
-// Ponto único de acesso à API (hoje o adaptador mock) · mock · futuro: trocar por adaptador HTTP
-import { mockAdapter } from "./mockAdapter";
+// Ponto único de acesso à API: adaptador HTTP do kira-backend · URL em VITE_API_URL · chat de IA e acompanhamento: mock, ainda sem backend
+import { httpAdapter } from "./httpAdapter";
+import { createMockBookings } from "./mockBookings";
+import { mockChat } from "./mockChat";
 
-export { ApiError } from "./contract";
+export { ApiError, errorMessage } from "./contract";
+export { authStore } from "./http";
 
-/** @type {import("./contract").KiraApi} */
-export const api = mockAdapter;
+export const api = {
+  ...httpAdapter,
+  chat: mockChat,
+  bookings: createMockBookings(undefined, { failFirst: false }),
+};

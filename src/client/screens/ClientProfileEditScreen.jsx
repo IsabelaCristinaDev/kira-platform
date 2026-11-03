@@ -1,14 +1,12 @@
-// Edição do perfil · react-hook-form + zod · foto via FileReader · api.profile
+// Edição do perfil · react-hook-form + zod · foto via FileReader · sem API: o backend ainda não tem endpoint de edição, os dados ficam só nesta sessão
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
-import { Check, CheckCircle2, ChevronRight, ImagePlus, Loader2, MapPin, User, X } from "lucide-react";
+import { Check, CheckCircle2, ChevronRight, ImagePlus, MapPin, User, X } from "lucide-react";
 import { useSignup } from "../../context/SignupContext";
 import { useSession } from "../../context/SessionContext";
 import { Field, Header, PrimaryButton, SecondaryButton, inputStyle } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
-import { api } from "../../shared/api";
 import { profileEditSchema } from "../../shared/schemas/forms";
 import { formatPhone } from "../../shared/utils/format";
 
@@ -19,18 +17,7 @@ export default function ClientProfileEditScreen() {
   const { cForm, handlePhoto, setCField } = useSignup();
   const { setScreen } = useSession();
   const cFileInputRef = useRef(null);
-  const [profileSaveStatus, setProfileSaveStatus] = useState("idle"); // idle | saving | success
-  const save = useMutation({
-    mutationFn: (data) => api.profile.save(data),
-    onMutate: () => setProfileSaveStatus("saving"),
-    onSuccess: () => {
-      setProfileSaveStatus("success");
-      setTimeout(() => {
-        setProfileSaveStatus("idle");
-        setScreen("clientProfile");
-      }, 700);
-    },
-  });
+  const [profileSaveStatus, setProfileSaveStatus] = useState("idle"); // idle | success
   const {
     handleSubmit,
     setValue,
@@ -45,7 +32,11 @@ export default function ClientProfileEditScreen() {
     setValue(key, value);
     clearErrors(key);
   };
-  const saveProfileEdit = handleSubmit(() => save.mutate(cForm));
+  // Os campos já foram gravados em cForm a cada mudança; aqui só confirma e volta
+  const saveProfileEdit = handleSubmit(() => {
+    setProfileSaveStatus("success");
+    setTimeout(() => setScreen("clientProfile"), 700);
+  });
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientProfile")} />
@@ -217,9 +208,8 @@ export default function ClientProfileEditScreen() {
             </SecondaryButton>
           </div>
           <div style={{ flex: 1 }}>
-            <PrimaryButton onClick={saveProfileEdit} disabled={profileSaveStatus === "saving"}>
-              {profileSaveStatus === "saving" ? <Loader2 size={15} className="spin" /> : <Check size={15} />}{" "}
-              {profileSaveStatus === "saving" ? "Salvando..." : "Salvar"}
+            <PrimaryButton onClick={saveProfileEdit} disabled={profileSaveStatus === "success"}>
+              <Check size={15} /> Salvar
             </PrimaryButton>
           </div>
         </div>

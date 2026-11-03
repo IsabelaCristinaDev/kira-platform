@@ -35,13 +35,14 @@ export const ProStatCard = ({ label, value, icon: Icon }) => (
 // barra é clicável e destaca o dia/semana selecionado (selectedIndex/onSelect
 // são opcionais — sem eles o gráfico continua só ilustrativo, como antes).
 export const RevenueBarChart = ({ data, selectedIndex, onSelect }) => {
-  const max = Math.max(...data.map((d) => d.value));
+  const max = Math.max(1, ...data.map((d) => d.value));
   const peakIndex = data.reduce((best, d, i, arr) => (d.value > arr[best].value ? i : best), 0);
+  const hasPeak = data.some((d) => d.value > 0);
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: "var(--space-8)", height: 90 }}>
       {data.map((d, i) => {
         const isSelected = selectedIndex === i;
-        const isPeak = i === peakIndex;
+        const isPeak = hasPeak && i === peakIndex;
         return (
           <button
             key={d.label}

@@ -1,4 +1,4 @@
-// Cadastro: endereço · CEP simulado (ViaCEP não integrado)
+// Cadastro: endereço · CEP pelo ViaCEP
 import { Loader2 } from "lucide-react";
 import { useSignup } from "../../context/SignupContext";
 import { useSession } from "../../context/SessionContext";
