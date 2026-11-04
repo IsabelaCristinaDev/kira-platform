@@ -5,12 +5,24 @@ import { useSession } from "../../context/SessionContext";
 import { Header, SecondaryButton } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
 import { ProStatCard, RevenueBarChart } from "../components/ProWidgets";
+import { downloadCsv, toCsv } from "../../shared/utils/csv";
 import { proDashboardStats, proMonthlyRevenue, proTransactionsMock, proWeeklyRevenue } from "../data/mocks";
 
 // "Gestão financeira" — painel de controle financeiro do profissional:
 // saldo, próximo repasse, faturamento por semana ou mês (gráfico
 // interativo), formas de recebimento e últimas transações, conforme
 // "Controle financeiro com métricas e gráfico de faturamento" do folheto.
+// Relatório das transações listadas na tela (CSV); hoje sobre o mock, depois sobre a API de financeiro
+const reportColumns = [
+  { label: "Cliente", value: (tx) => tx.client },
+  { label: "Serviço", value: (tx) => tx.service },
+  { label: "Data", value: (tx) => tx.date },
+  { label: "Valor (R$)", value: (tx) => tx.value.toFixed(2).replace(".", ",") },
+  { label: "Forma de pagamento", value: (tx) => tx.method },
+];
+const downloadTransactionsReport = () =>
+  downloadCsv("relatorio-financeiro-kira.csv", toCsv(reportColumns, proTransactionsMock));
+
 export default function ProFinanceScreen() {
   const { setScreen } = useSession();
   const [financePeriod, setFinancePeriod] = useState("semana");
@@ -238,7 +250,7 @@ export default function ProFinanceScreen() {
           ))}
         </div>
 
-        <SecondaryButton onClick={() => {}}>Baixar relatório</SecondaryButton>
+        <SecondaryButton onClick={downloadTransactionsReport}>Baixar relatório</SecondaryButton>
       </div>
     </div>
   );
