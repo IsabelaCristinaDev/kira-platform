@@ -4,10 +4,12 @@ import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import { AppProviders } from "./context/AppProviders";
 import { useSession } from "./context/SessionContext";
+import { useHScrollInteraction } from "./shared/hooks/useHScrollInteraction";
 import { colors, fontBody } from "./shared/theme";
 
 function Prototype() {
   const { screen, setScreen, setAccountType } = useSession();
+  useHScrollInteraction();
 
   const phoneFrame = {
     width: "min(390px, 100%)",

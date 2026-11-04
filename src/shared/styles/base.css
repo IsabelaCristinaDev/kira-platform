@@ -54,6 +54,17 @@ textarea,
   display: none;
 }
 
+/* no computador a linha também se arrasta com o mouse */
+@media (hover: hover) and (pointer: fine) {
+  .k-hscroll {
+    cursor: grab;
+  }
+  .k-hscroll.k-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
 /* área de toque de 44px sem mudar o visual do botão (botões de 30 a 34px) */
 .k-hit {
   position: relative;
