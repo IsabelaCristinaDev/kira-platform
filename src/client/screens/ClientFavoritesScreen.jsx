@@ -1,4 +1,4 @@
-// Perfil: favoritas · ids salvos nesta sessão + lista de estúdios do kira-backend
+// Perfil: favoritas · ids de api.favorites (salvos só nesta sessão, sem login) + lista de estúdios · API: kira-backend
 import { Bookmark } from "lucide-react";
 import { useSearch } from "../../context/SearchContext";
 import { useScheduling } from "../../context/SchedulingContext";

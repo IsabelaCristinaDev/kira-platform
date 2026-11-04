@@ -1,6 +1,7 @@
-// Busca: texto, categoria, filtros aplicados e favoritas · API: nenhuma (a lista vem de api.professionals)
+// Busca: texto, categoria, filtros aplicados e favoritas · API: kira-backend (favoritas, em api.favorites; a lista vem de api.professionals)
 import { createContext, useContext, useState } from "react";
 import { defaultSearchFilters } from "../client/data/options";
+import { useFavorites } from "../client/hooks/useFavorites";
 
 const SearchContext = createContext(null);
 
@@ -8,10 +9,7 @@ export function SearchProvider({ children }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("todos");
   const [appliedFilters, setAppliedFilters] = useState(defaultSearchFilters);
-  const [favoriteProIds, setFavoriteProIds] = useState([]);
-
-  const toggleFavoriteProfessional = (id) =>
-    setFavoriteProIds((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
+  const { favoriteProIds, toggleFavoriteProfessional } = useFavorites();
 
   const value = {
     searchQuery,
