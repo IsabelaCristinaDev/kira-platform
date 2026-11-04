@@ -120,6 +120,7 @@ export default function ClientSchedulingScreen() {
               >
                 Ver na agenda
               </PrimaryButton>
+              <SecondaryButton onClick={() => setScreen("clientCheckout")}>Ir para o pagamento</SecondaryButton>
               <SecondaryButton onClick={() => setScreen("clientHome")}>Voltar para o início</SecondaryButton>
             </div>
           </div>
