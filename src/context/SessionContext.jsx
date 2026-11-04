@@ -27,6 +27,8 @@ export function SessionProvider({ children }) {
       goToTab: (key) => clientTabs.includes(key) && setScreen(key),
       goToProTab: (key) => proTabs.includes(key) && setScreen(key),
       // A verificação facial lê para onde voltar e continuar do estado da navegação.
+      // abre a tela guardando de onde veio, para o botão voltar dela retornar ao lugar certo
+      openWithBack: (key, backTo) => navigate(pathFor(key), { state: { backTo } }),
       goToFace: (backTo, returnTo) => navigate(pathFor("face"), { state: { backTo, returnTo } }),
     }),
     [screen, setScreen, accountType, navigate],

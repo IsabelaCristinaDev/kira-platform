@@ -1,4 +1,5 @@
 // Atendimento: chat com a nossa inteligência artificial e transferência para atendente · mock (api.chat)
+import { useLocation } from "react-router-dom";
 import { CHAT_AGENTS, CHAT_STATUS, HANDOFF_STATES } from "../../shared/api/chatContract";
 import { ErrorState } from "../../shared/components/states";
 import { useScheduling } from "../../context/SchedulingContext";
@@ -15,6 +16,7 @@ import { useChat } from "../hooks/useChat";
 
 export default function ClientChatScreen() {
   const { setScreen } = useSession();
+  const backTo = useLocation().state?.backTo ?? "clientHelpSupport";
   const { setSelectedProId } = useScheduling();
   const chat = useChat();
   const { status, messages, agent, handoff, typing, online } = chat;
@@ -39,13 +41,7 @@ export default function ClientChatScreen() {
       }}
     >
       <style>{chatMotionCss}</style>
-      <ChatHeader
-        agent={agent}
-        handoff={handoff}
-        typing={typing}
-        online={online}
-        onBack={() => setScreen("clientHelpSupport")}
-      />
+      <ChatHeader agent={agent} handoff={handoff} typing={typing} online={online} onBack={() => setScreen(backTo)} />
       {!online && <ConnectionBanner />}
       {status === CHAT_STATUS.LOADING && <ChatSkeleton />}
       {status === CHAT_STATUS.ERROR && (

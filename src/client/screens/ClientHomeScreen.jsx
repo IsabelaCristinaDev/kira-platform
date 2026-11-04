@@ -19,7 +19,7 @@ import { dashboardCategories } from "../data/mocks";
 export default function ClientHomeScreen() {
   const { cForm } = useSignup();
   const { categoryFilter, setCategoryFilter } = useSearch();
-  const { goToTab, setScreen } = useSession();
+  const { goToTab, setScreen, openWithBack } = useSession();
   const { loadRanking, rankingError, rankingLoading, recommended } = useRanking();
   const { rankingSource, startTryOnFlow } = useTryOn();
   const { setBookedSlot, setSelectedProId } = useScheduling();
@@ -540,7 +540,7 @@ export default function ClientHomeScreen() {
         <button
           type="button"
           className="k-chip"
-          onClick={() => setScreen("clientChat")}
+          onClick={() => openWithBack("clientChat", "clientHome")}
           aria-label="Ajuda: conversar com a Kira"
           style={{
             position: "sticky",
