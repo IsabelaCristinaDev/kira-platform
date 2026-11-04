@@ -1,6 +1,7 @@
 // Mocks do cliente: categorias, agenda, perfil e extras de portfólio · backend futuro
 import {
   BadgeCheck,
+  Bell,
   Bookmark,
   Calendar,
   Clock,
@@ -10,6 +11,7 @@ import {
   HelpCircle,
   Home,
   MapPin,
+  MessageCircle,
   Scissors,
   Search,
   Settings,
@@ -252,6 +254,8 @@ export const clientProfileMenu = [
       { label: "Minhas avaliações", icon: Star, go: "clientReviews" },
       { label: "Profissionais favoritos", icon: Bookmark, go: "clientFavorites" },
       { label: "Histórico", icon: Clock, go: "clientHistory" },
+      { label: "Conversas", icon: MessageCircle, go: "clientConversations" },
+      { label: "Notificações", icon: Bell, go: "clientNotifications" },
     ],
   },
   {

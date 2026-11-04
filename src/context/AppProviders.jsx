@@ -1,6 +1,7 @@
 // Providers do app na ordem das dependências: sessão, cadastro, busca, agendamento, provador, painel · API: nenhuma
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { ConversationsProvider } from "./ConversationsContext";
 import { ProDashboardProvider } from "./ProDashboardContext";
 import { SchedulingProvider } from "./SchedulingContext";
 import { SearchProvider } from "./SearchContext";
@@ -26,7 +27,9 @@ export function AppProviders({ children }) {
           <SearchProvider>
             <SchedulingProvider>
               <TryOnProvider>
-                <ProDashboardProvider>{children}</ProDashboardProvider>
+                <ConversationsProvider>
+                  <ProDashboardProvider>{children}</ProDashboardProvider>
+                </ConversationsProvider>
               </TryOnProvider>
             </SchedulingProvider>
           </SearchProvider>

@@ -35,7 +35,13 @@ export default function ClientHelpSupportScreen() {
         <ProfileSection title="Dúvidas frequentes">
           {["Como funciona o Provador virtual?", "Como altero um agendamento?", "Como funciona o pagamento?"].map(
             (q, i, arr) => (
-              <ProfileMenuRow key={q} icon={HelpCircle} label={q} last={i === arr.length - 1} onClick={() => {}} />
+              <ProfileMenuRow
+                key={q}
+                icon={HelpCircle}
+                label={q}
+                last={i === arr.length - 1}
+                onClick={() => setScreen("clientFaq")}
+              />
             ),
           )}
         </ProfileSection>

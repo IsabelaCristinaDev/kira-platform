@@ -5,6 +5,10 @@ import ClientAgendaDetailScreen from "./client/screens/ClientAgendaDetailScreen"
 import ClientAgendaScreen from "./client/screens/ClientAgendaScreen";
 import ClientBookingTrackingScreen from "./client/screens/ClientBookingTrackingScreen";
 import ClientChatScreen from "./client/screens/ClientChatScreen";
+import ClientConversationScreen from "./client/screens/ClientConversationScreen";
+import ClientConversationsScreen from "./client/screens/ClientConversationsScreen";
+import ClientFaqScreen from "./client/screens/ClientFaqScreen";
+import ClientNotificationsScreen from "./client/screens/ClientNotificationsScreen";
 import ClientCouponsScreen from "./client/screens/ClientCouponsScreen";
 import ClientDocumentScreen from "./client/screens/ClientDocumentScreen";
 import ClientDoneScreen from "./client/screens/ClientDoneScreen";
@@ -43,7 +47,12 @@ import ProLocationScreen from "./professional/screens/ProLocationScreen";
 import ProLoyaltyScreen from "./professional/screens/ProLoyaltyScreen";
 import ProPersonalScreen from "./professional/screens/ProPersonalScreen";
 import ProPhotosScreen from "./professional/screens/ProPhotosScreen";
-import { ProSearchScreen } from "./professional/screens/ProPlaceholderScreen";
+import ProConversationScreen from "./professional/screens/ProConversationScreen";
+import ProConversationsScreen from "./professional/screens/ProConversationsScreen";
+import ProFaqScreen from "./professional/screens/ProFaqScreen";
+import ProNotificationsScreen from "./professional/screens/ProNotificationsScreen";
+import ProPremiumScreen from "./professional/screens/ProPremiumScreen";
+import { ProSearchScreen } from "./professional/screens/ProSearchScreen";
 import ProProfileMenuScreen from "./professional/screens/ProProfileMenuScreen";
 import ProSecurityScreen from "./professional/screens/ProSecurityScreen";
 import ProServicesScreen from "./professional/screens/ProServicesScreen";
@@ -85,6 +94,10 @@ export const screens = {
   clientPaymentHistory: ClientPaymentHistoryScreen,
   clientCoupons: ClientCouponsScreen,
   clientHelpSupport: ClientHelpSupportScreen,
+  clientFaq: ClientFaqScreen,
+  clientConversations: ClientConversationsScreen,
+  clientConversation: ClientConversationScreen,
+  clientNotifications: ClientNotificationsScreen,
   clientChat: ClientChatScreen,
   clientReviews: ClientReviewsScreen,
   clientFavorites: ClientFavoritesScreen,
@@ -109,6 +122,11 @@ export const screens = {
   proLoyalty: ProLoyaltyScreen,
   proSecurity: ProSecurityScreen,
   proHelp: ProHelpScreen,
+  proFaq: ProFaqScreen,
+  proConversations: ProConversationsScreen,
+  proConversation: ProConversationScreen,
+  proNotifications: ProNotificationsScreen,
+  proPremium: ProPremiumScreen,
   proSearch: ProSearchScreen,
   face: FaceScreen,
   home: HomeScreen,

@@ -1,5 +1,19 @@
 // Mocks do profissional: receita, analytics, agenda, gift cards, fidelidade · backend futuro
-import { BarChart3, Calendar, CreditCard, Gift, HelpCircle, Home, Search, ShieldCheck, Star, User } from "lucide-react";
+import {
+  BarChart3,
+  Bell,
+  Calendar,
+  CreditCard,
+  Gift,
+  HelpCircle,
+  Home,
+  MessageCircle,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  User,
+} from "lucide-react";
 
 // ==========================================================================
 // NOVO — Painel do profissional (mock)
@@ -142,6 +156,8 @@ export const proProfileMenu = [
     items: [
       { label: "Minha agenda", icon: Calendar, go: "proAgendaDash" },
       { label: "Financeiro", icon: CreditCard, go: "proFinance" },
+      { label: "Conversas", icon: MessageCircle, go: "proConversations" },
+      { label: "Notificações", icon: Bell, go: "proNotifications" },
     ],
   },
   {
@@ -149,6 +165,7 @@ export const proProfileMenu = [
     items: [
       { label: "Gift Cards Kira", icon: Gift, go: "proGiftCards" },
       { label: "Programa de fidelidade", icon: Star, go: "proLoyalty" },
+      { label: "Plano Premium", icon: Sparkles, go: "proPremium" },
     ],
   },
   {

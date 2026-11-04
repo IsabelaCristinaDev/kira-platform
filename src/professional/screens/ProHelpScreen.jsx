@@ -38,7 +38,13 @@ export default function ProHelpScreen() {
             "Como recebo pelos meus atendimentos?",
             "Como funciona o Canal de Segurança?",
           ].map((q, i, arr) => (
-            <ProfileMenuRow key={q} icon={HelpCircle} label={q} last={i === arr.length - 1} onClick={() => {}} />
+            <ProfileMenuRow
+              key={q}
+              icon={HelpCircle}
+              label={q}
+              last={i === arr.length - 1}
+              onClick={() => setScreen("proFaq")}
+            />
           ))}
         </ProfileSection>
         <SecondaryButton onClick={() => {}}>

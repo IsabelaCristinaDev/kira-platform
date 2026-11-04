@@ -37,6 +37,10 @@ export const clientPaths = area("/cliente", [
   ["clientPaymentHistory", "perfil/historico-pagamentos"],
   ["clientCoupons", "perfil/cupons"],
   ["clientHelpSupport", "perfil/ajuda"],
+  ["clientFaq", "perfil/ajuda/perguntas"],
+  ["clientConversations", "conversas"],
+  ["clientConversation", "conversas/conversa"],
+  ["clientNotifications", "notificacoes"],
   ["clientChat", "atendimento"],
   ["clientReviews", "perfil/avaliacoes"],
   ["clientFavorites", "perfil/favoritos"],
@@ -63,6 +67,11 @@ export const professionalPaths = area("/profissional", [
   ["proLoyalty", "fidelidade"],
   ["proSecurity", "seguranca"],
   ["proHelp", "ajuda"],
+  ["proFaq", "ajuda/perguntas"],
+  ["proConversations", "conversas"],
+  ["proConversation", "conversas/conversa"],
+  ["proNotifications", "notificacoes"],
+  ["proPremium", "premium"],
   ["proSearch", "buscar"],
 ]);
 
