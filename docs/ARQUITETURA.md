@@ -214,7 +214,7 @@ Em 03/11, no Chromium com Playwright, com backend e banco descartáveis (scripts
 ### Funcionárias (backend pronto nos PRs #8, #9 e #10)
 
 - [ ] **Tela de funcionárias** no perfil do profissional: listar, criar, editar e desativar (`api.staff.*`), com a agenda do dia e da semana, os bloqueios de horário e o total de comissões.
-- [ ] **Escolher a funcionária no agendamento:** mostrar `professionals.listStaff` e mandar o `staffId` no `appointments.create`.
+- [ ] **Escolher a funcionária no agendamento:** mostrar `professionals.listStaff` e mandar o `staffId` no `appointments.create`. Decidido em 04/11: a escolha é da cliente e tem a opção "Sem preferência", que não manda o `staffId`. Nesse caso, o backend indica uma funcionária livre, e os horários mostrados são os de qualquer funcionária livre. Ao escolher uma funcionária, mostrar só os horários dela (`availability.get` com `staffId`). Em estúdio sem funcionárias, não mostrar a escolha.
 - [x] **Horários livres da funcionária escolhida:** `api.availability.get({ proId, serviceId, staffId, date })`. A tela precisa incluir a funcionária na chave da consulta.
 
 ### Outras telas com a chamada já pronta

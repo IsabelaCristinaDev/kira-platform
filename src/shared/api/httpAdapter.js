@@ -174,7 +174,7 @@ export const httpAdapter = {
       const list = await request(`/api/agendamentos/empresa/${currentUserId()}`);
       return list.map((a) => toAppointment(a)).sort((a, b) => a.start - b.start);
     },
-    // Sem `staffId`, o estúdio decide quem atende
+    // Sem `staffId` ("Sem preferência"), o backend indica uma funcionária livre
     create: async ({ proId, serviceId, staffId = null, start, payment = null, notes = null }) =>
       toAppointment(
         await request(`/api/agendamentos/cliente/${currentUserId()}`, {
