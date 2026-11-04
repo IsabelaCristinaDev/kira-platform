@@ -44,6 +44,8 @@ export default function ProAddressScreen() {
               onChange={(e) => setPField("cep", formatCep(e.target.value))}
               onBlur={() => handleCepBlur(pForm)}
               placeholder="00000-000"
+              inputMode="numeric"
+              autoComplete="postal-code"
               style={inputStyle(pErrors.cep)}
             />
             {pCepLoading && (

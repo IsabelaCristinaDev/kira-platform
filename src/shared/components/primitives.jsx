@@ -77,6 +77,7 @@ export const Button = ({
     className="k-btn"
     style={{
       width: "100%",
+      minHeight: 44,
       padding: `var(--space-${pad})`,
       borderRadius: `var(--radius-${radius})`,
       border: "none",
@@ -199,8 +200,9 @@ export const ScreenHeader = ({ onBack, children }) => (
       onClick={onBack}
       aria-label="Voltar"
       style={{
-        width: 34,
-        height: 34,
+        width: 44,
+        height: 44,
+        margin: "calc(-1 * var(--space-5))",
         borderRadius: "var(--radius-round)",
         border: "none",
         background: "transparent",

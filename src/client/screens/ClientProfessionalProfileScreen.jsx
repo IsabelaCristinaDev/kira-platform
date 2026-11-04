@@ -25,6 +25,7 @@ export default function ClientProfessionalProfileScreen() {
       <div style={{ flex: 1, overflowY: "auto" }}>
         <div style={{ position: "relative", height: 140, background: gradientKira, flexShrink: 0 }}>
           <button
+            className="k-hit"
             onClick={() => setScreen("clientSearch")}
             aria-label="Voltar"
             style={{
@@ -45,6 +46,7 @@ export default function ClientProfessionalProfileScreen() {
             <ArrowLeft size={20} color={colors.primaryForeground} />
           </button>
           <button
+            className="k-hit"
             onClick={() => toggleFavoriteProfessional(pro.id)}
             aria-label={favoriteProIds.includes(pro.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
             style={{

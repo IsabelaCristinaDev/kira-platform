@@ -76,6 +76,7 @@ export default function ClientPersonalScreen() {
               )}
             </div>
             <button
+              className="k-hit"
               onClick={() => cFileInputRef.current?.click()}
               aria-label="Adicionar foto"
               style={{
@@ -107,6 +108,8 @@ export default function ClientPersonalScreen() {
             type="button"
             className="k-reset"
             style={{
+              minHeight: 44,
+              padding: "0 var(--space-12)",
               fontSize: "var(--font-size-xs)",
               color: colors.primaryText,
               fontWeight: 600,
@@ -136,15 +139,23 @@ export default function ClientPersonalScreen() {
             value={cForm.name}
             onChange={(e) => setCField("name", e.target.value)}
             placeholder="Ex.: Maria Almeida"
+            autoComplete="name"
             style={inputStyle(cErrors.name)}
           />
         </Field>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-10)" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+            gap: "0 var(--space-10)",
+          }}
+        >
           <Field label="CPF" error={cErrors.cpf}>
             <input
               value={cForm.cpf}
               onChange={(e) => setCField("cpf", formatCpf(e.target.value))}
               placeholder="000.000.000-00"
+              inputMode="numeric"
               style={inputStyle(cErrors.cpf)}
             />
           </Field>
@@ -180,6 +191,8 @@ export default function ClientPersonalScreen() {
             value={cForm.email}
             onChange={(e) => setCField("email", e.target.value)}
             placeholder="seu@email.com"
+            inputMode="email"
+            autoComplete="email"
             style={inputStyle(cErrors.email)}
           />
         </Field>
@@ -188,6 +201,8 @@ export default function ClientPersonalScreen() {
             value={cForm.phone}
             onChange={(e) => setCField("phone", formatPhone(e.target.value))}
             placeholder="(00) 00000-0000"
+            inputMode="tel"
+            autoComplete="tel"
             style={inputStyle(cErrors.phone)}
           />
         </Field>
@@ -198,9 +213,11 @@ export default function ClientPersonalScreen() {
               value={cForm.password}
               onChange={(e) => setCField("password", e.target.value)}
               placeholder="Mínimo 8 caracteres"
+              autoComplete="new-password"
               style={inputStyle(cErrors.password)}
             />
             <button
+              className="k-hit k-hit-wide"
               type="button"
               aria-label={cShowPassword ? "Ocultar a senha" : "Mostrar a senha"}
               onClick={() => setCShowPassword((s) => !s)}
@@ -226,9 +243,11 @@ export default function ClientPersonalScreen() {
               value={cForm.confirm}
               onChange={(e) => setCField("confirm", e.target.value)}
               placeholder="Repita a senha"
+              autoComplete="new-password"
               style={inputStyle(cErrors.confirm)}
             />
             <button
+              className="k-hit k-hit-wide"
               type="button"
               aria-label={cShowConfirm ? "Ocultar a confirmação de senha" : "Mostrar a confirmação de senha"}
               onClick={() => setCShowConfirm((s) => !s)}

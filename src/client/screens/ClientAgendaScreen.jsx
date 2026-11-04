@@ -39,10 +39,12 @@ export default function ClientAgendaScreen() {
         >
           Seus próximos momentos de beleza
         </p>
-        <div style={{ display: "flex", gap: "var(--space-8)" }}>
+        <div role="tablist" aria-label="Status dos agendamentos" style={{ display: "flex", gap: "var(--space-8)" }}>
           {appointmentTabs.map((t) => (
             <button
               key={t.id}
+              role="tab"
+              aria-selected={agendaTab === t.id}
               onClick={() => setAgendaTab(t.id)}
               style={{
                 flex: 1,

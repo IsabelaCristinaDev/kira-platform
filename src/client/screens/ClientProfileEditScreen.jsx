@@ -140,6 +140,7 @@ export default function ClientProfileEditScreen() {
             value={cForm.name}
             onChange={(e) => change("name", e.target.value)}
             placeholder="Ex.: Maria Almeida"
+            autoComplete="name"
             style={inputStyle(errors.name?.message)}
           />
         </Field>
@@ -149,6 +150,8 @@ export default function ClientProfileEditScreen() {
             value={cForm.email}
             onChange={(e) => change("email", e.target.value)}
             placeholder="seu@email.com"
+            inputMode="email"
+            autoComplete="email"
             style={inputStyle(errors.email?.message)}
           />
         </Field>
@@ -157,6 +160,8 @@ export default function ClientProfileEditScreen() {
             value={cForm.phone}
             onChange={(e) => change("phone", formatPhone(e.target.value))}
             placeholder="(00) 00000-0000"
+            inputMode="tel"
+            autoComplete="tel"
             style={inputStyle(errors.phone?.message)}
           />
         </Field>

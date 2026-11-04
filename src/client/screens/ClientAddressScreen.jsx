@@ -44,6 +44,8 @@ export default function ClientAddressScreen() {
               onChange={(e) => setCField("cep", formatCep(e.target.value))}
               onBlur={() => handleCepBlur(cForm)}
               placeholder="00000-000"
+              inputMode="numeric"
+              autoComplete="postal-code"
               style={inputStyle(cErrors.cep)}
             />
             {cCepLoading && (

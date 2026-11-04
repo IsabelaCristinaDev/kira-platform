@@ -120,8 +120,11 @@ export default function ClientHomeScreen() {
         </button>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "0 var(--space-24) var(--space-24)" }}>
-        <div style={{ display: "flex", gap: "var(--space-8)", overflowX: "auto", padding: "0 0 var(--space-18)" }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "0 var(--space-24) var(--space-24)" }}>
+        <div
+          className="k-hscroll"
+          style={{ display: "flex", gap: "var(--space-8)", overflowX: "auto", padding: "0 0 var(--space-18)" }}
+        >
           {dashboardCategories.map((cat) => (
             <CategoryChip
               key={cat.id}
@@ -324,6 +327,7 @@ export default function ClientHomeScreen() {
           return (
             <>
               <div
+                className="k-hscroll"
                 style={{
                   display: "flex",
                   gap: "var(--space-10)",

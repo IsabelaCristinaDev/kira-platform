@@ -56,6 +56,7 @@ export default function ClientSearchScreen() {
         </h1>
         <SearchBar value={searchQuery} onChange={setSearchQuery} onFilterClick={openFilterModal} />
         <div
+          className="k-hscroll"
           style={{
             display: "flex",
             gap: "var(--space-8)",

@@ -13,6 +13,7 @@ export const CalendarHeader = ({ monthDate, onPrev, onNext, canGoPrev }) => (
     style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-14)" }}
   >
     <button
+      className="k-hit"
       onClick={onPrev}
       disabled={!canGoPrev}
       aria-label="Mês anterior"
@@ -42,6 +43,7 @@ export const CalendarHeader = ({ monthDate, onPrev, onNext, canGoPrev }) => (
       {formatMonth(monthDate)}
     </span>
     <button
+      className="k-hit"
       onClick={onNext}
       aria-label="Próximo mês"
       style={{
