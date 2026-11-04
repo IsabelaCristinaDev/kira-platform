@@ -1,6 +1,6 @@
 // Home: busca, categorias, mapa mock, próximas e TOP 3 recomendadas · mock
 import { useState } from "react";
-import { ChevronRight, MapPin, MessageCircle, Search, Sparkles, Star, User, Wand2 } from "lucide-react";
+import { ChevronRight, MapPin, Search, Sparkles, Star, User, Wand2 } from "lucide-react";
 import { useSignup } from "../../context/SignupContext";
 import { useSearch } from "../../context/SearchContext";
 import { useSession } from "../../context/SessionContext";
@@ -10,7 +10,9 @@ import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { CategoryChip } from "../../shared/components/ui";
 import { mockProfessionals, nearbyProfessionals } from "../../shared/data/professionals";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
+import { CHAT_AGENTS } from "../../shared/api/chatContract";
 import { BottomNav } from "../components/BottomNav";
+import { AgentAvatar } from "../components/chat/AgentAvatar";
 import { RecommendedProfessionalCard } from "../components/ProfessionalCards";
 import { dashboardCategories } from "../data/mocks";
 
@@ -537,29 +539,24 @@ export default function ClientHomeScreen() {
         </button>
         <button
           type="button"
+          className="k-chip"
           onClick={() => setScreen("clientChat")}
-          aria-label="Ajuda: conversar com o atendimento Kira"
+          aria-label="Ajuda: conversar com a Kira"
           style={{
             position: "sticky",
             bottom: "var(--space-16)",
             marginLeft: "auto",
             display: "flex",
-            alignItems: "center",
-            gap: "var(--space-8)",
-            minHeight: 48,
-            padding: "0 var(--space-18)",
-            borderRadius: "var(--radius-pill)",
+            width: 56,
+            height: 56,
+            padding: 0,
             border: "none",
-            background: gradientKira,
-            color: colors.primaryForeground,
-            fontFamily: fontBody,
-            fontWeight: 700,
-            fontSize: "var(--font-size-sm)",
-            boxShadow: "var(--shadow-md)",
+            borderRadius: "var(--radius-round)",
+            background: "transparent",
             cursor: "pointer",
           }}
         >
-          <MessageCircle size={18} aria-hidden="true" /> Ajuda
+          <AgentAvatar agent={CHAT_AGENTS.AI} size={56} />
         </button>
       </div>
 
