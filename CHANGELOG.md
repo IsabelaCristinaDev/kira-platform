@@ -25,6 +25,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 - Acompanhamento do agendamento em `/cliente/agenda/acompanhar`, no estilo de acompanhar um pedido: status no topo,
   linha do tempo (pedido enviado, profissional confirmou, pagamento confirmado, quase na hora, em atendimento,
   concluído) e Pix com copiar código, aviso de pagamento e conferência. Contrato `api.bookings` pronto para a API real.
+- Notificação do navegador: service worker, abrir a conversa ao tocar, sem repetir a conversa aberta, `api.notifications`
+  pronta para o botão de permitir e remoção do navegador ao sair da conta. Sem as chaves no backend, fica desligada.
 
 ### Alterado
 

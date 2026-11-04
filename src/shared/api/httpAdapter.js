@@ -26,6 +26,7 @@ import {
   toTimeBlock,
   toTimeBlockRequest,
 } from "./mappers";
+import { disableWebPush, enableWebPush, forgetWebPush, syncWebPush } from "../notifications/webPush";
 import { onlyDigits } from "../utils/format";
 import { subscribeToConversation, subscribeToUserChannel } from "./messageSocket";
 
@@ -81,6 +82,15 @@ const profileRoute = () =>
     ? { path: `/api/empresas/${currentUserId()}/perfil`, from: toBusinessProfile, to: toBusinessProfileRequest }
     : { path: `/api/clientes/${currentUserId()}/perfil`, from: toClientProfile, to: toClientProfileRequest };
 
+const DEVICES_PATH = "/api/notificacoes/dispositivos/web";
+
+const pushCalls = {
+  // Nula com as notificações desligadas no servidor
+  getPublicKey: async () => (await request("/api/notificacoes/chave-publica")).chavePublica,
+  registerDevice: (device) => request(DEVICES_PATH, { method: "POST", body: device }),
+  removeDevice: (endpoint) => request(DEVICES_PATH, { method: "DELETE", body: { endpoint } }),
+};
+
 export const httpAdapter = {
   auth: {
     // LoginResponse: { token, refreshToken, tipo, nome, email, id? }
@@ -107,6 +117,8 @@ export const httpAdapter = {
         auth: false,
       }),
     logout: async () => {
+      // Antes de apagar a sessão: tirar o navegador da conta precisa do token
+      await disableWebPush(pushCalls);
       const refreshToken = authStore.get()?.refreshToken;
       authStore.set(null);
       if (refreshToken) {
@@ -306,6 +318,14 @@ export const httpAdapter = {
         onMessage: (m) => onMessage(toMessage(m, authStore.get()?.id ?? null)),
         onStatus,
       }),
+  },
+  // Notificação do navegador. A tela chama `enable` no toque do botão e mostra o resultado (PUSH_STATUS).
+  notifications: {
+    ...pushCalls,
+    enable: () => enableWebPush(pushCalls),
+    sync: () => syncWebPush(pushCalls),
+    disable: () => disableWebPush(pushCalls),
+    forget: forgetWebPush,
   },
   // Painel pronto do backend; sem período, vale do dia 1º do mês até hoje
   dashboard: {

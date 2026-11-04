@@ -9,6 +9,7 @@ export const sharedPaths = {
   forgotPassword: "/esqueci-a-senha",
   resetPassword: "/redefinir-senha",
   home: "/inicio",
+  openConversation: "/conversa",
 };
 
 export const clientPaths = area("/cliente", [

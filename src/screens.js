@@ -58,6 +58,7 @@ import FaceScreen from "./shared/screens/FaceScreen";
 import HomeScreen from "./shared/screens/HomeScreen";
 import ForgotPasswordScreen from "./shared/screens/ForgotPasswordScreen";
 import LoginScreen from "./shared/screens/LoginScreen";
+import OpenConversationScreen from "./shared/screens/OpenConversationScreen";
 import ResetPasswordScreen from "./shared/screens/ResetPasswordScreen";
 import SignupScreen from "./shared/screens/SignupScreen";
 import SplashScreen from "./shared/screens/SplashScreen";
@@ -66,6 +67,7 @@ import SplashScreen from "./shared/screens/SplashScreen";
 export const screens = {
   splash: SplashScreen,
   login: LoginScreen,
+  openConversation: OpenConversationScreen,
   forgotPassword: ForgotPasswordScreen,
   resetPassword: ResetPasswordScreen,
   signup: SignupScreen,

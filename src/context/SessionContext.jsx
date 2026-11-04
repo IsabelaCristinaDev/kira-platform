@@ -1,4 +1,4 @@
-// Sessão: tela atual (vem da URL), login no backend, tipo de conta e atalhos de navegação · API: kira-backend (auth)
+// Sessão: tela atual (vem da URL), login no backend, tipo de conta e atalhos de navegação · API: kira-backend (auth, notificações)
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -38,6 +38,7 @@ export function SessionProvider({ children }) {
         const lost = !next && !loggingOut.current;
         if (lost || (next && next.id !== previous.id)) queryClient.clear();
         if (lost) {
+          api.notifications.forget();
           setAccountType(null);
           navigate(pathFor("login"), { replace: true });
         }

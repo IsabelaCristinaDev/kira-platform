@@ -164,6 +164,19 @@
  * @property {{average: number|null, total: number, breakdown: {stars: number, count: number, percent: number}[]}} ratings
  */
 
+/**
+ * Resultado de pedir a permissão e registrar o navegador (`api.notifications.enable`).
+ * @typedef {"permitido"|"bloqueado"|"sem_resposta"|"sem_suporte"|"desligado_no_servidor"|"erro"} PushStatus
+ */
+export const PUSH_STATUS = {
+  GRANTED: "permitido",
+  BLOCKED: "bloqueado",
+  DISMISSED: "sem_resposta", // fechou o pedido sem escolher: dá para pedir de novo
+  UNSUPPORTED: "sem_suporte", // inclui o app Expo e o iPhone sem o site na tela inicial
+  SERVER_OFF: "desligado_no_servidor", // backend sem as chaves: não é erro
+  FAILED: "erro",
+};
+
 export class ApiError extends Error {
   constructor(code, message, status = 0, details = null) {
     super(message ?? code);

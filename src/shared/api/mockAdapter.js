@@ -1,7 +1,7 @@
 // Adaptador mock usado só pelo app Expo (ver index.native.js): dados locais com latência simulada · mock
 import { recommendProfessionals } from "../../client/recommendation";
 import { mockProfessionals } from "../data/professionals";
-import { ApiError } from "./contract";
+import { ApiError, PUSH_STATUS } from "./contract";
 import { mockBookings } from "./mockBookings";
 import { mockChat } from "./mockChat";
 import { mockReports } from "./mockReports";
@@ -70,6 +70,16 @@ export const mockAdapter = {
       await wait(700);
       return { ok: true };
     },
+  },
+  // O Expo não tem service worker; o push do celular fica para quando o mobile for ligado ao backend
+  notifications: {
+    getPublicKey: async () => null,
+    registerDevice: async () => null,
+    removeDevice: async () => null,
+    enable: async () => PUSH_STATUS.UNSUPPORTED,
+    sync: async () => {},
+    disable: async () => {},
+    forget: async () => {},
   },
   chat: mockChat,
   tryOn: mockTryOn,
