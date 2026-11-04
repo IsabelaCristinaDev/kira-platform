@@ -33,16 +33,20 @@ const ensureSubscription = async (registration, publicKey) => {
   return registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
 };
 
-const subscribeAndRegister = async (calls) => {
-  const publicKey = await calls.getPublicKey();
-  // Sem as chaves no servidor, a notificação está desligada: não é um erro
-  if (!publicKey) return PUSH_STATUS.SERVER_OFF;
-  await navigator.serviceWorker.register(workerUrl());
-  const registration = await navigator.serviceWorker.ready;
-  const subscription = await ensureSubscription(registration, publicKey);
-  await calls.registerDevice(toDeviceRequest(subscription));
-  return PUSH_STATUS.GRANTED;
-};
+// Dois registros juntos do mesmo navegador (duas abas, ou entrar e tocar no botão) dariam conflito no backend
+const oneAtATime = (task) => (navigator.locks ? navigator.locks.request("kira.push.register", task) : task());
+
+const subscribeAndRegister = (calls) =>
+  oneAtATime(async () => {
+    const publicKey = await calls.getPublicKey();
+    // Sem as chaves no servidor, a notificação está desligada: não é um erro
+    if (!publicKey) return PUSH_STATUS.SERVER_OFF;
+    await navigator.serviceWorker.register(workerUrl());
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await ensureSubscription(registration, publicKey);
+    await calls.registerDevice(toDeviceRequest(subscription));
+    return PUSH_STATUS.GRANTED;
+  });
 
 const currentSubscription = async () => {
   if (!isSupported()) return null;

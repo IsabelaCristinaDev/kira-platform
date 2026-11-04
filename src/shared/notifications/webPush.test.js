@@ -108,6 +108,28 @@ describe("enableWebPush", () => {
     calls.registerDevice.mockRejectedValue(new Error("fora do ar"));
     await expect(enableWebPush(calls)).resolves.toBe(PUSH_STATUS.FAILED);
   });
+  it("registros ao mesmo tempo acontecem um depois do outro", async () => {
+    makeBrowser();
+    let tail = Promise.resolve();
+    navigator.locks = {
+      request: (_name, task) => {
+        const run = tail.then(task);
+        tail = run.catch(() => {});
+        return run;
+      },
+    };
+    let running = 0;
+    let most = 0;
+    const calls = makeCalls();
+    calls.registerDevice.mockImplementation(async () => {
+      most = Math.max(most, ++running);
+      await new Promise((resolve) => setTimeout(resolve));
+      running--;
+    });
+    await Promise.all([enableWebPush(calls), syncWebPush(calls)]);
+    expect(calls.registerDevice).toHaveBeenCalledTimes(2);
+    expect(most).toBe(1);
+  });
   it("aproveita a inscrição feita com a mesma chave", async () => {
     const existing = makeSubscription();
     const { registration } = makeBrowser({ existing });
