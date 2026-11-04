@@ -149,6 +149,19 @@ export const toStaffRequest = (f) => ({
   comissaoPercentual: f.commissionPercent === "" || f.commissionPercent == null ? null : Number(f.commissionPercent),
 });
 
+export const toEmergencyContact = (c) => ({
+  id: c.id,
+  name: c.nome,
+  phone: c.telefone,
+  relationship: c.parentesco ?? null,
+});
+
+export const toEmergencyContactRequest = (c) => ({
+  nome: c.name.trim(),
+  telefone: c.phone.trim(),
+  parentesco: c.relationship?.trim() || null,
+});
+
 export const toTimeBlock = (b) => ({
   id: b.id,
   staffId: b.funcionariaId,

@@ -8,6 +8,8 @@ import {
   toBusinessService,
   toClientRegistration,
   toDashboard,
+  toEmergencyContact,
+  toEmergencyContactRequest,
   toLocalDate,
   toLocalDateTime,
   toBusinessProfile,
@@ -318,6 +320,21 @@ export const httpAdapter = {
         onMessage: (m) => onMessage(toMessage(m, authStore.get()?.id ?? null)),
         onStatus,
       }),
+  },
+  // Estúdios salvos pela cliente logada. Salvar e remover de novo não dão erro.
+  favorites: {
+    listIds: async () => (await request("/api/favoritas")).map((studio) => studio.id),
+    add: (professionalId) => request(`/api/favoritas/${professionalId}`, { method: "PUT" }),
+    remove: (professionalId) => request(`/api/favoritas/${professionalId}`, { method: "DELETE" }),
+  },
+  // Contatos de emergência da cliente logada, até 5. Para corrigir um dado, remove e cadastra de novo.
+  emergencyContacts: {
+    list: async () => (await request("/api/contatos-emergencia")).map(toEmergencyContact),
+    create: async (contact) =>
+      toEmergencyContact(
+        await request("/api/contatos-emergencia", { method: "POST", body: toEmergencyContactRequest(contact) }),
+      ),
+    remove: (id) => request(`/api/contatos-emergencia/${id}`, { method: "DELETE" }),
   },
   // Notificação do navegador. A tela chama `enable` no toque do botão e mostra o resultado (PUSH_STATUS).
   notifications: {
