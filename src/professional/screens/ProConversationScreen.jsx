@@ -8,5 +8,11 @@ export default function ProConversationScreen() {
   const { setScreen } = useSession();
   const { selectedConversationId } = useConversations();
   const contact = proConversationsDemo.find((c) => c.id === selectedConversationId) ?? proConversationsDemo[0];
-  return <ConversationPage contact={contact} onBack={() => setScreen("proConversations")} />;
+  return (
+    <ConversationPage
+      contact={contact}
+      onBack={() => setScreen("proConversations")}
+      actions={[{ label: "Ver agendamento", onClick: () => setScreen("proAgendaDash") }]}
+    />
+  );
 }
