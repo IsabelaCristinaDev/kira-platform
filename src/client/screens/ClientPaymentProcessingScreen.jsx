@@ -1,6 +1,7 @@
 // Processamento do pagamento: aguardando, processando e resultado demonstrativo · nenhum pagamento real acontece
 import { CheckCircle2, Clock, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
 import { DemoBanner } from "../../shared/components/demo";
 import { Chip } from "../../shared/components/primitives";
@@ -34,6 +35,7 @@ const STATES = [
 
 export default function ClientPaymentProcessingScreen() {
   const { setScreen } = useSession();
+  const { scheduleTime, setBookedSlot } = useScheduling();
   const [state, setState] = useState("waiting");
   const current = STATES.find((s) => s.id === state);
   const { Icon } = current;
@@ -105,9 +107,30 @@ export default function ClientPaymentProcessingScreen() {
           {current.text}
         </p>
       </div>
-      <PrimaryButton onClick={() => setScreen("clientBookingTracking")}>Acompanhar agendamento</PrimaryButton>
+      <PrimaryButton
+        disabled={state !== "result"}
+        onClick={() => {
+          setBookedSlot(scheduleTime);
+          setScreen("clientScheduling");
+        }}
+      >
+        Ver confirmação do agendamento
+      </PrimaryButton>
+      {state !== "result" && (
+        <p
+          style={{
+            fontFamily: fontBody,
+            fontSize: "var(--font-size-xs)",
+            color: colors.mutedForeground,
+            textAlign: "center",
+            margin: "var(--space-8) 0 0",
+          }}
+        >
+          A confirmação vem depois do pagamento. Veja o resultado demonstrativo para continuar.
+        </p>
+      )}
       <div style={{ height: "var(--space-8)" }} />
-      <SecondaryButton onClick={() => setScreen("clientHome")}>Voltar para o início</SecondaryButton>
+      <SecondaryButton onClick={() => setScreen("clientCheckout")}>Voltar ao pagamento</SecondaryButton>
     </ScreenFrame>
   );
 }

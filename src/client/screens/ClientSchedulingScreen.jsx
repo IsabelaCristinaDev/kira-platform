@@ -29,7 +29,6 @@ export default function ClientSchedulingScreen() {
     selectedDate,
     selectedProId,
     setAgendaTab,
-    setBookedSlot,
     setScheduleTime,
     viewMonth,
   } = useScheduling();
@@ -120,7 +119,6 @@ export default function ClientSchedulingScreen() {
               >
                 Ver na agenda
               </PrimaryButton>
-              <SecondaryButton onClick={() => setScreen("clientCheckout")}>Ir para o pagamento</SecondaryButton>
               <SecondaryButton onClick={() => setScreen("clientHome")}>Voltar para o início</SecondaryButton>
             </div>
           </div>
@@ -207,7 +205,7 @@ export default function ClientSchedulingScreen() {
 
             {scheduleTime && (
               <div style={{ marginTop: "var(--space-20)" }}>
-                <PrimaryButton onClick={() => setBookedSlot(scheduleTime)}>Continuar para confirmação</PrimaryButton>
+                <PrimaryButton onClick={() => setScreen("clientCheckout")}>Continuar para o pagamento</PrimaryButton>
               </div>
             )}
           </>
