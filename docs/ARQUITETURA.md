@@ -161,23 +161,43 @@ Para a notificação chegar com o app fechado, como no Instagram.
 
 **Integração**
 
-- [ ] **Service worker:** recebe a notificação do navegador e a mostra com o nome de quem enviou e o texto. Campos recebidos: `titulo`, `corpo` e `agendamentoId`.
-- [ ] **Abrir a conversa:** ao tocar na notificação, abrir o app na conversa daquele agendamento.
-- [ ] **Não repetir:** não mostrar a notificação se a conversa já estiver aberta na tela.
-- [ ] **Chamadas:** `GET /api/notificacoes/chave-publica`, `POST` e `DELETE /api/notificacoes/dispositivos/web`, com uma função pronta para a tela pedir a permissão e registrar o navegador.
-- [ ] **Sair da conta:** remover o navegador, para a pessoa não receber notificações de uma conta que saiu.
+- [x] **Service worker (`public/sw.js`):** recebe a notificação do navegador e mostra só o que o backend mandou (`titulo`, `corpo`, `agendamentoId`). Uma notificação por conversa: a nova substitui a anterior. Fica em `public/` para ter nome fixo na raiz; por isso não importa nada de `src/`, e um teste confere que as mensagens e o endereço são os de `shared/notifications/conversationLink.js`.
+- [x] **Abrir a conversa:** com o app aberto, o service worker avisa a aba e a foca. Com o app fechado, abre `/conversa?agendamento=id`; essa rota, sem visual (`OpenConversationScreen`), seleciona o agendamento e vai para a conversa da conta (`clientConversation` ou `proConversation`). Sem sessão, passa pelo login e continua para a conversa.
+- [x] **Não repetir:** o service worker pergunta às janelas visíveis se a conversa está aberta (`WebPushBridge`). Janela que não responde em 500 ms conta como não aberta: é melhor avisar a mais do que perder o aviso.
+- [x] **Chamadas (`api.notifications`):** `getPublicKey`, `registerDevice` e `removeDevice`. A tela chama `enable()` no toque do botão. Nunca rejeita e devolve `PUSH_STATUS`: `permitido`, `bloqueado`, `sem_resposta` (fechou o pedido sem escolher), `sem_suporte`, `desligado_no_servidor` (backend sem as chaves VAPID) ou `erro`.
+- [x] **Sair da conta:** remove o navegador antes de apagar a sessão e cancela a inscrição. Falha ou demora (limite de 3 s) não impedem a saída. Com a sessão perdida não há token para chamar o backend: só cancela a inscrição, e o backend apaga o registro no próximo envio recusado.
+- [x] **Ao entrar na conta:** se a permissão já foi dada, registra o navegador na conta logada sem perguntar nada (`api.notifications.sync`).
+- [x] **Um registro por vez:** registros simultâneos do mesmo navegador dão conflito no backend. O app registra um de cada vez, entre as abas também, nos navegadores com Web Locks; nos outros, o registro pode falhar e vale no próximo login.
+- [ ] **Backend:** tratar esse conflito, que hoje responde erro 500. Ver "Testes" abaixo.
+- [x] **Mock do Expo:** `api.notifications` responde `sem_suporte`, porque o Expo não tem service worker.
 
 **Tela**
 
-- [ ] **Botão "Permitir notificações":** chama a função acima e mostra o resultado (permitido ou bloqueado).
+- [ ] **Botão "Permitir notificações":** chama `api.notifications.enable()` no toque (o pedido de permissão precisa vir logo depois do toque) e mostra o resultado.
+- [ ] **Se houver opção de desligar:** `api.notifications.disable()` existe, mas o próximo login registra de novo, porque a permissão continua dada. Vai precisar guardar a escolha da pessoa.
 
 **Testes**
 
-- [ ] Notificação chegando de verdade no Chrome e no Firefox, com o app fechado.
+Em 03/11, no Chromium com Playwright, com backend e banco descartáveis (scripts fora do repositório). O push foi simulado pelo protocolo de depuração do navegador, e a inscrição foi simulada, porque o Chromium daqui não fala com o serviço de push (`enable()` devolve `erro`).
 
-**Decisão pendente**
+- [x] Service worker servido em `/sw.js` no `npm run dev` e no build (`dist`), registrado e ativo.
+- [x] Notificação com nome e texto, com o app em outra tela e sem nenhuma janela do app.
+- [x] Não repete com a conversa aberta e visível; mostra com outra conversa aberta e com a aba escondida (simulada na página).
+- [x] Toque com o app aberto: abre a conversa certa, sem recarregar. Evento de toque simulado, sem clique de verdade.
+- [x] Endereço da conversa aberto em uma janela nova, para cliente e profissional, e sem sessão (login e depois a conversa).
+- [x] `POST` e `DELETE` no backend real, conferidos no banco; sem as chaves VAPID, `desligado_no_servidor`, sem erro.
+- [x] Sair da conta com o `DELETE` falhando e sem responder: a pessoa sai (em 3,1 s no pior caso).
+- [x] Registros simultâneos em duas abas, 45 em 15 rodadas: sem o bloqueio, 18 falharam com erro 500; com o bloqueio, nenhum falhou.
+- [x] Teste completo repetido 6 vezes, 40 de 40 em todas. Antes do bloqueio, o registro falhou em 3 de 6 rodadas.
+- [ ] Notificação chegando de verdade pelo serviço de push, no Chrome e no Firefox, com o app fechado. Só dá para testar em um navegador comum, com as chaves VAPID no backend e o botão (ou chamando `enable()`).
+- [ ] Clique de verdade na notificação com o app fechado: o navegador só permite abrir a janela em um clique real, então o teste conferiu o endereço pedido e abriu esse endereço à parte.
+- [ ] Firefox e Safari: nada foi testado neles.
+- [ ] Janela visível sem o foco com a conversa aberta: não mostra a notificação; conferir se o Chrome mostra um aviso genérico no lugar.
 
-- [ ] A notificação mostra o texto da mensagem (até 120 caracteres) ou só "Nova mensagem"? Hoje o backend envia o texto.
+**Decisões pendentes**
+
+- [ ] A notificação mostra o texto da mensagem (até 120 caracteres) ou só "Nova mensagem"? Hoje o backend envia o texto, e o service worker mostra o que vier. A decisão fica só no backend.
+- [ ] Computador compartilhado: a permissão é do navegador, não da conta. Quem entrar depois em um navegador já permitido passa a receber as notificações ali sem ser perguntado, até sair da conta. Decidir se a segunda conta deve confirmar.
 
 ### Painel do profissional (backend pronto no PR #12)
 
@@ -242,7 +262,7 @@ Situação em 01/11/2026.
 **Integração**
 
 - [x] **Notificação com o app fechado, backend:** registro de navegadores e envio (`/api/notificacoes`), PR #17.
-- [ ] **Notificação com o app fechado, integração:** ver "Notificação do navegador" em "O que falta no frontend".
+- [x] **Notificação com o app fechado, integração:** feita, faltam o botão e o teste com o serviço de push real. Ver "Notificação do navegador" em "O que falta no frontend".
 - [ ] **Áudio no chat:** depende do armazenamento de arquivos do backend. Fazer junto com o upload de fotos.
 
 **Testes que faltam**

@@ -99,5 +99,5 @@ Testes do backend: passam os 407 no CI do PR #25; na máquina, precisam do Docke
 
 1. **E-mail:** `MAIL_USERNAME` e `MAIL_PASSWORD` já estão no `.env` do backend. Falta testar a troca de senha do começo ao fim (pedir o link, abrir o e-mail, criar a nova senha e entrar).
 2. **Telas que faltam no app:** lista de conversas e não lidas no menu, gerenciar serviços, funcionárias, escolher a funcionária no agendamento, editar perfil, campo de categoria e usar o painel do backend.
-3. **Integração que falta:** notificação do navegador e áudio no chat (ver "O que falta no frontend" no `ARQUITETURA.md`).
+3. **Integração que falta:** áudio no chat. A notificação do navegador está integrada; faltam o botão e o teste com o serviço de push real (ver "O que falta no frontend" no `ARQUITETURA.md`).
 4. **Hospedar o backend e o web:** hoje tudo roda só local.
