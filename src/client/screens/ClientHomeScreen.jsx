@@ -1,6 +1,6 @@
 // Home: busca, categorias, mapa mock, próximas e TOP 3 recomendadas · mock
 import { useState } from "react";
-import { ChevronRight, MapPin, Search, Sparkles, Star, User, Wand2 } from "lucide-react";
+import { ChevronRight, MapPin, MessageCircle, Search, Sparkles, Star, User, Wand2 } from "lucide-react";
 import { useSignup } from "../../context/SignupContext";
 import { useSearch } from "../../context/SearchContext";
 import { useSession } from "../../context/SessionContext";
@@ -534,6 +534,32 @@ export default function ClientHomeScreen() {
             </p>
           </div>
           <ChevronRight size={18} color={colors.primary} />
+        </button>
+        <button
+          type="button"
+          onClick={() => setScreen("clientChat")}
+          aria-label="Ajuda: conversar com o atendimento Kira"
+          style={{
+            position: "sticky",
+            bottom: "var(--space-16)",
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-8)",
+            minHeight: 48,
+            padding: "0 var(--space-18)",
+            borderRadius: "var(--radius-pill)",
+            border: "none",
+            background: gradientKira,
+            color: colors.primaryForeground,
+            fontFamily: fontBody,
+            fontWeight: 700,
+            fontSize: "var(--font-size-sm)",
+            boxShadow: "var(--shadow-md)",
+            cursor: "pointer",
+          }}
+        >
+          <MessageCircle size={18} aria-hidden="true" /> Ajuda
         </button>
       </div>
 
