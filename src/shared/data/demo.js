@@ -4,7 +4,7 @@ import { mockProfessionals } from "./professionals";
 // ---- Conversas (cliente e profissional) ----
 export const demoMessages = [
   { id: "m1", from: "them", text: "Mensagem de exemplo recebida.", time: "09:30" },
-  { id: "m2", from: "me", text: "Mensagem de exemplo enviada.", time: "09:32" },
+  { id: "m2", from: "me", text: "Mensagem de exemplo enviada.", time: "09:32", status: "read" },
   { id: "m3", from: "them", text: "Outra mensagem de exemplo recebida.", time: "09:35" },
 ];
 
@@ -112,3 +112,67 @@ export const cardsDemo = [
     main: false,
   },
 ];
+
+// ---- Fidelidade do cliente: valores de exemplo, sem regra de acúmulo nem conversão (a definir) ----
+export const loyaltyDemo = {
+  points: 1240,
+  cashback: "R$ 0,00",
+  history: [
+    { id: "h1", label: "Pontos de exemplo", detail: "Atendimento de exemplo", points: "+100", time: "Hoje" },
+    { id: "h2", label: "Pontos de exemplo", detail: "Atendimento de exemplo", points: "+100", time: "12/07" },
+    { id: "h3", label: "Resgate de exemplo", detail: "Benefício demonstrativo", points: "-300", time: "01/07" },
+  ],
+  rewards: [
+    { id: "r1", title: "Benefício demonstrativo 1", cost: "Pontos a definir" },
+    { id: "r2", title: "Benefício demonstrativo 2", cost: "Pontos a definir" },
+  ],
+};
+
+// ---- Histórico de clientes do profissional: nomes já usados nos mocks, números de exemplo ----
+export const proClientsDemo = [
+  { id: "cli-1", name: "Ana Souza", last: "Hoje, 10:30", count: 5, procedures: ["Coloração", "Hidratação"] },
+  { id: "cli-2", name: "Rafael Lima", last: "Ontem, 13:00", count: 3, procedures: ["Corte"] },
+  { id: "cli-3", name: "Beatriz Nunes", last: "12/07", count: 1, procedures: ["Corte", "Escova"] },
+  { id: "cli-4", name: "Camila Rocha", last: "28/06", count: 2, procedures: ["Hidratação"] },
+];
+
+// ---- Certificados: exemplos, nenhum foi validado ----
+export const certificatesDemo = [
+  {
+    id: "ct1",
+    name: "Certificado de exemplo",
+    issuer: "Instituição de exemplo",
+    issued: "00/00/0000",
+    validity: "Sem validade",
+  },
+  {
+    id: "ct2",
+    name: "Outro certificado de exemplo",
+    issuer: "Instituição de exemplo",
+    issued: "00/00/0000",
+    validity: "00/00/0000",
+  },
+];
+
+// ---- Jornada do cliente: etapas do pitch (slide 14) ----
+export const journeySteps = [
+  "Descoberta do profissional",
+  "Recomendação da IA",
+  "Escolha do procedimento",
+  "Agendamento",
+  "Confirmação",
+  "Pagamento",
+  "Atendimento realizado",
+  "Avaliação",
+  "Fidelidade",
+];
+
+// ---- Chat: mensagem com imagem e estados de envio (apenas visual) ----
+export const chatImageDemo = {
+  id: "m4",
+  from: "me",
+  image: true,
+  text: "Imagem de exemplo",
+  time: "09:40",
+  status: "read",
+};
