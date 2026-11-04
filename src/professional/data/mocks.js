@@ -156,6 +156,7 @@ export const proProfileMenu = [
     items: [
       { label: "Minha agenda", icon: Calendar, go: "proAgendaDash" },
       { label: "Financeiro", icon: CreditCard, go: "proFinance" },
+      { label: "Meus clientes", icon: User, go: "proClients" },
       { label: "Conversas", icon: MessageCircle, go: "proConversations" },
       { label: "Notificações", icon: Bell, go: "proNotifications" },
     ],

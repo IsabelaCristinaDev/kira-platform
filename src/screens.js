@@ -4,6 +4,12 @@ import ClientAddressScreen from "./client/screens/ClientAddressScreen";
 import ClientAgendaDetailScreen from "./client/screens/ClientAgendaDetailScreen";
 import ClientAgendaScreen from "./client/screens/ClientAgendaScreen";
 import ClientBookingTrackingScreen from "./client/screens/ClientBookingTrackingScreen";
+import ClientCheckoutScreen from "./client/screens/ClientCheckoutScreen";
+import ClientJourneyScreen from "./client/screens/ClientJourneyScreen";
+import ClientLoyaltyScreen from "./client/screens/ClientLoyaltyScreen";
+import ClientPaymentProcessingScreen from "./client/screens/ClientPaymentProcessingScreen";
+import ClientRecommendedScreen from "./client/screens/ClientRecommendedScreen";
+import ProClientsScreen from "./professional/screens/ProClientsScreen";
 import ClientChatScreen from "./client/screens/ClientChatScreen";
 import ClientConversationScreen from "./client/screens/ClientConversationScreen";
 import ClientConversationsScreen from "./client/screens/ClientConversationsScreen";
@@ -95,6 +101,11 @@ export const screens = {
   clientCoupons: ClientCouponsScreen,
   clientHelpSupport: ClientHelpSupportScreen,
   clientFaq: ClientFaqScreen,
+  clientCheckout: ClientCheckoutScreen,
+  clientPaymentProcessing: ClientPaymentProcessingScreen,
+  clientRecommended: ClientRecommendedScreen,
+  clientLoyalty: ClientLoyaltyScreen,
+  clientJourney: ClientJourneyScreen,
   clientConversations: ClientConversationsScreen,
   clientConversation: ClientConversationScreen,
   clientNotifications: ClientNotificationsScreen,
@@ -123,6 +134,7 @@ export const screens = {
   proSecurity: ProSecurityScreen,
   proHelp: ProHelpScreen,
   proFaq: ProFaqScreen,
+  proClients: ProClientsScreen,
   proConversations: ProConversationsScreen,
   proConversation: ProConversationScreen,
   proNotifications: ProNotificationsScreen,

@@ -256,6 +256,7 @@ export const clientProfileMenu = [
       { label: "Histórico", icon: Clock, go: "clientHistory" },
       { label: "Conversas", icon: MessageCircle, go: "clientConversations" },
       { label: "Notificações", icon: Bell, go: "clientNotifications" },
+      { label: "Fidelidade Kira", icon: Sparkles, go: "clientLoyalty" },
     ],
   },
   {
