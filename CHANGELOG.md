@@ -14,6 +14,17 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 - Componentes: `Sheet`, `DemoBanner`/`DemoNotice`, `ScreenFrame`, `StarRatingInput`, `ConversationList`,
   `NotificationCenter`, `FaqView`.
 
+### Adicionado (telas do pitch, camada visual)
+
+- Checkout do agendamento (Pix, cartão em até 3x e Gift Card) e tela separada de processamento com estados
+  demonstrativos. Nada é cobrado nem validado.
+- Resultado do provador com compatibilidade (reaproveita `recommendProfessionals`), antes/depois e acesso aos
+  recomendados; tela "Recomendado pela IA" com ordenação, filtro, justificativa, perfil, conversa e agendar.
+- Fidelidade Kira do cliente (valores de exemplo, regras a definir), histórico de clientes do profissional,
+  jornada completa do cliente e certificados (exemplo, não verificados) no perfil público.
+- Chat: busca de conversas, estados de envio e leitura, mensagem com imagem, anexo desativado, aviso sem conexão
+  e atalhos para perfil, agendar e agendamento.
+
 ### Corrigido
 
 - Quadro do celular com largura responsiva e altura definida (tela cheia em celulares), para a rolagem interna, a barra
