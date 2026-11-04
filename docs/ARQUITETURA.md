@@ -46,7 +46,6 @@ Front-end em Vite + React que consome o kira-backend (Spring Boot). Em desenvolv
 | Edição do perfil                                    | Salva só na sessão atual; `api.profile.saveMine` está pronta, falta a tela usar                                  |
 | Fotos (perfil, documentos, portfólio)               | Ficam no navegador; o cadastro não envia imagens                                                                 |
 | Categoria do serviço                                | O filtro e os cards de distância já usam os dados do backend; falta o campo de categoria no cadastro de serviços |
-| Favoritas                                           | Guardadas só na sessão atual                                                                                     |
 | Denúncia e emergência                               | Só a interface (futura `POST /api/denuncias`)                                                                    |
 | Verificação facial                                  | Só a interface, nenhum dado biométrico é salvo                                                                   |
 | Gift cards, fidelidade, cupons, formas de pagamento | Telas sem dados                                                                                                  |
@@ -78,8 +77,9 @@ Situação em 29/10/2026, na ordem em que vamos fazer. Cada item vira uma branch
 
 ### 4. Recursos da cliente
 
-- [ ] **Favoritas:** salvar, listar e remover estúdios favoritos.
-- [ ] **Contato de emergência:** cadastrar e listar.
+- [x] **Favoritas:** salvar, listar e remover estúdios favoritos (PR #27).
+- [x] **Contato de emergência:** cadastrar, listar e remover, até 5 por cliente (PR #27). Por enquanto só ficam guardados: nada avisa essas pessoas.
+- [ ] **Editar contato de emergência:** não há rota; para corrigir, é preciso remover e cadastrar de novo. Criar se a tela precisar.
 - [ ] **Busca no banco:** filtrar por nome, cidade, tipo, serviço, preço e nota no banco, com paginação e já trazendo os serviços. Só então o app troca a busca local pela do servidor.
 
 ### 5. Pagamentos (depende de escolher o gateway)
@@ -219,6 +219,9 @@ Em 03/11, no Chromium com Playwright, com backend e banco descartáveis (scripts
 
 ### Outras telas com a chamada já pronta
 
+- [ ] **Tela de contatos de emergência:** listar, cadastrar e remover (`api.emergencyContacts`). Mostrar as mensagens de erro do backend, como a do limite de 5.
+- [ ] **Aviso de falha ao favoritar:** se o backend falhar, a marcação volta sozinha, mas nenhuma mensagem explica o motivo.
+- [ ] **Favoritas salvas sem login:** ficam só na sessão e não passam para a conta ao entrar. Decidir se devem passar.
 - [x] **Chat cliente–empresa (do agendamento):** feito, com WebSocket. Sem a conexão, a conversa atualiza por consulta a cada 10 segundos.
 - [ ] **Áudio no chat:** gravar, enviar e ouvir mensagens de voz. Depende do armazenamento de arquivos do backend (o mesmo do upload de fotos).
 - [ ] **Notificação de mensagem nova, como no Instagram:** lista de conversas, contador ao vivo e notificação com o app fechado (web push no web; push do celular quando o mobile chegar). E-mail não faz parte do chat.
@@ -252,7 +255,7 @@ Em 03/11, no Chromium com Playwright, com backend e banco descartáveis (scripts
 
 ### Depende do backend
 
-- [ ] **Fotos, favoritas, emergência, busca no servidor e pagamentos:** cada um quando o passo correspondente de "O que falta no backend" estiver pronto.
+- [ ] **Fotos, busca no servidor e pagamentos:** cada um quando o passo correspondente de "O que falta no backend" estiver pronto.
 - [ ] **Denúncia (por último, com o canal de segurança):** `api.reports.submit` real no web (hoje só existe o mock do Expo), com a tradução dos motivos, ligar os botões de `Safety.jsx` e corrigir as mensagens (ver `CANAL-SEGURANCA.md`).
 
 ## Pendências do chat

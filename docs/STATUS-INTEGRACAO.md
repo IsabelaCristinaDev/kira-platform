@@ -26,6 +26,7 @@ Situação em 03/11/2026. Lista do que o app web (kira-platform) já usa do back
 | Remarcar (até 2 horas antes)                        | Detalhe do agendamento → "Remarcar horário" |
 | Chat com o estúdio, em tempo real                   | Detalhe do agendamento → "Conversar com…"   |
 | Avaliar atendimento concluído                       | Detalhe do agendamento / Minhas avaliações  |
+| Salvar estúdios favoritos                           | Perfil do profissional / Favoritos          |
 | Histórico e pagamentos                              | Perfil                                      |
 
 ### Profissional
@@ -56,6 +57,7 @@ As chamadas e as conversões já existem em `src/shared/api/httpAdapter.js` e `m
 | Escolher a funcionária                | `professionals.listStaff`, `appointments.create({ staffId })`                                                                                         | O agendamento não mostra a escolha; os horários livres já aceitam a funcionária (`availability.get({ staffId })`) |
 | Painel pronto do backend              | `dashboard.getMine({ from, to })`, pelo hook `useDashboard`                                                                                           | As telas ainda calculam os números no navegador (`metrics.js`)                                                    |
 | Editar perfil                         | `profile.getMine`, `saveMine`                                                                                                                         | A edição da cliente salva só na sessão, e o profissional não tem tela                                             |
+| Contatos de emergência                | `emergencyContacts.list`, `create`, `remove`                                                                                                          |
 | Categoria do serviço                  | `services.create`, `update` e cadastro do profissional, com `category`                                                                                | Falta o campo na tela; sem ele, o backend deduz pelo nome                                                         |
 
 ### Problemas no backend encontrados na integração
@@ -79,7 +81,7 @@ As chamadas e as conversões já existem em `src/shared/api/httpAdapter.js` e `m
 
 - **Chat com IA (atendimento):** tela pronta em `/cliente/atendimento`, com respostas simuladas (`api.chat`) e aviso de demonstração. Futuro: n8n. É outro chat, diferente do cliente–empresa (`api.messages`). Os cards de profissional usam dados de exemplo, então abrir o perfil de um deles dá erro.
 - **Acompanhar agendamento:** mostra o agendamento real, mas as etapas e o Pix são simulados (`api.bookings`), com aviso de demonstração.
-- Fotos, favoritas, emergência, gift cards, fidelidade, cupons e formas de pagamento.
+- Fotos, gift cards, fidelidade, cupons e formas de pagamento.
 - **Documento e selfie do cadastro:** as fotos ficam só no navegador e não são enviadas. O backend não tem rota de upload nem campo de verificação, então o botão "Continuar para verificação facial" não verifica nada. Falta decidir entre verificação por um serviço externo (guardar só o resultado e descartar a selfie), revisão manual dos documentos ou esconder essas telas por enquanto.
 
 ## Situação do backend
@@ -93,7 +95,7 @@ Desde 02/11, a `main` do backend tem tudo o que o app usa. Em 03/11 entraram os 
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 410 no CI do PR #26; na máquina, precisam do Docker e do banco local no ar. No app, os 212 testes passam.
+Testes do backend: passam os 424 no CI do PR #27; na máquina, precisam do Docker e do banco local no ar. No app, os 223 testes passam.
 
 ## Para tudo funcionar de verdade
 

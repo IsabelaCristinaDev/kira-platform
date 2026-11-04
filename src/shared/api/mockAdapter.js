@@ -38,6 +38,11 @@ const getDaySchedule = (date, pro) => {
   return Array.from(new Set(slots)).sort();
 };
 
+// Só na memória, igual às favoritas do app Expo até o mobile ser ligado ao backend
+const favoriteIds = new Set();
+const emergencyContacts = [];
+const MAX_EMERGENCY_CONTACTS = 5;
+
 export const mockAdapter = {
   professionals: {
     list: async () => {
@@ -69,6 +74,40 @@ export const mockAdapter = {
     save: async () => {
       await wait(700);
       return { ok: true };
+    },
+  },
+  favorites: {
+    listIds: async () => {
+      await wait(300);
+      return [...favoriteIds];
+    },
+    add: async (professionalId) => {
+      await wait(300);
+      favoriteIds.add(professionalId);
+    },
+    remove: async (professionalId) => {
+      await wait(300);
+      favoriteIds.delete(professionalId);
+    },
+  },
+  emergencyContacts: {
+    list: async () => {
+      await wait(300);
+      return [...emergencyContacts];
+    },
+    create: async ({ name, phone, relationship = null }) => {
+      await wait(300);
+      if (emergencyContacts.length >= MAX_EMERGENCY_CONTACTS) {
+        throw new ApiError("too_many_contacts", "Você pode ter no máximo 5 contatos de emergência", 400);
+      }
+      const contact = { id: `contato-${Date.now()}-${emergencyContacts.length}`, name, phone, relationship };
+      emergencyContacts.push(contact);
+      return contact;
+    },
+    remove: async (id) => {
+      await wait(300);
+      const index = emergencyContacts.findIndex((c) => c.id === id);
+      if (index >= 0) emergencyContacts.splice(index, 1);
     },
   },
   // O Expo não tem service worker; o push do celular fica para quando o mobile for ligado ao backend

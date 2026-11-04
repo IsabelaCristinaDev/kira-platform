@@ -165,6 +165,14 @@
  */
 
 /**
+ * @typedef {Object} EmergencyContact
+ * @property {string} id
+ * @property {string} name
+ * @property {string} phone
+ * @property {string|null} relationship
+ */
+
+/**
  * Resultado de pedir a permissão e registrar o navegador (`api.notifications.enable`).
  * @typedef {"permitido"|"bloqueado"|"sem_resposta"|"sem_suporte"|"desligado_no_servidor"|"erro"} PushStatus
  */
