@@ -27,6 +27,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
   concluído) e Pix com copiar código, aviso de pagamento e conferência. Contrato `api.bookings` pronto para a API real.
 - Notificação do navegador: service worker, abrir a conversa ao tocar, sem repetir a conversa aberta, `api.notifications`
   pronta para o botão de permitir e remoção do navegador ao sair da conta. Sem as chaves no backend, fica desligada.
+- Favoritas salvas na conta da cliente, em vez de só na sessão. `api.emergencyContacts` pronta para a tela de contatos
+  de emergência.
 
 ### Alterado
 
