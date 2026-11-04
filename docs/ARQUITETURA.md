@@ -167,8 +167,8 @@ Para a notificação chegar com o app fechado, como no Instagram.
 - [x] **Chamadas (`api.notifications`):** `getPublicKey`, `registerDevice` e `removeDevice`. A tela chama `enable()` no toque do botão. Nunca rejeita e devolve `PUSH_STATUS`: `permitido`, `bloqueado`, `sem_resposta` (fechou o pedido sem escolher), `sem_suporte`, `desligado_no_servidor` (backend sem as chaves VAPID) ou `erro`.
 - [x] **Sair da conta:** remove o navegador antes de apagar a sessão e cancela a inscrição. Falha ou demora (limite de 3 s) não impedem a saída. Com a sessão perdida não há token para chamar o backend: só cancela a inscrição, e o backend apaga o registro no próximo envio recusado.
 - [x] **Ao entrar na conta:** se a permissão já foi dada, registra o navegador na conta logada sem perguntar nada (`api.notifications.sync`).
-- [x] **Um registro por vez:** registros simultâneos do mesmo navegador dão conflito no backend. O app registra um de cada vez, entre as abas também, nos navegadores com Web Locks; nos outros, o registro pode falhar e vale no próximo login.
-- [ ] **Backend:** tratar esse conflito, que hoje responde erro 500. Ver "Testes" abaixo.
+- [x] **Um registro por vez:** o app registra um de cada vez, entre as abas também, nos navegadores com Web Locks.
+- [x] **Backend:** aceita registros simultâneos do mesmo navegador, sem erro 500, também nos navegadores sem Web Locks (PR #26 do backend).
 - [x] **Mock do Expo:** `api.notifications` responde `sem_suporte`, porque o Expo não tem service worker.
 
 **Tela**
@@ -187,7 +187,7 @@ Em 03/11, no Chromium com Playwright, com backend e banco descartáveis (scripts
 - [x] Endereço da conversa aberto em uma janela nova, para cliente e profissional, e sem sessão (login e depois a conversa).
 - [x] `POST` e `DELETE` no backend real, conferidos no banco; sem as chaves VAPID, `desligado_no_servidor`, sem erro.
 - [x] Sair da conta com o `DELETE` falhando e sem responder: a pessoa sai (em 3,1 s no pior caso).
-- [x] Registros simultâneos em duas abas, 45 em 15 rodadas: sem o bloqueio, 18 falharam com erro 500; com o bloqueio, nenhum falhou.
+- [x] Registros simultâneos em duas abas, 45 em 15 rodadas, antes da correção do backend: sem o bloqueio, 18 falharam com erro 500; com o bloqueio, nenhum falhou. A correção é coberta por um teste com banco real no backend; a comparação no navegador não foi repetida depois dela.
 - [x] Teste completo repetido 6 vezes, 40 de 40 em todas. Antes do bloqueio, o registro falhou em 3 de 6 rodadas.
 - [ ] Notificação chegando de verdade pelo serviço de push, no Chrome e no Firefox, com o app fechado. Só dá para testar em um navegador comum, com as chaves VAPID no backend e o botão (ou chamando `enable()`).
 - [ ] Clique de verdade na notificação com o app fechado: o navegador só permite abrir a janela em um clique real, então o teste conferiu o endereço pedido e abriu esse endereço à parte.

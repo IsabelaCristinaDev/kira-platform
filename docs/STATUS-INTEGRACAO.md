@@ -93,7 +93,7 @@ Desde 02/11, a `main` do backend tem tudo o que o app usa. Em 03/11 entraram os 
 - Id do usuário no login e no refresh
 - Chat só para quem participa do agendamento
 
-Testes do backend: passam os 407 no CI do PR #25; na máquina, precisam do Docker e do banco local no ar. No app, os 159 testes passam.
+Testes do backend: passam os 410 no CI do PR #26; na máquina, precisam do Docker e do banco local no ar. No app, os 212 testes passam.
 
 ## Para tudo funcionar de verdade
 
