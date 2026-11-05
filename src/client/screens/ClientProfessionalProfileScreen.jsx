@@ -10,6 +10,7 @@ import { ProPhoto, RatingStars, ratingLabel } from "../components/ProfessionalCa
 import { Badge } from "../../shared/components/primitives";
 import { certificatesDemo } from "../../shared/data/demo";
 import { useProfessional } from "../hooks/useProfessionals";
+import { PortfolioGallery } from "../components/PortfolioGallery";
 
 export default function ClientProfessionalProfileScreen() {
   const { favoriteProIds, toggleFavoriteProfessional } = useSearch();
@@ -231,6 +232,8 @@ export default function ClientProfessionalProfileScreen() {
               </div>
             ))}
           </div>
+
+          <PortfolioGallery proId={pro.id} />
 
           <h2
             style={{
