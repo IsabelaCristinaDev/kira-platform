@@ -1,7 +1,9 @@
-// Câmera da selfie do cadastro: abre, captura em quadrado espelhado e libera a câmera · API do navegador: getUserMedia
+// Câmera (selfie do cadastro e provador): abre, captura em quadrado e libera a câmera · API do navegador: getUserMedia
 import { useEffect, useRef, useState } from "react";
 
-export function useSelfieCamera(photo, setPhoto) {
+// options.facingMode: "user" (frontal, espelhada) ou "environment" (traseira, sem espelho)
+export function useSelfieCamera(photo, setPhoto, { facingMode = "user" } = {}) {
+  const mirror = facingMode === "user";
   const [status, setStatus] = useState(photo ? "captured" : "idle"); // idle | streaming | error | captured
   const [error, setError] = useState("");
   const videoRef = useRef(null);
@@ -16,7 +18,7 @@ export function useSelfieCamera(photo, setPhoto) {
     setError("");
     setStatus("idle");
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode }, audio: false });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -38,8 +40,10 @@ export function useSelfieCamera(photo, setPhoto) {
     const ctx = canvas.getContext("2d");
     const sx = (video.videoWidth - size) / 2;
     const sy = (video.videoHeight - size) / 2;
-    ctx.translate(size, 0);
-    ctx.scale(-1, 1);
+    if (mirror) {
+      ctx.translate(size, 0);
+      ctx.scale(-1, 1);
+    }
     ctx.drawImage(video, sx, sy, size, size, 0, 0, size, size);
     setPhoto(canvas.toDataURL("image/jpeg", 0.9));
     stop();
