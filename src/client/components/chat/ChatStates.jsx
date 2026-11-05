@@ -8,40 +8,41 @@ import { AgentAvatar } from "./AgentAvatar";
 import { QuickReplies } from "./QuickReplies";
 
 export const ChatWelcome = ({ onPick }) => (
-  <div
-    style={{
-      flex: 1,
-      minHeight: 0,
-      overflowY: "auto",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "var(--space-14)",
-      padding: "var(--space-24) var(--space-24) var(--space-16)",
-      textAlign: "center",
-    }}
-  >
-    <AgentAvatar agent={CHAT_AGENTS.AI} size={80} />
-    <Heading as="h2" size="3xl" style={{ lineHeight: 1.15 }}>
-      Oi, eu sou a Kira
-    </Heading>
-    <Text size="base" color={colors.mutedForeground} style={{ maxWidth: 290, lineHeight: 1.5 }}>
-      Sou a nossa inteligência artificial e posso te ajudar a encontrar profissionais, agendar horários e tirar dúvidas.
-    </Text>
-    <Text
-      size="xs"
-      weight={600}
-      color={colors.primaryText}
-      style={{ letterSpacing: "0.08em", textTransform: "uppercase" }}
+  <div style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+    {/* margin auto centraliza sem cortar o topo quando a tela é baixa (justify-content: center cortava) */}
+    <div
+      style={{
+        margin: "auto 0",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "var(--space-14)",
+        padding: "var(--space-24) var(--space-24) var(--space-16)",
+        textAlign: "center",
+      }}
     >
-      beleza, tecnologia, confiança
-    </Text>
-    <Text size="sm" weight={600} style={{ marginTop: "var(--space-8)" }}>
-      Por onde você quer começar?
-    </Text>
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <QuickReplies options={welcomeSuggestions} onPick={onPick} indent={false} />
+      <AgentAvatar agent={CHAT_AGENTS.AI} size={80} />
+      <Heading as="h2" size="3xl" style={{ lineHeight: 1.15 }}>
+        Oi, eu sou a Kira
+      </Heading>
+      <Text size="base" color={colors.mutedForeground} style={{ maxWidth: 290, lineHeight: 1.5 }}>
+        Sou a nossa inteligência artificial e posso te ajudar a encontrar profissionais, agendar horários e tirar
+        dúvidas.
+      </Text>
+      <Text
+        size="xs"
+        weight={600}
+        color={colors.primaryText}
+        style={{ letterSpacing: "0.08em", textTransform: "uppercase" }}
+      >
+        beleza, tecnologia, confiança
+      </Text>
+      <Text size="sm" weight={600} style={{ marginTop: "var(--space-8)" }}>
+        Por onde você quer começar?
+      </Text>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <QuickReplies options={welcomeSuggestions} onPick={onPick} indent={false} />
+      </div>
     </div>
   </div>
 );
