@@ -8,9 +8,8 @@ import { useScheduling } from "../../context/SchedulingContext";
 import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { CategoryChip } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
-import { CHAT_AGENTS } from "../../shared/api/chatContract";
 import { BottomNav } from "../components/BottomNav";
-import { AgentAvatar } from "../components/chat/AgentAvatar";
+import { MascotHelpButton } from "../components/chat/MascotHelpButton";
 import { ProPhoto, RecommendedProfessionalCard, ratingLabel } from "../components/ProfessionalCards";
 import { dashboardCategories } from "../data/options";
 import { useProfessionals } from "../hooks/useProfessionals";
@@ -363,27 +362,7 @@ export default function ClientHomeScreen() {
           </div>
           <ChevronRight size={18} color={colors.primary} />
         </button>
-        <button
-          type="button"
-          className="k-chip"
-          onClick={() => openWithBack("clientChat", "clientHome")}
-          aria-label="Ajuda: conversar com a Kira"
-          style={{
-            position: "sticky",
-            bottom: "var(--space-16)",
-            marginLeft: "auto",
-            display: "flex",
-            width: 56,
-            height: 56,
-            padding: 0,
-            border: "none",
-            borderRadius: "var(--radius-round)",
-            background: "transparent",
-            cursor: "pointer",
-          }}
-        >
-          <AgentAvatar agent={CHAT_AGENTS.AI} size={56} />
-        </button>
+        <MascotHelpButton onOpen={() => openWithBack("clientChat", "clientHome")} />
       </div>
 
       <BottomNav active="clientHome" onNavigate={goToTab} />

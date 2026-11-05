@@ -98,8 +98,81 @@ textarea,
   outline-offset: 2px;
 }
 
+/* Mascote da Kira (ajuda da Home): sombra difusa rosa e lilás e flutuação quase imperceptível */
+.k-mascot {
+  filter: drop-shadow(0 6px 10px rgba(236, 72, 153, 0.3)) drop-shadow(0 2px 16px rgba(168, 85, 247, 0.28));
+  animation: k-mascot-float 5s ease-in-out infinite;
+}
+/* Balão de apresentação do mascote: surge com fade e leve subida */
+.k-mascot-help {
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.k-hint {
+  position: absolute;
+  right: 18px;
+  bottom: calc(100% + 2px);
+  width: max-content;
+  max-width: 190px;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--gradient-kira);
+  box-shadow:
+    0 8px 24px rgba(168, 85, 247, 0.3),
+    0 2px 8px rgba(236, 72, 153, 0.25);
+  color: hsl(var(--white-hsl));
+  font-family: var(--font-body, inherit);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+  pointer-events: none;
+}
+/* Pontinha do balão, apontando para o mascote */
+.k-hint::after {
+  content: "";
+  position: absolute;
+  right: 30px;
+  top: 100%;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 9px solid var(--color-violet);
+}
+.k-hint[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.k-mascot-help .k-mascot {
+  transition: filter 0.3s ease;
+}
+.k-mascot-help[data-hint="true"] .k-mascot {
+  filter: drop-shadow(0 6px 12px rgba(236, 72, 153, 0.45)) drop-shadow(0 0 18px rgba(168, 85, 247, 0.5));
+}
+@keyframes k-mascot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
 /* respeita quem pede menos movimento; o giro do carregando continua para indicar progresso */
 @media (prefers-reduced-motion: reduce) {
+  .k-mascot {
+    animation: none;
+  }
+  .k-hint {
+    transition: opacity 0.01ms;
+    transform: none;
+  }
   *:not(.spin),
   *:not(.spin)::before,
   *:not(.spin)::after {

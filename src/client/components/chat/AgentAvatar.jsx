@@ -1,12 +1,11 @@
-// Avatar de quem atende no chat: gradiente com brilho para a IA, anel rosa com fone para o atendente · API: nenhuma
-import { Headset, Sparkles } from "lucide-react";
+// Avatar de quem atende no chat: mascote da Kira para a IA, anel rosa com fone para o atendente · API: nenhuma
+import { Headset } from "lucide-react";
 import { CHAT_AGENTS } from "../../../shared/api/chatContract";
-import { colors, gradientKira } from "../../../shared/theme";
-import { ON_GRADIENT } from "../../../shared/components/chatStyles";
+import mascote from "../../../assets/mascote-kira.png";
+import { colors } from "../../../shared/theme";
 
-export const AgentAvatar = ({ agent, size = 44 }) => {
+export const AgentAvatar = ({ agent, size = 44, glow = false }) => {
   const human = agent === CHAT_AGENTS.HUMAN;
-  const Icon = human ? Headset : Sparkles;
   return (
     <div
       aria-hidden="true"
@@ -19,12 +18,16 @@ export const AgentAvatar = ({ agent, size = 44 }) => {
         alignItems: "center",
         justifyContent: "center",
         boxSizing: "border-box",
-        background: human ? "var(--color-primary-tint)" : gradientKira,
+        background: human ? "var(--color-primary-tint)" : "transparent",
         border: human ? `2px solid ${colors.primary}` : "none",
-        boxShadow: human ? "none" : "var(--shadow-card-glow)",
+        boxShadow: "none",
       }}
     >
-      <Icon size={Math.round(size / 2)} color={human ? colors.foreground : ON_GRADIENT} />
+      {human ? (
+        <Headset size={Math.round(size / 2)} color={colors.foreground} />
+      ) : (
+        <img src={mascote} alt="" width={size} height={size} style={{ objectFit: "contain" }} />
+      )}
     </div>
   );
 };
