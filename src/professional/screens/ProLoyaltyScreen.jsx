@@ -1,5 +1,6 @@
 // Fidelidade: pontos e cashback · estado local
 import { Check } from "lucide-react";
+import { useState } from "react";
 import { useProDashboard } from "../../context/ProDashboardContext";
 import { useSession } from "../../context/SessionContext";
 import { Header, PrimaryButton } from "../../shared/components/ui";
@@ -10,6 +11,11 @@ import { Checkbox } from "../../shared/components/primitives";
 export default function ProLoyaltyScreen() {
   const { loyaltySettings, setLoyaltySettings } = useProDashboard();
   const { setScreen } = useSession();
+  const [saved, setSaved] = useState(false);
+  const change = (update) => {
+    setSaved(false);
+    setLoyaltySettings(update);
+  };
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("proProfileMenu")} />
@@ -49,10 +55,7 @@ export default function ProLoyaltyScreen() {
             cursor: "pointer",
           }}
         >
-          <Checkbox
-            checked={loyaltySettings.enabled}
-            onChange={() => setLoyaltySettings((s) => ({ ...s, enabled: !s.enabled }))}
-          />
+          <Checkbox checked={loyaltySettings.enabled} onChange={() => change((s) => ({ ...s, enabled: !s.enabled }))} />
           <span
             style={{
               flex: 1,
@@ -85,7 +88,7 @@ export default function ProLoyaltyScreen() {
             max={5}
             step={0.5}
             value={loyaltySettings.pointsPerReal}
-            onChange={(e) => setLoyaltySettings((s) => ({ ...s, pointsPerReal: Number(e.target.value) }))}
+            onChange={(e) => change((s) => ({ ...s, pointsPerReal: Number(e.target.value) }))}
             style={{ flex: 1, accentColor: colors.primary }}
           />
           <span
@@ -121,7 +124,7 @@ export default function ProLoyaltyScreen() {
             max={20}
             step={1}
             value={loyaltySettings.cashbackPercent}
-            onChange={(e) => setLoyaltySettings((s) => ({ ...s, cashbackPercent: Number(e.target.value) }))}
+            onChange={(e) => change((s) => ({ ...s, cashbackPercent: Number(e.target.value) }))}
             style={{ flex: 1, accentColor: colors.primary }}
           />
           <span
@@ -138,7 +141,21 @@ export default function ProLoyaltyScreen() {
           </span>
         </div>
 
-        <PrimaryButton onClick={() => {}}>Salvar configurações</PrimaryButton>
+        <PrimaryButton onClick={() => setSaved(true)}>Salvar configurações</PrimaryButton>
+        <p
+          role="status"
+          style={{
+            fontFamily: fontBody,
+            fontSize: "var(--font-size-xs)",
+            fontWeight: 600,
+            color: colors.primaryText,
+            textAlign: "center",
+            margin: "var(--space-10) 0 0",
+            minHeight: "1.2em",
+          }}
+        >
+          {saved ? "Configurações salvas" : ""}
+        </p>
       </div>
     </div>
   );

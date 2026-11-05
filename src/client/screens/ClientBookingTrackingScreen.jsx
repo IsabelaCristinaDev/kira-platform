@@ -41,7 +41,7 @@ export default function ClientBookingTrackingScreen() {
 }
 
 function BookingTracking({ appointment }) {
-  const { setScreen } = useSession();
+  const { setScreen, openWithBack } = useSession();
   const { status, booking, reload, reportPayment, paying, payError } = useBookingTracking(appointment.id);
   const awaitingPayment =
     booking && booking.step === BOOKING_STEPS.CONFIRMED && booking.payment.state !== PAYMENT_STATES.CONFIRMED;
@@ -110,7 +110,7 @@ function BookingTracking({ appointment }) {
               <PaymentPanel payment={booking.payment} paying={paying} error={payError} onReport={reportPayment} />
             )}
             <BookingTimeline booking={booking} />
-            <SecondaryButton onClick={() => setScreen("clientChat")}>
+            <SecondaryButton onClick={() => openWithBack("clientChat", "clientBookingTracking")}>
               <MessageCircle size={15} aria-hidden="true" /> Falar com o atendimento
             </SecondaryButton>
           </>

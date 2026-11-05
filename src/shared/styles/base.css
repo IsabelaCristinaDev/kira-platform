@@ -45,6 +45,41 @@ textarea,
   text-align: inherit;
 }
 
+/* linha com rolagem horizontal por toque, roda e teclado: sem a barra de rolagem clássica do Windows */
+.k-hscroll {
+  scrollbar-width: none;
+}
+
+.k-hscroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* no computador a linha também se arrasta com o mouse */
+@media (hover: hover) and (pointer: fine) {
+  .k-hscroll {
+    cursor: grab;
+  }
+  .k-hscroll.k-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
+/* área de toque de 44px sem mudar o visual do botão (botões de 30 a 34px) */
+.k-hit {
+  position: relative;
+}
+
+.k-hit::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+
+.k-hit-wide::after {
+  inset: -11px -7px;
+}
+
 /* esconde da tela mas mantém para leitores de tela e teclado */
 .k-sr-only {
   position: absolute;
@@ -61,4 +96,16 @@ textarea,
 .k-sr-only:focus-visible + .k-check {
   outline: var(--focus-ring);
   outline-offset: 2px;
+}
+
+/* respeita quem pede menos movimento; o giro do carregando continua para indicar progresso */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.spin),
+  *:not(.spin)::before,
+  *:not(.spin)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

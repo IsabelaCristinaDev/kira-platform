@@ -6,7 +6,16 @@ import ClientRescheduleScreen from "./client/screens/ClientRescheduleScreen";
 import ClientConversationScreen from "./client/screens/ClientConversationScreen";
 import ClientAgendaScreen from "./client/screens/ClientAgendaScreen";
 import ClientBookingTrackingScreen from "./client/screens/ClientBookingTrackingScreen";
+import ClientCheckoutScreen from "./client/screens/ClientCheckoutScreen";
+import ClientJourneyScreen from "./client/screens/ClientJourneyScreen";
+import ClientLoyaltyScreen from "./client/screens/ClientLoyaltyScreen";
+import ClientPaymentProcessingScreen from "./client/screens/ClientPaymentProcessingScreen";
+import ClientRecommendedScreen from "./client/screens/ClientRecommendedScreen";
+import ProClientsScreen from "./professional/screens/ProClientsScreen";
 import ClientChatScreen from "./client/screens/ClientChatScreen";
+import ClientConversationsScreen from "./client/screens/ClientConversationsScreen";
+import ClientFaqScreen from "./client/screens/ClientFaqScreen";
+import ClientNotificationsScreen from "./client/screens/ClientNotificationsScreen";
 import ClientCouponsScreen from "./client/screens/ClientCouponsScreen";
 import ClientDocumentScreen from "./client/screens/ClientDocumentScreen";
 import ClientDoneScreen from "./client/screens/ClientDoneScreen";
@@ -48,7 +57,11 @@ import ProLocationScreen from "./professional/screens/ProLocationScreen";
 import ProLoyaltyScreen from "./professional/screens/ProLoyaltyScreen";
 import ProPersonalScreen from "./professional/screens/ProPersonalScreen";
 import ProPhotosScreen from "./professional/screens/ProPhotosScreen";
-import { ProSearchScreen } from "./professional/screens/ProPlaceholderScreen";
+import ProConversationsScreen from "./professional/screens/ProConversationsScreen";
+import ProFaqScreen from "./professional/screens/ProFaqScreen";
+import ProNotificationsScreen from "./professional/screens/ProNotificationsScreen";
+import ProPremiumScreen from "./professional/screens/ProPremiumScreen";
+import { ProSearchScreen } from "./professional/screens/ProSearchScreen";
 import ProProfileMenuScreen from "./professional/screens/ProProfileMenuScreen";
 import ProSecurityScreen from "./professional/screens/ProSecurityScreen";
 import ProServicesScreen from "./professional/screens/ProServicesScreen";
@@ -98,6 +111,14 @@ export const screens = {
   clientPaymentHistory: ClientPaymentHistoryScreen,
   clientCoupons: ClientCouponsScreen,
   clientHelpSupport: ClientHelpSupportScreen,
+  clientFaq: ClientFaqScreen,
+  clientCheckout: ClientCheckoutScreen,
+  clientPaymentProcessing: ClientPaymentProcessingScreen,
+  clientRecommended: ClientRecommendedScreen,
+  clientLoyalty: ClientLoyaltyScreen,
+  clientJourney: ClientJourneyScreen,
+  clientConversations: ClientConversationsScreen,
+  clientNotifications: ClientNotificationsScreen,
   clientChat: ClientChatScreen,
   clientReviews: ClientReviewsScreen,
   clientFavorites: ClientFavoritesScreen,
@@ -125,6 +146,11 @@ export const screens = {
   proSecurity: ProSecurityScreen,
   proBusinessHours: ProBusinessHoursScreen,
   proHelp: ProHelpScreen,
+  proFaq: ProFaqScreen,
+  proClients: ProClientsScreen,
+  proConversations: ProConversationsScreen,
+  proNotifications: ProNotificationsScreen,
+  proPremium: ProPremiumScreen,
   proSearch: ProSearchScreen,
   face: FaceScreen,
   home: HomeScreen,

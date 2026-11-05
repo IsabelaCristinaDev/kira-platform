@@ -54,7 +54,9 @@ export default function ClientAgendaDetailScreen() {
   const canReview = appointment.status === "concluido" && reviews.isSuccess && !myReview;
   const status = statusOf(appointment);
   return (
-    <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background, position: "relative" }}
+    >
       <Header onBack={() => setScreen("clientAgenda")} />
       <div style={{ flex: 1, padding: "0 var(--space-24) var(--space-32)", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-12)", marginBottom: "var(--space-18)" }}>
@@ -153,6 +155,7 @@ export default function ClientAgendaDetailScreen() {
               <Route size={15} aria-hidden="true" /> Acompanhar agendamento
             </PrimaryButton>
           )}
+          <SecondaryButton onClick={() => setScreen("clientJourney")}>Ver jornada</SecondaryButton>
           <SecondaryButton onClick={() => setScreen("clientConversation")}>
             <MessageCircle size={15} /> Conversar com {pro.name.split(" ")[0]}
           </SecondaryButton>
@@ -224,6 +227,7 @@ export default function ClientAgendaDetailScreen() {
               style={{
                 width: "100%",
                 padding: "var(--space-12)",
+                minHeight: 44,
                 borderRadius: "var(--radius-lg)",
                 border: "none",
                 background: "transparent",

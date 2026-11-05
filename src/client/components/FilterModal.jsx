@@ -18,7 +18,7 @@ export const FilterModal = ({ open, mounted, onClose, draft, setDraft, onApply, 
       role="presentation"
       onClick={(e) => e.target === e.currentTarget && onClose()}
       style={{
-        position: "fixed",
+        position: "absolute",
         inset: 0,
         background: "hsl(var(--foreground-hsl) / 0.45)",
         display: "flex",

@@ -10,6 +10,15 @@ import { ProStatCard, RevenueBarChart } from "../components/ProWidgets";
 import { useBusinessData } from "../hooks/useBusinessData";
 import { completed, monthlyRevenue, weeklyRevenue } from "../utils/metrics";
 import { paymentLabels } from "../../shared/api/mappers";
+import { downloadCsv, toCsv } from "../../shared/utils/csv";
+
+// Relatório dos atendimentos pagos listados na tela (CSV), a partir dos agendamentos reais
+const reportColumns = [
+  { label: "Cliente", value: (tx) => tx.clientName },
+  { label: "Serviço", value: (tx) => tx.service },
+  { label: "Data", value: (tx) => tx.start.toLocaleDateString("pt-BR") },
+  { label: "Valor (R$)", value: (tx) => (tx.price ?? 0).toFixed(2).replace(".", ",") },
+];
 
 // "Gestão financeira" — painel de controle financeiro do profissional:
 // faturamento do mês, faturamento por semana ou mês (gráfico interativo),
@@ -279,7 +288,11 @@ export default function ProFinanceScreen() {
               ))}
             </div>
 
-            <SecondaryButton onClick={() => {}}>Baixar relatório</SecondaryButton>
+            <SecondaryButton
+              onClick={() => downloadCsv("relatorio-financeiro-kira.csv", toCsv(reportColumns, transactions))}
+            >
+              Baixar relatório
+            </SecondaryButton>
           </>
         )}
       </div>

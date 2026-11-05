@@ -75,6 +75,7 @@ export default function ProPersonalScreen() {
               )}
             </div>
             <button
+              className="k-hit"
               onClick={() => pFileInputRef.current?.click()}
               aria-label="Adicionar foto"
               style={{
@@ -106,6 +107,8 @@ export default function ProPersonalScreen() {
             type="button"
             className="k-reset"
             style={{
+              minHeight: 44,
+              padding: "0 var(--space-12)",
               fontSize: "var(--font-size-xs)",
               color: colors.primaryText,
               fontWeight: 600,
@@ -171,6 +174,7 @@ export default function ProPersonalScreen() {
               )
             }
             placeholder={pForm.documentType === "cpf" ? "000.000.000-00" : "00.000.000/0000-00"}
+            inputMode="numeric"
             style={inputStyle(pErrors.document)}
           />
         </Field>
@@ -190,6 +194,8 @@ export default function ProPersonalScreen() {
             value={pForm.email}
             onChange={(e) => setPField("email", e.target.value)}
             placeholder="seu@email.com"
+            inputMode="email"
+            autoComplete="email"
             style={inputStyle(pErrors.email)}
           />
         </Field>
@@ -198,6 +204,8 @@ export default function ProPersonalScreen() {
             value={pForm.phone}
             onChange={(e) => setPField("phone", formatPhone(e.target.value))}
             placeholder="(00) 00000-0000"
+            inputMode="tel"
+            autoComplete="tel"
             style={inputStyle(pErrors.phone)}
           />
         </Field>
@@ -208,9 +216,11 @@ export default function ProPersonalScreen() {
               value={pForm.password}
               onChange={(e) => setPField("password", e.target.value)}
               placeholder="Mínimo 8 caracteres"
+              autoComplete="new-password"
               style={inputStyle(pErrors.password)}
             />
             <button
+              className="k-hit k-hit-wide"
               type="button"
               aria-label={pShowPassword ? "Ocultar a senha" : "Mostrar a senha"}
               onClick={() => setPShowPassword((s) => !s)}
@@ -236,9 +246,11 @@ export default function ProPersonalScreen() {
               value={pForm.confirm}
               onChange={(e) => setPField("confirm", e.target.value)}
               placeholder="Repita a senha"
+              autoComplete="new-password"
               style={inputStyle(pErrors.confirm)}
             />
             <button
+              className="k-hit k-hit-wide"
               type="button"
               aria-label={pShowConfirm ? "Ocultar a confirmação de senha" : "Mostrar a confirmação de senha"}
               onClick={() => setPShowConfirm((s) => !s)}
@@ -258,7 +270,9 @@ export default function ProPersonalScreen() {
           </div>
         </Field>
 
-        <PrimaryButton onClick={() => validateProPersonal() && setScreen("proAddress")}>Continuar</PrimaryButton>
+        <PrimaryButton sticky onClick={() => validateProPersonal() && setScreen("proAddress")}>
+          Continuar
+        </PrimaryButton>
       </div>
     </div>
   );

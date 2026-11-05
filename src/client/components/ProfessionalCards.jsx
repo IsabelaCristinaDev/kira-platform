@@ -7,7 +7,8 @@ import { colors, fontBody, gradientKira } from "../../shared/theme";
 // Foto do estúdio ou, sem foto cadastrada, as iniciais do nome
 export const ProPhoto = ({ pro, size, radius = "var(--radius-xl)", style }) => {
   const box = { width: size, height: size, borderRadius: radius, flexShrink: 0, ...style };
-  if (pro.photo) return <img src={pro.photo} alt={pro.name} style={{ ...box, objectFit: "cover" }} />;
+  if (pro.photo)
+    return <img src={pro.photo} alt={pro.name} style={{ ...box, objectFit: "cover", objectPosition: "center 25%" }} />;
   const initials = pro.name
     .split(" ")
     .filter(Boolean)
@@ -62,6 +63,7 @@ export const ProfessionalCard = ({ pro, onClick }) => (
           fontSize: "var(--font-size-sm)",
           color: colors.foreground,
           margin: 0,
+          overflowWrap: "anywhere",
         }}
       >
         {pro.name}
@@ -72,6 +74,7 @@ export const ProfessionalCard = ({ pro, onClick }) => (
           fontSize: "var(--font-size-xs)",
           color: colors.mutedForeground,
           margin: "var(--space-1) 0 var(--space-4)",
+          overflowWrap: "anywhere",
         }}
       >
         {pro.role}
@@ -160,6 +163,7 @@ export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
         background: colors.card,
         overflow: "hidden",
         cursor: "pointer",
+        flexShrink: 0,
       }}
     >
       <div style={{ padding: "var(--space-12) var(--space-14) 0" }}>

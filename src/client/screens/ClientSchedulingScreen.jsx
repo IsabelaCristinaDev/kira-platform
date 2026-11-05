@@ -280,6 +280,11 @@ export default function ClientSchedulingScreen() {
                 <PrimaryButton disabled={book.isPending} onClick={() => book.mutate()}>
                   {book.isPending ? "Confirmando..." : "Confirmar agendamento"}
                 </PrimaryButton>
+                <div style={{ marginTop: "var(--space-10)" }}>
+                  <SecondaryButton onClick={() => setScreen("clientCheckout")}>
+                    Ver formas de pagamento (demonstração)
+                  </SecondaryButton>
+                </div>
               </div>
             )}
           </>

@@ -4,6 +4,43 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 ## [Não lançado]
 
+### Adicionado (camada visual, sem funcionalidade real)
+
+- Telas de demonstração: conversas e conversa (cliente e profissional), central de notificações, perguntas frequentes,
+  Plano Premium (R9), Buscar do profissional (substitui o "em breve"). Dados de exemplo identificados em `shared/data/demo.js`.
+- Modais visuais: avaliar atendimento, cancelar agendamento, exportar dados (LGPD), adicionar cartão (campos
+  desativados), criar Gift Card e assinar Premium. Nenhum deles executa a operação: mostram o aviso de demonstração.
+- Formas de pagamento com cartões de exemplo e seleção do principal; cupom mostra o aviso ao aplicar.
+- Componentes: `Sheet`, `DemoBanner`/`DemoNotice`, `ScreenFrame`, `StarRatingInput`, `ConversationList`,
+  `NotificationCenter`, `FaqView`.
+
+### Adicionado (telas do pitch, camada visual)
+
+- Checkout do agendamento (Pix, cartão em até 3x e Gift Card) e tela separada de processamento com estados
+  demonstrativos. Nada é cobrado nem validado.
+- Resultado do provador com compatibilidade (reaproveita `recommendProfessionals`), antes/depois e acesso aos
+  recomendados; tela "Recomendado pela IA" com ordenação, filtro, justificativa, perfil, conversa e agendar.
+- Fidelidade Kira do cliente (valores de exemplo, regras a definir), histórico de clientes do profissional,
+  jornada completa do cliente e certificados (exemplo, não verificados) no perfil público.
+- Chat: busca de conversas, estados de envio e leitura, mensagem com imagem, anexo desativado, aviso sem conexão
+  e atalhos para perfil, agendar e agendamento.
+
+### Corrigido
+
+- Quadro do celular com largura responsiva e altura definida (tela cheia em celulares), para a rolagem interna, a barra
+  inferior e o botão Agendar ficarem sempre visíveis e sem estouro lateral de 320px a 1440px.
+- Perfil da profissional: avatar inteiro sobre o cabeçalho, fotos enquadradas pelo rosto e portfólio proporcional.
+- Busca: botão de filtro sem corte em telas estreitas, chips sem barra de rolagem clássica e scroll infinito ativo.
+- Card de faturamento do painel profissional e corpo da home do cliente sem rolagem horizontal.
+- Calendário com "Novembro de 2026" (antes "De"), overlay do filtro restrito ao quadro, chat sem altura fixa.
+- Acessibilidade: área de toque de 44px no Voltar e nos botões, contraste AA na abertura, abas com `role` e
+  `aria-selected`, `aria-pressed` nos chips, teclado numérico e autopreenchimento nos formulários e respeito a
+  "reduzir movimento".
+
+### Alterado
+
+- Continuar e Salvar ficam fixos no rodapé dos formulários longos de cadastro e edição.
+
 ### Adicionado
 
 - Tela de horário de funcionamento do profissional (dias e horas em que atende), com aviso no painel enquanto nenhum dia estiver aberto.
@@ -13,6 +50,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 - Remarcar horário pelo detalhe do agendamento: mesmo serviço e profissional, novo dia e horário livre.
 - Chat entre cliente e estúdio no agendamento, em tempo real (WebSocket), com reconexão automática. Agendamento cancelado fica só para leitura.
 - O profissional remarca pela agenda, sem o limite de 2 horas da cliente. Os horários oferecidos são os da funcionária do atendimento.
+- Relatório do financeiro (Baixar relatório) em CSV com as transações listadas, a partir dos agendamentos concluídos.
+- Confirmação "Configurações salvas" na tela de fidelidade.
+
 - Chat de atendimento em `/cliente/atendimento` com dados simulados: respostas da nossa inteligência artificial,
   cartão de profissional, sugestão de horário, transferência para atendente, falha de envio e modo sem conexão.
 - Contrato `api.chat` pronto para conectar ao n8n (mensagens, transferência e eventos).

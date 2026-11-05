@@ -8,7 +8,9 @@ import { useScheduling } from "../../context/SchedulingContext";
 import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { CategoryChip } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
+import { CHAT_AGENTS } from "../../shared/api/chatContract";
 import { BottomNav } from "../components/BottomNav";
+import { AgentAvatar } from "../components/chat/AgentAvatar";
 import { ProPhoto, RecommendedProfessionalCard, ratingLabel } from "../components/ProfessionalCards";
 import { dashboardCategories } from "../data/options";
 import { useProfessionals } from "../hooks/useProfessionals";
@@ -16,7 +18,7 @@ import { useProfessionals } from "../hooks/useProfessionals";
 export default function ClientHomeScreen() {
   const { cForm } = useSignup();
   const { categoryFilter, setCategoryFilter } = useSearch();
-  const { goToTab, setScreen } = useSession();
+  const { goToTab, setScreen, openWithBack } = useSession();
   const { loadRanking, rankingError, rankingLoading, recommended } = useRanking();
   const { rankingSource, startTryOnFlow } = useTryOn();
   const { setBookedSlot, setSelectedProId } = useScheduling();
@@ -118,8 +120,11 @@ export default function ClientHomeScreen() {
         </button>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "0 var(--space-24) var(--space-24)" }}>
-        <div style={{ display: "flex", gap: "var(--space-8)", overflowX: "auto", padding: "0 0 var(--space-18)" }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "0 var(--space-24) var(--space-24)" }}>
+        <div
+          className="k-hscroll"
+          style={{ display: "flex", gap: "var(--space-8)", overflowX: "auto", padding: "0 0 var(--space-18)" }}
+        >
           {dashboardCategories.map((cat) => (
             <CategoryChip
               key={cat.id}
@@ -152,6 +157,7 @@ export default function ClientHomeScreen() {
           return (
             <>
               <div
+                className="k-hscroll"
                 style={{
                   display: "flex",
                   gap: "var(--space-10)",
@@ -356,6 +362,27 @@ export default function ClientHomeScreen() {
             </p>
           </div>
           <ChevronRight size={18} color={colors.primary} />
+        </button>
+        <button
+          type="button"
+          className="k-chip"
+          onClick={() => openWithBack("clientChat", "clientHome")}
+          aria-label="Ajuda: conversar com a Kira"
+          style={{
+            position: "sticky",
+            bottom: "var(--space-16)",
+            marginLeft: "auto",
+            display: "flex",
+            width: 56,
+            height: 56,
+            padding: 0,
+            border: "none",
+            borderRadius: "var(--radius-round)",
+            background: "transparent",
+            cursor: "pointer",
+          }}
+        >
+          <AgentAvatar agent={CHAT_AGENTS.AI} size={56} />
         </button>
       </div>
 

@@ -1,18 +1,32 @@
 // Provador: resultado e botão Encontrar profissionais · ranking sobre os estúdios do kira-backend
 import { Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useRanking, useTryOn } from "../../context/TryOnContext";
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
 import { ErrorState, SkeletonLoading } from "../../shared/components/states";
-import { Header, PrimaryButton } from "../../shared/components/ui";
+import { Chip } from "../../shared/components/primitives";
+import { Header, PrimaryButton, SecondaryButton } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
+import { CompatibilityRing } from "../components/CompatibilityRing";
 import { RecommendedProfessionalCard } from "../components/ProfessionalCards";
+import { recommendProfessionals } from "../recommendation";
 
 export default function ClientTryOnResultScreen() {
   const { goToPersonalizedRanking, tryOnClientPhoto, tryOnReference } = useTryOn();
   const { loadRanking, rankingError, rankingLoading, recommended } = useRanking();
   const { setBookedSlot, setSelectedProId } = useScheduling();
   const { setScreen } = useSession();
+  const [showAfter, setShowAfter] = useState(true);
+  // Reaproveita o cálculo de recommendation.js: a compatibilidade mostrada é a do melhor profissional para esta referência
+  const best = useMemo(
+    () =>
+      tryOnReference
+        ? recommendProfessionals({ referenceImage: tryOnReference, generatedImage: tryOnClientPhoto, limit: 1 })[0]
+        : null,
+    [tryOnReference, tryOnClientPhoto],
+  );
+  const related = [...new Set(recommended.map((p) => p.category))];
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientTryOnPhoto")} />
@@ -69,7 +83,7 @@ export default function ClientTryOnResultScreen() {
                 textAlign: "center",
               }}
             >
-              Resultado (prévia)
+              {showAfter ? "Depois (prévia)" : "Antes"}
             </p>
             <div
               style={{
@@ -85,18 +99,86 @@ export default function ClientTryOnResultScreen() {
                 alt="Prévia do resultado"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "hsl(var(--primary-hsl) / 0.18)",
-                  border: `2px solid ${colors.primary}`,
-                  borderRadius: "var(--radius-xl)",
-                }}
-              />
+              {showAfter && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "hsl(var(--primary-hsl) / 0.18)",
+                    border: `2px solid ${colors.primary}`,
+                    borderRadius: "var(--radius-xl)",
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
+
+        <div
+          role="group"
+          aria-label="Comparar antes e depois"
+          style={{ display: "flex", gap: "var(--space-8)", justifyContent: "center", marginBottom: "var(--space-18)" }}
+        >
+          <Chip style={{ minHeight: 44 }} active={!showAfter} onClick={() => setShowAfter(false)}>
+            Antes
+          </Chip>
+          <Chip style={{ minHeight: 44 }} active={showAfter} onClick={() => setShowAfter(true)}>
+            Depois
+          </Chip>
+        </div>
+
+        <section
+          aria-label="Compatibilidade"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-14)",
+            padding: "var(--space-14)",
+            borderRadius: "var(--radius-2xl)",
+            border: `1px solid ${colors.border}`,
+            background: colors.card,
+            marginBottom: "var(--space-18)",
+          }}
+        >
+          <CompatibilityRing value={best?.compatibility} />
+          <div style={{ minWidth: 0 }}>
+            <h2
+              style={{
+                fontFamily: fontDisplay,
+                fontWeight: 700,
+                fontSize: "var(--font-size-base)",
+                color: colors.foreground,
+                margin: "0 0 var(--space-4)",
+              }}
+            >
+              Compatibilidade com o seu visual
+            </h2>
+            <p
+              style={{
+                fontFamily: fontBody,
+                fontSize: "var(--font-size-xs)",
+                color: colors.mutedForeground,
+                margin: 0,
+              }}
+            >
+              {best
+                ? "Estimativa do melhor profissional para esta referência, combinando procedimento, similaridade, distância e avaliação."
+                : "Indisponível: envie uma referência no provador para calcular."}
+            </p>
+            {related.length > 0 && (
+              <p
+                style={{
+                  fontFamily: fontBody,
+                  fontSize: "var(--font-size-xs)",
+                  color: colors.foreground,
+                  margin: "var(--space-6) 0 0",
+                }}
+              >
+                Procedimentos relacionados: {related.join(", ")}
+              </p>
+            )}
+          </div>
+        </section>
 
         <div
           style={{
@@ -116,6 +198,8 @@ export default function ClientTryOnResultScreen() {
         </div>
 
         <PrimaryButton onClick={goToPersonalizedRanking}>Encontrar profissionais</PrimaryButton>
+        <div style={{ height: "var(--space-8)" }} />
+        <SecondaryButton onClick={() => setScreen("clientRecommended")}>Ver recomendados pela IA</SecondaryButton>
 
         <div style={{ marginTop: "var(--space-22)" }}>
           {rankingLoading ? (

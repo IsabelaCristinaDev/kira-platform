@@ -56,11 +56,13 @@ export default function ClientSearchScreen() {
         </h1>
         <SearchBar value={searchQuery} onChange={setSearchQuery} onFilterClick={openFilterModal} />
         <div
+          className="k-hscroll"
           style={{
             display: "flex",
             gap: "var(--space-8)",
             overflowX: "auto",
-            padding: "var(--space-14) 0 var(--space-4)",
+            margin: "0 calc(-1 * var(--space-24))",
+            padding: "var(--space-14) var(--space-24) var(--space-4)",
           }}
         >
           {categoryOptions.map((c) => (

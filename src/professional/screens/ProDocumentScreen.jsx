@@ -62,6 +62,7 @@ export default function ProDocumentScreen() {
           Aceitamos RG, CNH ou outro documento oficial com foto.
         </p>
         <PrimaryButton
+          sticky
           onClick={() => {
             const e = {};
             if (!pForm.docFrontPhoto) e.docFrontPhoto = "Adicione a foto da frente do documento";

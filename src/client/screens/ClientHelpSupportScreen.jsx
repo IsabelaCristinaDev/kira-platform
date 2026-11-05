@@ -6,7 +6,7 @@ import { colors, fontBody, fontDisplay } from "../../shared/theme";
 
 // === PERFIL: Ajuda e suporte ===
 export default function ClientHelpSupportScreen() {
-  const { setScreen } = useSession();
+  const { setScreen, openWithBack } = useSession();
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientProfile")} />
@@ -35,11 +35,17 @@ export default function ClientHelpSupportScreen() {
         <ProfileSection title="Dúvidas frequentes">
           {["Como funciona o Provador virtual?", "Como altero um agendamento?", "Como funciona o pagamento?"].map(
             (q, i, arr) => (
-              <ProfileMenuRow key={q} icon={HelpCircle} label={q} last={i === arr.length - 1} onClick={() => {}} />
+              <ProfileMenuRow
+                key={q}
+                icon={HelpCircle}
+                label={q}
+                last={i === arr.length - 1}
+                onClick={() => setScreen("clientFaq")}
+              />
             ),
           )}
         </ProfileSection>
-        <SecondaryButton onClick={() => setScreen("clientChat")}>
+        <SecondaryButton onClick={() => openWithBack("clientChat", "clientHelpSupport")}>
           <MessageCircle size={15} /> Conversar com o suporte
         </SecondaryButton>
       </div>

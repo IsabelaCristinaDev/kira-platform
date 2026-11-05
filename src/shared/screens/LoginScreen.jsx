@@ -55,6 +55,8 @@ export default function LoginScreen() {
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
             placeholder="seu@email.com"
+            inputMode="email"
+            autoComplete="email"
             style={inputStyle(false)}
           />
         </Field>
@@ -65,9 +67,11 @@ export default function LoginScreen() {
               value={loginPassword}
               onChange={(e) => setLoginPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
               style={inputStyle(false)}
             />
             <button
+              className="k-hit k-hit-wide"
               type="button"
               aria-label={showLoginPassword ? "Ocultar a senha" : "Mostrar a senha"}
               onClick={() => setShowLoginPassword((s) => !s)}

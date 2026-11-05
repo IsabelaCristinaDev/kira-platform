@@ -2,11 +2,18 @@
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { colors, fontBody, fontDisplay, gradientKira } from "../theme";
 
+// "novembro de 2026" vira "Novembro de 2026": só a inicial maiúscula (o capitalize do CSS deixava "De")
+const formatMonth = (date) => {
+  const label = date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  return label.charAt(0).toUpperCase() + label.slice(1);
+};
+
 export const CalendarHeader = ({ monthDate, onPrev, onNext, canGoPrev }) => (
   <div
     style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-14)" }}
   >
     <button
+      className="k-hit"
       onClick={onPrev}
       disabled={!canGoPrev}
       aria-label="Mês anterior"
@@ -31,12 +38,12 @@ export const CalendarHeader = ({ monthDate, onPrev, onNext, canGoPrev }) => (
         fontWeight: 700,
         fontSize: "var(--font-size-base)",
         color: colors.foreground,
-        textTransform: "capitalize",
       }}
     >
-      {monthDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+      {formatMonth(monthDate)}
     </span>
     <button
+      className="k-hit"
       onClick={onNext}
       aria-label="Próximo mês"
       style={{

@@ -4,7 +4,7 @@ import { BOOKING_STEPS, BOOKING_STEP_ORDER } from "../../../shared/api/bookingCo
 import { colors, fontBody, gradientKira } from "../../../shared/theme";
 import { formatStepTime, stepContent } from "../../booking/bookingContent";
 
-const Dot = ({ state }) => (
+export const Dot = ({ state }) => (
   <div
     aria-hidden="true"
     style={{

@@ -7,6 +7,8 @@ import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header, PrimaryButton } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { ProPhoto, RatingStars, ratingLabel } from "../components/ProfessionalCards";
+import { Badge } from "../../shared/components/primitives";
+import { certificatesDemo } from "../../shared/data/demo";
 import { useProfessional } from "../hooks/useProfessionals";
 
 export default function ClientProfessionalProfileScreen() {
@@ -40,6 +42,7 @@ export default function ClientProfessionalProfileScreen() {
       <div style={{ flex: 1, overflowY: "auto" }}>
         <div style={{ position: "relative", height: 140, background: gradientKira, flexShrink: 0 }}>
           <button
+            className="k-hit"
             onClick={() => setScreen("clientSearch")}
             aria-label="Voltar"
             style={{
@@ -60,6 +63,7 @@ export default function ClientProfessionalProfileScreen() {
             <ArrowLeft size={20} color={colors.primaryForeground} />
           </button>
           <button
+            className="k-hit"
             onClick={() => toggleFavoriteProfessional(pro.id)}
             aria-label={favoriteProIds.includes(pro.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
             style={{
@@ -314,6 +318,48 @@ export default function ClientProfessionalProfileScreen() {
               ))}
             </div>
           )}
+
+          <h2
+            style={{
+              fontFamily: fontDisplay,
+              fontWeight: 700,
+              fontSize: "var(--font-size-base)",
+              color: colors.foreground,
+              margin: "0 0 var(--space-10)",
+            }}
+          >
+            Certificados
+          </h2>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)", marginBottom: "var(--space-20)" }}
+          >
+            {certificatesDemo.map((cert) => (
+              <div
+                key={cert.id}
+                style={{
+                  padding: "var(--space-12) var(--space-14)",
+                  borderRadius: "var(--radius-xl)",
+                  border: `1px solid ${colors.border}`,
+                  background: colors.card,
+                  fontFamily: fontBody,
+                }}
+              >
+                <p style={{ margin: 0, fontWeight: 700, fontSize: "var(--font-size-sm)", color: colors.foreground }}>
+                  {cert.name}
+                </p>
+                <p
+                  style={{
+                    margin: "var(--space-2) 0 var(--space-6)",
+                    fontSize: "var(--font-size-xs)",
+                    color: colors.mutedForeground,
+                  }}
+                >
+                  {cert.issuer} · Emitido em {cert.issued} · Validade: {cert.validity}
+                </p>
+                <Badge tone="neutral">Exemplo · não verificado</Badge>
+              </div>
+            ))}
+          </div>
 
           <h2
             style={{

@@ -44,6 +44,8 @@ export default function ClientAddressScreen() {
               onChange={(e) => setCField("cep", formatCep(e.target.value))}
               onBlur={() => handleCepBlur(cForm)}
               placeholder="00000-000"
+              inputMode="numeric"
+              autoComplete="postal-code"
               style={inputStyle(cErrors.cep)}
             />
             {cCepLoading && (
@@ -109,7 +111,7 @@ export default function ClientAddressScreen() {
             />
           </Field>
         </div>
-        <PrimaryButton onClick={() => validateAddress(cForm, setCErrors) && setScreen("clientLocation")}>
+        <PrimaryButton sticky onClick={() => validateAddress(cForm, setCErrors) && setScreen("clientLocation")}>
           Continuar
         </PrimaryButton>
       </div>
