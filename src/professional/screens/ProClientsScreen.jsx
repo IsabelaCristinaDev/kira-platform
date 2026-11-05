@@ -1,28 +1,53 @@
-// Histórico de clientes do profissional: busca, filtro e detalhe · dados de exemplo
+// Histórico de clientes do profissional: busca, filtro e detalhe · API: kira-backend (agendamentos concluídos do estúdio)
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "../../context/SessionContext";
 import { ContactAvatar } from "../../shared/components/conversations";
-import { DemoBanner } from "../../shared/components/demo";
 import { Chip } from "../../shared/components/primitives";
 import { ScreenFrame } from "../../shared/components/ScreenFrame";
 import { Sheet } from "../../shared/components/Sheet";
 import { SecondaryButton } from "../../shared/components/ui";
-import { proClientsDemo } from "../../shared/data/demo";
-import { useConversations } from "../../context/ConversationsContext";
+import { useScheduling } from "../../context/SchedulingContext";
+import { errorMessage } from "../../shared/api";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
+import { formatRelativeDay, formatTime } from "../../shared/api/mappers";
+import { useBusinessData } from "../hooks/useBusinessData";
+import { completed } from "../utils/metrics";
 import { colors, fontBody } from "../../shared/theme";
 
 const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 const p = { margin: 0, fontFamily: fontBody };
 
+// Agrupa os atendimentos concluídos por cliente, do mais recente para o mais antigo
+const groupClients = (appointments) => {
+  const byClient = new Map();
+  for (const a of completed(appointments).sort((x, y) => y.start - x.start)) {
+    const key = a.clientId ?? a.clientName;
+    const entry = byClient.get(key) ?? {
+      id: String(key),
+      name: a.clientName,
+      lastAppointmentId: a.id,
+      last: `${formatRelativeDay(a.start)}, ${formatTime(a.start)}`,
+      count: 0,
+      procedures: [],
+    };
+    entry.count += 1;
+    if (a.service && !entry.procedures.includes(a.service)) entry.procedures.push(a.service);
+    byClient.set(key, entry);
+  }
+  return [...byClient.values()];
+};
+
 export default function ProClientsScreen() {
   const { setScreen } = useSession();
-  const { setSelectedConversationId } = useConversations();
+  const { setSelectedAppointmentId } = useScheduling();
+  const business = useBusinessData();
   const [query, setQuery] = useState("");
   const [onlyRegular, setOnlyRegular] = useState(false);
   const [detail, setDetail] = useState(null);
   const q = norm(query.trim());
-  const list = proClientsDemo.filter((c) => norm(c.name).includes(q) && (!onlyRegular || c.count >= 3));
+  const clients = groupClients(business.appointments);
+  const list = clients.filter((c) => norm(c.name).includes(q) && (!onlyRegular || c.count >= 3));
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, position: "relative" }}>
       <ScreenFrame
@@ -30,7 +55,6 @@ export default function ProClientsScreen() {
         title="Meus clientes"
         subtitle="Histórico de quem você já atendeu."
       >
-        <DemoBanner>Clientes e atendimentos de exemplo.</DemoBanner>
         <div
           style={{
             display: "flex",
@@ -70,7 +94,14 @@ export default function ProClientsScreen() {
             Recorrentes (3 ou mais)
           </Chip>
         </div>
-        {list.length === 0 ? (
+        {business.loading ? (
+          <SkeletonLoading count={3} />
+        ) : business.error ? (
+          <ErrorState
+            onRetry={business.retry}
+            message={errorMessage(business.error, "Não foi possível carregar os clientes agora.")}
+          />
+        ) : list.length === 0 ? (
           <p
             style={{
               ...p,
@@ -80,7 +111,7 @@ export default function ProClientsScreen() {
               padding: "var(--space-32) 0",
             }}
           >
-            Nenhum cliente encontrado.
+            {clients.length === 0 ? "Você ainda não tem atendimentos concluídos." : "Nenhum cliente encontrado."}
           </p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
@@ -158,7 +189,7 @@ export default function ProClientsScreen() {
           </dl>
           <SecondaryButton
             onClick={() => {
-              setSelectedConversationId(detail.id);
+              setSelectedAppointmentId(detail.lastAppointmentId);
               setScreen("proConversation");
             }}
           >

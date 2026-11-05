@@ -1,9 +1,10 @@
-// Painel do profissional: mês e dia da agenda e regras de fidelidade · dados: mock · API: nenhuma
+// Painel do profissional: mês e dia da agenda e regras de fidelidade · API: nenhuma (fidelidade ainda não tem backend)
 import { createContext, useContext, useState } from "react";
-import { initialLoyaltySettings } from "../professional/data/mocks";
 import { startOfDay, startOfMonth } from "../shared/utils/date";
 
 const ProDashboardContext = createContext(null);
+
+const initialLoyaltySettings = { enabled: true, pointsPerReal: 1, cashbackPercent: 5 };
 
 export function ProDashboardProvider({ children }) {
   const [proViewMonth, setProViewMonth] = useState(startOfMonth(new Date()));
@@ -12,11 +13,18 @@ export function ProDashboardProvider({ children }) {
 
   const changeProMonth = (delta) => setProViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + delta, 1));
 
+  // Abre a agenda em um dia, mesmo que seja de outro mês
+  const goToProDate = (date) => {
+    setProSelectedDate(date);
+    setProViewMonth(startOfMonth(date));
+  };
+
   const value = {
     proViewMonth,
     proSelectedDate,
     setProSelectedDate,
     changeProMonth,
+    goToProDate,
     loyaltySettings,
     setLoyaltySettings,
   };

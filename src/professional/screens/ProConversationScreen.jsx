@@ -1,18 +1,21 @@
-// Conversa do profissional com um cliente · demonstração visual, dados de exemplo
-import { useConversations } from "../../context/ConversationsContext";
+// Conversa do estúdio com a cliente sobre um atendimento · API: kira-backend (api.messages)
+import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
-import { ConversationPage } from "../../shared/components/ConversationPage";
-import { proConversationsDemo } from "../../shared/data/demo";
+import { AppointmentChatScreen } from "../../shared/components/AppointmentChatScreen";
+import { useBusinessAppointments } from "../hooks/useBusinessData";
 
 export default function ProConversationScreen() {
+  const { selectedAppointmentId } = useScheduling();
   const { setScreen } = useSession();
-  const { selectedConversationId } = useConversations();
-  const contact = proConversationsDemo.find((c) => c.id === selectedConversationId) ?? proConversationsDemo[0];
+  const appointments = useBusinessAppointments();
+  const toAgenda = () => setScreen("proAgendaDash");
   return (
-    <ConversationPage
-      contact={contact}
-      onBack={() => setScreen("proConversations")}
-      actions={[{ label: "Ver agendamento", onClick: () => setScreen("proAgendaDash") }]}
+    <AppointmentChatScreen
+      appointments={appointments}
+      appointmentId={selectedAppointmentId}
+      otherNameOf={(a) => a.clientName}
+      onBack={toAgenda}
+      onNotFound={toAgenda}
     />
   );
 }

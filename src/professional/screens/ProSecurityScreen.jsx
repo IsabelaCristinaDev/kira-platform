@@ -1,11 +1,12 @@
-// Segurança Kira: verificação, denúncia e emergência · mock · futura API: POST /api/denuncias
+// Segurança Kira: verificação, denúncia e emergência · API: kira-backend (avaliações) · futura API: POST /api/denuncias
 import { BadgeCheck, CheckCircle2, Clock, User } from "lucide-react";
 import { useSignup } from "../../context/SignupContext";
 import { useSession } from "../../context/SessionContext";
 import { ReportButton } from "../../shared/components/Safety";
 import { Header } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
-import { proDashboardStats } from "../data/mocks";
+import { useBusinessData } from "../hooks/useBusinessData";
+import { averageRating } from "../utils/metrics";
 
 // "Segurança Kira" — perfil verificado, checklist de credibilidade e
 // Canal de Segurança, conforme a segunda página do folheto profissional.
@@ -14,6 +15,8 @@ export default function ProSecurityScreen() {
   const { setScreen } = useSession();
   const hasDocs = !!pForm.docFrontPhoto && !!pForm.docBackPhoto;
   const certCount = pForm.specialties.length;
+  const { reviews } = useBusinessData();
+  const rating = averageRating(reviews);
   const verified = hasDocs;
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
@@ -117,7 +120,12 @@ export default function ProSecurityScreen() {
                 detail: `${certCount} certificado${certCount === 1 ? "" : "s"} enviado${certCount === 1 ? "" : "s"}`,
                 done: certCount > 0,
               },
-              { label: "Avaliações reais", detail: `${proDashboardStats.rating} · avaliações confirmadas`, done: true },
+              {
+                label: "Avaliações reais",
+                detail:
+                  rating != null ? `${rating} · ${reviews.length} avaliações de clientes` : "Nenhuma avaliação ainda",
+                done: rating != null,
+              },
             ].map((item) => (
               <div
                 key={item.label}

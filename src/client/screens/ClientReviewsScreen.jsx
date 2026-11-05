@@ -1,18 +1,22 @@
-// Perfil: avaliações feitas · mock
+// Perfil: avaliações feitas e atendimentos a avaliar · API: kira-backend (agendamentos e avaliações)
 import { useSession } from "../../context/SessionContext";
 import { useScheduling } from "../../context/SchedulingContext";
-import { EmptyState } from "../../shared/components/states";
+import { errorMessage } from "../../shared/api";
+import { EmptyState, ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header } from "../../shared/components/ui";
-import { mockProfessionals } from "../../shared/data/professionals";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
-import { RatingStars } from "../components/ProfessionalCards";
-import { appointmentsMock, clientReviewsMock } from "../data/mocks";
+import { ProPhoto, RatingStars } from "../components/ProfessionalCards";
+import { useMyAppointments, useMyReviews } from "../hooks/useProfessionals";
 
 // === PERFIL: Minhas avaliações ===
 export default function ClientReviewsScreen() {
   const { setScreen } = useSession();
   const { setSelectedAppointmentId } = useScheduling();
-  const reviewed = appointmentsMock.filter((a) => a.status === "concluido");
+  const appointments = useMyAppointments();
+  const reviews = useMyReviews();
+  const reviewed = (appointments.data ?? []).filter((a) => a.status === "concluido");
+  const loading = appointments.isLoading || reviews.isLoading;
+  const failed = appointments.isError ? appointments : reviews.isError ? reviews : null;
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientProfile")} />
@@ -38,13 +42,19 @@ export default function ClientReviewsScreen() {
         >
           Avaliações que você deixou para profissionais atendidos.
         </p>
-        {reviewed.length === 0 ? (
+        {loading ? (
+          <SkeletonLoading count={3} />
+        ) : failed ? (
+          <ErrorState
+            onRetry={failed.refetch}
+            message={errorMessage(failed.error, "Não foi possível carregar suas avaliações.")}
+          />
+        ) : reviewed.length === 0 ? (
           <EmptyState onClear={() => setScreen("clientProfile")} />
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-10)" }}>
             {reviewed.map((a) => {
-              const pro = mockProfessionals.find((p) => p.id === a.proId) || mockProfessionals[0];
-              const review = clientReviewsMock[a.id];
+              const review = reviews.data.find((r) => r.appointmentId === a.id);
               return (
                 <div
                   key={a.id}
@@ -63,11 +73,7 @@ export default function ClientReviewsScreen() {
                       marginBottom: "var(--space-8)",
                     }}
                   >
-                    <img
-                      src={pro.photo}
-                      alt={pro.name}
-                      style={{ width: 36, height: 36, borderRadius: "var(--radius-md)", objectFit: "cover" }}
-                    />
+                    <ProPhoto pro={{ name: a.proName, photo: null }} size={36} radius="var(--radius-md)" />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p
                         style={{
@@ -78,7 +84,7 @@ export default function ClientReviewsScreen() {
                           margin: 0,
                         }}
                       >
-                        {pro.name}
+                        {a.proName}
                       </p>
                       <p
                         style={{

@@ -1,7 +1,6 @@
 // Processamento do pagamento: aguardando, processando e resultado demonstrativo · nenhum pagamento real acontece
 import { CheckCircle2, Clock, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
 import { DemoBanner } from "../../shared/components/demo";
 import { Chip } from "../../shared/components/primitives";
@@ -35,7 +34,6 @@ const STATES = [
 
 export default function ClientPaymentProcessingScreen() {
   const { setScreen } = useSession();
-  const { scheduleTime, setBookedSlot } = useScheduling();
   const [state, setState] = useState("waiting");
   const current = STATES.find((s) => s.id === state);
   const { Icon } = current;
@@ -107,14 +105,8 @@ export default function ClientPaymentProcessingScreen() {
           {current.text}
         </p>
       </div>
-      <PrimaryButton
-        disabled={state !== "result"}
-        onClick={() => {
-          setBookedSlot(scheduleTime);
-          setScreen("clientScheduling");
-        }}
-      >
-        Ver confirmação do agendamento
+      <PrimaryButton disabled={state !== "result"} onClick={() => setScreen("clientScheduling")}>
+        Voltar ao agendamento
       </PrimaryButton>
       {state !== "result" && (
         <p

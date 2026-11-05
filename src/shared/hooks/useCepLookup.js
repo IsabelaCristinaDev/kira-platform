@@ -1,4 +1,4 @@
-// Busca de endereço pelo CEP (preenche só os campos vazios) · mock via api.address · futuro: ViaCEP
+// Busca de endereço pelo CEP (preenche só os campos vazios) · API: ViaCEP
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../api";
 import { onlyDigits } from "../utils/format";

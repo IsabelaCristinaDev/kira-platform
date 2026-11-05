@@ -99,7 +99,8 @@ export const CalendarDay = ({ cell, selected, onClick }) => {
   );
 };
 
-export const CalendarMonth = ({ monthDate, selectedDate, today, monthKey, onSelect }) => {
+// `isDayAvailable` diz quais dias podem ser escolhidos; sem ele, todos a partir de hoje
+export const CalendarMonth = ({ monthDate, selectedDate, today, monthKey, onSelect, isDayAvailable }) => {
   const year = monthDate.getFullYear();
   const month = monthDate.getMonth();
   const startOffset = new Date(year, month, 1).getDay();
@@ -145,9 +146,8 @@ export const CalendarMonth = ({ monthDate, selectedDate, today, monthKey, onSele
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "var(--space-4)" }}>
         {cells.map((cell, i) => {
           const midnight = new Date(cell.date.getFullYear(), cell.date.getMonth(), cell.date.getDate());
-          const isPast = midnight < today;
-          const isSunday = cell.date.getDay() === 0;
-          const unavailable = cell.inMonth && (isPast || isSunday);
+          const available = isDayAvailable ? isDayAvailable(midnight) : midnight >= today;
+          const unavailable = cell.inMonth && !available;
           const isToday = midnight.getTime() === today.getTime();
           const isSelected = !!selectedDate && midnight.getTime() === selectedDate.getTime();
           return (

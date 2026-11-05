@@ -1,16 +1,18 @@
-// Perfil: histórico de serviços · mock
+// Perfil: histórico de serviços · API: kira-backend (agendamentos do cliente)
 import { useSession } from "../../context/SessionContext";
 import { useScheduling } from "../../context/SchedulingContext";
+import { errorMessage } from "../../shared/api";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header } from "../../shared/components/ui";
-import { mockProfessionals } from "../../shared/data/professionals";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
 import { AppointmentCard } from "../components/ProfessionalCards";
-import { appointmentsMock } from "../data/mocks";
+import { useMyAppointments } from "../hooks/useProfessionals";
 
 // === PERFIL: Histórico completo ===
 export default function ClientHistoryScreen() {
   const { setScreen } = useSession();
   const { setSelectedAppointmentId } = useScheduling();
+  const appointments = useMyAppointments();
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientProfile")} />
@@ -36,22 +38,31 @@ export default function ClientHistoryScreen() {
         >
           Todos os seus agendamentos, de qualquer status.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-10)" }}>
-          {appointmentsMock.map((a) => {
-            const pro = mockProfessionals.find((p) => p.id === a.proId) || mockProfessionals[0];
-            return (
+        {appointments.isLoading ? (
+          <SkeletonLoading count={3} />
+        ) : appointments.isError ? (
+          <ErrorState
+            onRetry={appointments.refetch}
+            message={errorMessage(appointments.error, "Não foi possível carregar o histórico.")}
+          />
+        ) : appointments.data.length === 0 ? (
+          <p style={{ fontFamily: fontBody, fontSize: "var(--font-size-sm)", color: colors.mutedForeground }}>
+            Você ainda não tem agendamentos.
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-10)" }}>
+            {appointments.data.map((a) => (
               <AppointmentCard
                 key={a.id}
                 appointment={a}
-                pro={pro}
                 onClick={() => {
                   setSelectedAppointmentId(a.id);
                   setScreen("clientAgendaDetail");
                 }}
               />
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

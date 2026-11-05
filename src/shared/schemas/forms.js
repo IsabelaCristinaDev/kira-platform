@@ -62,6 +62,17 @@ export const addressSchema = z.object({
   state: z.string().refine((v) => v.trim().length === 2, "Use a sigla do estado (ex.: GO)"),
 });
 
+// Esqueci a senha: e-mail; nova senha: código do e-mail (vem no link) e a senha duas vezes
+export const forgotPasswordSchema = z.object({ email: emailRule });
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().refine((v) => v.trim(), "Cole o código que chegou no seu e-mail"),
+    password: passwordRule,
+    confirm: z.string(),
+  })
+  .superRefine(confirmCheck);
+
 export const termsSchema = z.object({
   termsUse: z.boolean().refine(Boolean, "Aceite os Termos de Uso para continuar"),
   termsPrivacy: z.boolean().refine(Boolean, "Aceite a Política de Privacidade para continuar"),

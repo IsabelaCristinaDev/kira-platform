@@ -1,28 +1,20 @@
-// Conversa do cliente com uma profissional · demonstração visual, dados de exemplo
-import { useConversations } from "../../context/ConversationsContext";
+// Conversa da cliente com o estúdio sobre um agendamento · API: kira-backend (api.messages)
 import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
-import { ConversationPage } from "../../shared/components/ConversationPage";
-import { clientConversationsDemo } from "../../shared/data/demo";
+import { AppointmentChatScreen } from "../../shared/components/AppointmentChatScreen";
+import { useMyAppointments } from "../hooks/useProfessionals";
 
 export default function ClientConversationScreen() {
+  const { selectedAppointmentId } = useScheduling();
   const { setScreen } = useSession();
-  const { setSelectedProId, resetScheduling } = useScheduling();
-  const { selectedConversationId } = useConversations();
-  const contact = clientConversationsDemo.find((c) => c.id === selectedConversationId) ?? clientConversationsDemo[0];
-  const go = (screen) => () => {
-    setSelectedProId(contact.proId);
-    if (screen === "clientScheduling") resetScheduling();
-    setScreen(screen);
-  };
+  const appointments = useMyAppointments();
   return (
-    <ConversationPage
-      contact={contact}
-      onBack={() => setScreen("clientConversations")}
-      actions={[
-        { label: "Ver perfil", onClick: go("clientProfessionalProfile") },
-        { label: "Agendar", onClick: go("clientScheduling") },
-      ]}
+    <AppointmentChatScreen
+      appointments={appointments}
+      appointmentId={selectedAppointmentId}
+      otherNameOf={(a) => a.proName}
+      onBack={() => setScreen("clientAgendaDetail")}
+      onNotFound={() => setScreen("clientAgenda")}
     />
   );
 }

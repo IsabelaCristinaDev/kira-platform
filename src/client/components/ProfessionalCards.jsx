@@ -1,8 +1,42 @@
-// Cards de profissional, recomendação, ranking e agendamento · API: nenhuma
+// Cards de profissional, recomendação, ranking e agendamento · API: nenhuma (recebem dados do backend já convertidos)
 import { ChevronRight, Clock, MapPin, Sparkles, Star } from "lucide-react";
 import { SecondaryButton } from "../../shared/components/ui";
+import { statusOf } from "../../shared/data/appointments";
 import { colors, fontBody, gradientKira } from "../../shared/theme";
-import { getRankingExtras } from "../data/mocks";
+
+// Foto do estúdio ou, sem foto cadastrada, as iniciais do nome
+export const ProPhoto = ({ pro, size, radius = "var(--radius-xl)", style }) => {
+  const box = { width: size, height: size, borderRadius: radius, flexShrink: 0, ...style };
+  if (pro.photo)
+    return <img src={pro.photo} alt={pro.name} style={{ ...box, objectFit: "cover", objectPosition: "center 25%" }} />;
+  const initials = pro.name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+  return (
+    <div
+      role="img"
+      aria-label={pro.name}
+      style={{
+        ...box,
+        background: gradientKira,
+        color: colors.primaryForeground,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: fontBody,
+        fontWeight: 700,
+        fontSize: typeof size === "number" && size < 48 ? "var(--font-size-xs)" : "var(--font-size-md)",
+      }}
+    >
+      {initials}
+    </div>
+  );
+};
+
+export const ratingLabel = (pro) => (pro.rating != null ? pro.rating : "Novo");
 
 export const ProfessionalCard = ({ pro, onClick }) => (
   <button
@@ -20,18 +54,7 @@ export const ProfessionalCard = ({ pro, onClick }) => (
       cursor: "pointer",
     }}
   >
-    <img
-      src={pro.photo}
-      alt={pro.name}
-      style={{
-        width: 56,
-        height: 56,
-        borderRadius: "var(--radius-xl)",
-        objectFit: "cover",
-        objectPosition: "center 25%",
-        flexShrink: 0,
-      }}
-    />
+    <ProPhoto pro={pro} size={56} />
     <div style={{ flex: 1, minWidth: 0 }}>
       <p
         style={{
@@ -67,35 +90,45 @@ export const ProfessionalCard = ({ pro, onClick }) => (
             color: colors.mutedForeground,
           }}
         >
-          <Star size={11} color={colors.accent} fill={colors.accent} /> {pro.rating}
+          <Star size={11} color={colors.accent} fill={colors.accent} /> {ratingLabel(pro)}
           {pro.reviews ? ` (${pro.reviews})` : ""}
         </span>
-        <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--space-2)",
-            fontFamily: fontBody,
-            fontSize: "var(--font-size-xs)",
-            color: colors.mutedForeground,
-          }}
-        >
-          <MapPin size={11} /> {pro.distance} km
-        </span>
+        {(pro.distance != null || pro.city) && (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+              fontFamily: fontBody,
+              fontSize: "var(--font-size-xs)",
+              color: colors.mutedForeground,
+            }}
+          >
+            <MapPin size={11} /> {pro.distance != null ? `${pro.distance} km` : pro.city}
+          </span>
+        )}
       </div>
     </div>
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--space-4)", flexShrink: 0 }}
-    >
-      <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
-        a partir de
-      </span>
-      <span
-        style={{ fontFamily: fontBody, fontWeight: 700, fontSize: "var(--font-size-md)", color: colors.primaryText }}
+    {pro.price != null && (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: "var(--space-4)",
+          flexShrink: 0,
+        }}
       >
-        R$ {pro.price}
-      </span>
-    </div>
+        <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
+          a partir de
+        </span>
+        <span
+          style={{ fontFamily: fontBody, fontWeight: 700, fontSize: "var(--font-size-md)", color: colors.primaryText }}
+        >
+          R$ {pro.price}
+        </span>
+      </div>
+    )}
     <ChevronRight size={18} color={colors.mutedForeground} style={{ flexShrink: 0 }} />
   </button>
 );
@@ -115,12 +148,11 @@ export const CompatibilityBadge = ({ value }) => (
       fontWeight: 700,
     }}
   >
-    <Sparkles size={11} /> {value}% compatível com seu visual
+    <Sparkles size={11} /> {value}% compatível
   </span>
 );
 
 export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
-  const extras = getRankingExtras(pro);
   return (
     <div
       role="presentation"
@@ -138,18 +170,7 @@ export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
         <CompatibilityBadge value={pro.compatibility} />
       </div>
       <div style={{ display: "flex", gap: "var(--space-12)", padding: "var(--space-14)" }}>
-        <img
-          src={pro.photo}
-          alt={pro.name}
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: "var(--radius-2xl)",
-            objectFit: "cover",
-            objectPosition: "center 25%",
-            flexShrink: 0,
-          }}
-        />
+        <ProPhoto pro={pro} size={64} radius="var(--radius-2xl)" />
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
@@ -191,54 +212,33 @@ export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
                 color: colors.mutedForeground,
               }}
             >
-              <Star size={11} color={colors.accent} fill={colors.accent} /> {pro.rating} ({pro.reviews} avaliações)
+              <Star size={11} color={colors.accent} fill={colors.accent} /> {ratingLabel(pro)}
+              {pro.reviews != null ? ` (${pro.reviews} avaliações)` : ""}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-8)", flexWrap: "wrap" }}>
-            <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
-              R$ {pro.price} — R$ {pro.price + 70}
-            </span>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--space-2)",
-                fontFamily: fontBody,
-                fontSize: "var(--font-size-xs)",
-                color: colors.mutedForeground,
-              }}
-            >
-              <MapPin size={11} /> {pro.distance} km
-            </span>
+            {pro.price != null && (
+              <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
+                a partir de R$ {pro.price}
+              </span>
+            )}
+            {(pro.distance != null || pro.city) && (
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-2)",
+                  fontFamily: fontBody,
+                  fontSize: "var(--font-size-xs)",
+                  color: colors.mutedForeground,
+                }}
+              >
+                <MapPin size={11} /> {pro.distance != null ? `${pro.distance} km` : pro.city}
+              </span>
+            )}
           </div>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--space-4)",
-              fontFamily: fontBody,
-              fontSize: "var(--font-size-xs)",
-              color: colors.primaryText,
-              fontWeight: 600,
-              marginTop: "var(--space-4)",
-            }}
-          >
-            <Clock size={11} /> Disponível {extras.nextSlot.toLowerCase()}
-          </span>
         </div>
       </div>
-      {extras.portfolio.length > 0 && (
-        <div style={{ display: "flex", gap: "var(--space-6)", padding: "0 var(--space-14) var(--space-14)" }}>
-          {extras.portfolio.map((photo) => (
-            <img
-              key={photo}
-              src={photo}
-              alt={`Trabalho de ${pro.name}`}
-              style={{ width: 56, height: 56, borderRadius: "var(--radius-md)", objectFit: "cover" }}
-            />
-          ))}
-        </div>
-      )}
       <div style={{ padding: "0 var(--space-14) var(--space-14)" }}>
         <SecondaryButton onClick={onViewProfile}>Ver perfil</SecondaryButton>
       </div>
@@ -247,7 +247,7 @@ export const RecommendedProfessionalCard = ({ pro, onViewProfile }) => {
 };
 
 export const RatingStars = ({ value, size = 12 }) => {
-  const rounded = Math.round(value);
+  const rounded = Math.round(value ?? 0);
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1)" }}>
       {Array.from({ length: 5 }).map((_, i) => (
@@ -331,18 +331,7 @@ export const RankingCard = ({ pro, rank, onClick }) => {
           {rank}
         </span>
       )}
-      <img
-        src={pro.photo}
-        alt={pro.name}
-        style={{
-          width: 52,
-          height: 52,
-          borderRadius: "var(--radius-xl)",
-          objectFit: "cover",
-          objectPosition: "center 25%",
-          flexShrink: 0,
-        }}
-      />
+      <ProPhoto pro={pro} size={52} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <p
           style={{
@@ -368,7 +357,8 @@ export const RankingCard = ({ pro, rank, onClick }) => {
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)" }}>
           <RatingStars value={pro.rating} size={10} />
           <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
-            {pro.rating} ({pro.reviews})
+            {ratingLabel(pro)}
+            {pro.reviews != null ? ` (${pro.reviews})` : ""}
           </span>
         </div>
       </div>
@@ -377,13 +367,9 @@ export const RankingCard = ({ pro, rank, onClick }) => {
   );
 };
 
-export const AppointmentCard = ({ appointment, pro, onClick }) => {
-  const statusMap = {
-    proximo: { label: "✓ Confirmado", color: colors.primaryText },
-    concluido: { label: "Concluído", color: colors.mutedForeground },
-    cancelado: { label: "Cancelado", color: colors.destructiveText },
-  };
-  const status = statusMap[appointment.status];
+export const AppointmentCard = ({ appointment, onClick }) => {
+  const status = statusOf(appointment);
+  const pro = { name: appointment.proName, photo: null };
   return (
     <button
       onClick={onClick}
@@ -401,18 +387,7 @@ export const AppointmentCard = ({ appointment, pro, onClick }) => {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-12)" }}>
-        <img
-          src={pro.photo}
-          alt={pro.name}
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: "var(--radius-lg)",
-            objectFit: "cover",
-            objectPosition: "center 25%",
-            flexShrink: 0,
-          }}
-        />
+        <ProPhoto pro={pro} size={48} radius="var(--radius-lg)" />
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
@@ -433,7 +408,7 @@ export const AppointmentCard = ({ appointment, pro, onClick }) => {
               margin: "var(--space-1) 0 0",
             }}
           >
-            {pro.role}
+            {appointment.staffName ? `com ${appointment.staffName}` : appointment.payment}
           </p>
         </div>
         <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", fontWeight: 700, color: status.color }}>
@@ -474,14 +449,12 @@ export const AppointmentCard = ({ appointment, pro, onClick }) => {
             color: colors.mutedForeground,
           }}
         >
-          <MapPin size={11} /> {appointment.place}
+          <MapPin size={11} /> {appointment.proName}
         </span>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span
-          style={{ fontFamily: fontBody, fontSize: "var(--font-size-sm)", fontWeight: 700, color: colors.primaryText }}
-        >
-          R$ {appointment.price.toFixed(2)}
+        <span style={{ fontFamily: fontBody, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
+          {appointment.durationMinutes ? `${appointment.durationMinutes} min` : ""}
         </span>
         <span
           style={{

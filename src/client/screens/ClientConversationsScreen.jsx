@@ -1,25 +1,17 @@
-// Conversas do cliente com profissionais · demonstração visual, dados de exemplo
-import { useConversations } from "../../context/ConversationsContext";
+// Conversas da cliente com os estúdios, uma por agendamento · API: kira-backend (api.messages)
+import { useScheduling } from "../../context/SchedulingContext";
 import { useSession } from "../../context/SessionContext";
-import { ConversationList } from "../../shared/components/conversations";
-import { DemoBanner } from "../../shared/components/demo";
+import { RealConversationList } from "../../shared/components/RealConversationList";
 import { ScreenFrame } from "../../shared/components/ScreenFrame";
-import { clientConversationsDemo } from "../../shared/data/demo";
 
 export default function ClientConversationsScreen() {
   const { setScreen } = useSession();
-  const { setSelectedConversationId } = useConversations();
+  const { setSelectedAppointmentId } = useScheduling();
   return (
-    <ScreenFrame
-      onBack={() => setScreen("clientProfile")}
-      title="Conversas"
-      subtitle="Suas conversas com profissionais."
-    >
-      <DemoBanner />
-      <ConversationList
-        items={clientConversationsDemo}
-        onOpen={(c) => {
-          setSelectedConversationId(c.id);
+    <ScreenFrame onBack={() => setScreen("clientProfile")} title="Conversas" subtitle="Suas conversas com os estúdios.">
+      <RealConversationList
+        onOpen={(id) => {
+          setSelectedAppointmentId(id);
           setScreen("clientConversation");
         }}
       />

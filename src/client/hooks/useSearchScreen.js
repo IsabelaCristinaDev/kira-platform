@@ -1,11 +1,9 @@
-// Estado da tela de busca (carregamento, filtros, rolagem infinita, puxar para atualizar) · api.professionals
-import { useQuery } from "@tanstack/react-query";
+// Estado da tela de busca (carregamento, filtros, rolagem infinita, puxar para atualizar) · API: kira-backend (estúdios)
 import { useEffect, useRef, useState } from "react";
 import { useSearch } from "../../context/SearchContext";
-import { api } from "../../shared/api";
-import { mockProfessionals } from "../../shared/data/professionals";
-import { defaultSearchFilters } from "../data/mocks";
+import { defaultSearchFilters } from "../data/options";
 import { searchProfessionals } from "../utils/searchProfessionals";
+import { useProfessionals } from "./useProfessionals";
 
 const PAGE_SIZE = 8;
 
@@ -20,16 +18,16 @@ export function useSearchScreen() {
   const searchListRef = useRef(null);
   const pullStartY = useRef(null);
 
-  // a lista carrega a cada entrada na tela; a busca em si é feita aqui, sem novo carregamento
-  const load = useQuery({ queryKey: ["professionals"], queryFn: () => api.professionals.list() });
+  // a lista vem do backend; a busca e os filtros são aplicados aqui, sem novo carregamento
+  const load = useProfessionals();
   const searchLoading = load.isFetching;
 
-  const filteredProfessionals = searchProfessionals(mockProfessionals, {
+  const filteredProfessionals = searchProfessionals(load.data ?? [], {
     query: searchQuery,
     category: categoryFilter,
     filters: appliedFilters,
   });
-  const searchHasError = searchQuery.trim().toLowerCase() === "erro";
+  const searchHasError = load.isError && !load.isFetching;
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);

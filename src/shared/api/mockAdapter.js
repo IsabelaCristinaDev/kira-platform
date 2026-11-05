@@ -1,8 +1,7 @@
-// Adaptador mock da API: dados locais com latência simulada · mock · futuro: adaptador HTTP real
+// Adaptador mock usado só pelo app Expo (ver index.native.js): dados locais com latência simulada · mock
 import { recommendProfessionals } from "../../client/recommendation";
 import { mockProfessionals } from "../data/professionals";
-import { getDaySchedule } from "../utils/date";
-import { ApiError } from "./contract";
+import { ApiError, PUSH_STATUS } from "./contract";
 import { mockBookings } from "./mockBookings";
 import { mockChat } from "./mockChat";
 import { mockReports } from "./mockReports";
@@ -10,7 +9,40 @@ import { mockTryOn } from "./mockTryOn";
 
 export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** @type {import("./contract").KiraApi} */
+// Horários de exemplo, sempre os mesmos para o mesmo dia e profissional
+const getDaySchedule = (date, pro) => {
+  const day = date.getDate();
+  const base = [
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+  ];
+  if (day % 6 === 0) return []; // dia sem horários
+  const seed = (day * 7 + pro.id * 13) % base.length;
+  const count = 3 + (day % 4);
+  const slots = [];
+  for (let i = 0; i < count; i++) slots.push(base[(seed + i * 3) % base.length]);
+  return Array.from(new Set(slots)).sort();
+};
+
+// Só na memória, igual às favoritas do app Expo até o mobile ser ligado ao backend
+const favoriteIds = new Set();
+const emergencyContacts = [];
+const MAX_EMERGENCY_CONTACTS = 5;
+
 export const mockAdapter = {
   professionals: {
     list: async () => {
@@ -29,7 +61,7 @@ export const mockAdapter = {
   recommendations: {
     get: async (params) => {
       await wait(550);
-      return recommendProfessionals(params);
+      return recommendProfessionals(mockProfessionals, params);
     },
   },
   address: {
@@ -43,6 +75,50 @@ export const mockAdapter = {
       await wait(700);
       return { ok: true };
     },
+  },
+  favorites: {
+    listIds: async () => {
+      await wait(300);
+      return [...favoriteIds];
+    },
+    add: async (professionalId) => {
+      await wait(300);
+      favoriteIds.add(professionalId);
+    },
+    remove: async (professionalId) => {
+      await wait(300);
+      favoriteIds.delete(professionalId);
+    },
+  },
+  emergencyContacts: {
+    list: async () => {
+      await wait(300);
+      return [...emergencyContacts];
+    },
+    create: async ({ name, phone, relationship = null }) => {
+      await wait(300);
+      if (emergencyContacts.length >= MAX_EMERGENCY_CONTACTS) {
+        throw new ApiError("too_many_contacts", "Você pode ter no máximo 5 contatos de emergência", 400);
+      }
+      const contact = { id: `contato-${Date.now()}-${emergencyContacts.length}`, name, phone, relationship };
+      emergencyContacts.push(contact);
+      return contact;
+    },
+    remove: async (id) => {
+      await wait(300);
+      const index = emergencyContacts.findIndex((c) => c.id === id);
+      if (index >= 0) emergencyContacts.splice(index, 1);
+    },
+  },
+  // O Expo não tem service worker; o push do celular fica para quando o mobile for ligado ao backend
+  notifications: {
+    getPublicKey: async () => null,
+    registerDevice: async () => null,
+    removeDevice: async () => null,
+    enable: async () => PUSH_STATUS.UNSUPPORTED,
+    sync: async () => {},
+    disable: async () => {},
+    forget: async () => {},
   },
   chat: mockChat,
   tryOn: mockTryOn,

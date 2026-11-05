@@ -27,7 +27,7 @@
 ## Legenda de arquivo
 
 Todo arquivo de `src/` começa com uma linha de comentário: o que faz, origem dos dados e API usada.
-Ao trocar um mock por API real, atualize a legenda e `docs/ARQUITETURA.md`.
+Ao ligar uma tela a um endpoint novo, atualize a legenda do arquivo e `docs/ARQUITETURA.md`.
 
 ## Versionamento
 

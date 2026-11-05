@@ -1,4 +1,4 @@
-// Botão de segurança, denúncia e emergência · mock · futura API: POST /api/denuncias
+// Botão de segurança, denúncia e emergência · sem API: o backend ainda não tem denúncias (futura POST /api/denuncias)
 import {
   AlertTriangle,
   Bell,

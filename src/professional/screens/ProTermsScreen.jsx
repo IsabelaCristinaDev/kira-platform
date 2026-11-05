@@ -1,14 +1,23 @@
-// Cadastro: aceite de termos · API: nenhuma
-import { Check } from "lucide-react";
+// Cadastro: aceite de termos, criação da conta e login · API: kira-backend (registro e login)
+import { useMutation } from "@tanstack/react-query";
 import { useSignup } from "../../context/SignupContext";
 import { useSession } from "../../context/SessionContext";
+import { api, errorMessage } from "../../shared/api";
 import { Header, PrimaryButton, StepDots } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
 import { Checkbox } from "../../shared/components/primitives";
 
 export default function ProTermsScreen() {
   const { pErrors, pForm, setPErrors, setPField, validateTerms } = useSignup();
-  const { setScreen } = useSession();
+  const { login, setScreen } = useSession();
+  // Cria a conta e já entra com ela
+  const register = useMutation({
+    mutationFn: async () => {
+      await api.auth.registerProfessional(pForm);
+      await login({ email: pForm.email, password: pForm.password });
+    },
+    onSuccess: () => setScreen("proDone"),
+  });
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
       <StepDots total={8} done={8} />
@@ -66,8 +75,24 @@ export default function ProTermsScreen() {
             )}
           </div>
         ))}
-        <PrimaryButton onClick={() => validateTerms(pForm, setPErrors) && setScreen("proDone")}>
-          Concluir cadastro
+        {register.isError && (
+          <p
+            role="alert"
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: colors.destructiveText,
+              fontFamily: fontBody,
+              margin: "0 0 var(--space-12)",
+            }}
+          >
+            {errorMessage(register.error, "Não foi possível criar a conta agora.")}
+          </p>
+        )}
+        <PrimaryButton
+          disabled={register.isPending}
+          onClick={() => validateTerms(pForm, setPErrors) && register.mutate()}
+        >
+          {register.isPending ? "Criando conta..." : "Concluir cadastro"}
         </PrimaryButton>
       </div>
     </div>

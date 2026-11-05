@@ -1,16 +1,16 @@
-// Menu do perfil do cliente · API: nenhuma
+// Menu do perfil do cliente · API: kira-backend (logout)
 import { LogOut, User } from "lucide-react";
 import { useSignup } from "../../context/SignupContext";
 import { useSession } from "../../context/SessionContext";
 import { ProfileMenuRow, ProfileSection } from "../../shared/components/ui";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { BottomNav } from "../components/BottomNav";
-import { clientProfileMenu } from "../data/mocks";
+import { clientProfileMenu } from "../data/options";
 
 // ---------- Perfil da cliente ----------
 export default function ClientProfileScreen() {
   const { cForm } = useSignup();
-  const { goToTab, setScreen } = useSession();
+  const { goToTab, logout, setScreen } = useSession();
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <div
@@ -87,7 +87,7 @@ export default function ClientProfileScreen() {
           </ProfileSection>
         ))}
         <button
-          onClick={() => setScreen("splash")}
+          onClick={logout}
           style={{
             width: "100%",
             padding: "var(--space-13)",

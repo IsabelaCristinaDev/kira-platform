@@ -1,4 +1,4 @@
-// Checkout do agendamento: resumo e escolha do pagamento (Pix, cartão, Gift Card) · demonstração, nada é cobrado nem validado
+// Checkout do agendamento: resumo e escolha do pagamento (Pix, cartão, Gift Card) · estúdio e serviço: kira-backend · pagamento: demonstração, nada é cobrado nem validado
 import { Check, CreditCard, Gift, QrCode } from "lucide-react";
 import { useState } from "react";
 import { useScheduling } from "../../context/SchedulingContext";
@@ -7,8 +7,11 @@ import { DemoBanner, DemoNotice } from "../../shared/components/demo";
 import { ScreenFrame } from "../../shared/components/ScreenFrame";
 import { inputStyle, PrimaryButton, SecondaryButton } from "../../shared/components/ui";
 import { cardsDemo } from "../../shared/data/demo";
-import { mockProfessionals } from "../../shared/data/professionals";
+import { errorMessage } from "../../shared/api";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
+import { ProPhoto } from "../components/ProfessionalCards";
+import { useProfessional } from "../hooks/useProfessionals";
 
 const METHODS = [
   { id: "pix", label: "Pix", detail: "Código para pagar no app do banco", icon: QrCode },
@@ -19,9 +22,11 @@ const METHODS = [
 const text = { margin: 0, fontFamily: fontBody };
 
 export default function ClientCheckoutScreen() {
-  const { selectedProId, selectedDate, bookedSlot, scheduleTime } = useScheduling();
+  const { selectedProId, selectedServiceId, selectedDate, bookedSlot, scheduleTime } = useScheduling();
   const { setScreen } = useSession();
-  const pro = mockProfessionals.find((p) => p.id === selectedProId) || mockProfessionals[0];
+  const proQuery = useProfessional(selectedProId);
+  const pro = proQuery.data;
+  const service = pro?.services.find((x) => x.id === selectedServiceId) ?? pro?.services[0];
   const [method, setMethod] = useState("pix");
   const [cardId, setCardId] = useState(cardsDemo[0].id);
   const [installments, setInstallments] = useState(1);
@@ -29,6 +34,33 @@ export default function ClientCheckoutScreen() {
   const [notice, setNotice] = useState("");
   const time = bookedSlot || scheduleTime;
   const date = selectedDate?.toLocaleDateString("pt-BR", { day: "2-digit", month: "long" });
+
+  const price = service?.price;
+  const priceLabel = price != null ? price.toFixed(2).replace(".", ",") : "—";
+
+  if (!pro) {
+    return (
+      <ScreenFrame
+        onBack={() => setScreen("clientScheduling")}
+        title="Pagamento"
+        subtitle="Escolha como pagar o seu agendamento."
+      >
+        {proQuery.isError ? (
+          <ErrorState
+            onRetry={proQuery.refetch}
+            message={errorMessage(proQuery.error, "Não foi possível carregar o agendamento.")}
+          />
+        ) : proQuery.isLoading ? (
+          <SkeletonLoading count={2} />
+        ) : (
+          <ErrorState
+            onRetry={() => setScreen("clientHome")}
+            message="Escolha um estúdio e um serviço para ver o pagamento."
+          />
+        )}
+      </ScreenFrame>
+    );
+  }
 
   return (
     <ScreenFrame
@@ -51,18 +83,7 @@ export default function ClientCheckoutScreen() {
           marginBottom: "var(--space-18)",
         }}
       >
-        <img
-          src={pro.photo}
-          alt=""
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: "var(--radius-xl)",
-            objectFit: "cover",
-            objectPosition: "center 25%",
-            flexShrink: 0,
-          }}
-        />
+        <ProPhoto pro={pro} size={56} />
         <div style={{ minWidth: 0, flex: 1 }}>
           <p
             style={{
@@ -75,13 +96,13 @@ export default function ClientCheckoutScreen() {
           >
             {pro.name}
           </p>
-          <p style={{ ...text, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>{pro.services[0]}</p>
+          <p style={{ ...text, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>{service?.name}</p>
           <p style={{ ...text, fontSize: "var(--font-size-xs)", color: colors.mutedForeground }}>
             {date ? `${date} às ${time ?? "--:--"}` : "Data e horário ainda não escolhidos"}
           </p>
         </div>
         <p style={{ ...text, fontWeight: 700, fontSize: "var(--font-size-base)", color: colors.primaryText }}>
-          R$ {pro.price}
+          R$ {priceLabel}
         </p>
       </section>
 
@@ -354,8 +375,8 @@ export default function ClientCheckoutScreen() {
             color: colors.mutedForeground,
           }}
         >
-          <span>{pro.services[0]}</span>
-          <span>R$ {pro.price}</span>
+          <span>{service?.name}</span>
+          <span>R$ {priceLabel}</span>
         </div>
         <div
           style={{
@@ -380,7 +401,7 @@ export default function ClientCheckoutScreen() {
           }}
         >
           <span>Total</span>
-          <span>R$ {pro.price}</span>
+          <span>R$ {priceLabel}</span>
         </div>
       </section>
 

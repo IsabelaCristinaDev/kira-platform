@@ -1,4 +1,4 @@
-// Estados de carregamento (skeleton), vazio e erro · API: nenhuma
+// Estados de carregamento (skeleton), vazio e erro, e aviso de recurso simulado · API: nenhuma
 import { AlertCircle, SearchX } from "lucide-react";
 import { colors, fontBody } from "../theme";
 import { PrimaryButton, SecondaryButton } from "./ui";
@@ -131,4 +131,22 @@ export const ErrorState = ({ onRetry, message = "Não foi possível carregar os 
       <PrimaryButton onClick={onRetry}>Tentar novamente</PrimaryButton>
     </div>
   </div>
+);
+
+// Recurso ainda sem backend: deixa claro que o que aparece na tela não é real
+export const DemoNotice = ({ children }) => (
+  <p
+    role="note"
+    style={{
+      margin: 0,
+      padding: "var(--space-10) var(--space-12)",
+      borderRadius: "var(--radius-lg)",
+      background: colors.muted,
+      color: colors.foreground,
+      fontFamily: fontBody,
+      fontSize: "var(--font-size-xs)",
+    }}
+  >
+    <strong>Demonstração:</strong> {children}
+  </p>
 );

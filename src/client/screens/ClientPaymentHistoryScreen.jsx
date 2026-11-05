@@ -1,15 +1,21 @@
-// Perfil: histórico de pagamentos · mock
+// Perfil: histórico de pagamentos (atendimentos concluídos) · API: kira-backend (agendamentos e serviços)
 import { useSession } from "../../context/SessionContext";
-import { EmptyState } from "../../shared/components/states";
+import { errorMessage } from "../../shared/api";
+import { EmptyState, ErrorState, SkeletonLoading } from "../../shared/components/states";
 import { Header } from "../../shared/components/ui";
-import { mockProfessionals } from "../../shared/data/professionals";
 import { colors, fontBody, fontDisplay } from "../../shared/theme";
-import { appointmentsMock } from "../data/mocks";
+import { ProPhoto } from "../components/ProfessionalCards";
+import { useMyAppointments, useProfessionals } from "../hooks/useProfessionals";
 
 // === PERFIL: Histórico de pagamentos ===
 export default function ClientPaymentHistoryScreen() {
   const { setScreen } = useSession();
-  const paid = appointmentsMock.filter((a) => a.status === "concluido");
+  const appointments = useMyAppointments();
+  const professionals = useProfessionals();
+  const paid = (appointments.data ?? []).filter((a) => a.status === "concluido");
+  // O agendamento não traz o preço: vem do serviço cadastrado no estúdio
+  const priceOf = (a) =>
+    professionals.data?.find((p) => p.id === a.proId)?.services.find((s) => s.id === a.serviceId)?.price ?? null;
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: colors.background }}>
       <Header onBack={() => setScreen("clientProfile")} />
@@ -35,12 +41,19 @@ export default function ClientPaymentHistoryScreen() {
         >
           Pagamentos de serviços já concluídos.
         </p>
-        {paid.length === 0 ? (
+        {appointments.isLoading ? (
+          <SkeletonLoading count={3} />
+        ) : appointments.isError ? (
+          <ErrorState
+            onRetry={appointments.refetch}
+            message={errorMessage(appointments.error, "Não foi possível carregar os pagamentos.")}
+          />
+        ) : paid.length === 0 ? (
           <EmptyState onClear={() => setScreen("clientProfile")} />
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
             {paid.map((a) => {
-              const pro = mockProfessionals.find((p) => p.id === a.proId) || mockProfessionals[0];
+              const price = priceOf(a);
               return (
                 <div
                   key={a.id}
@@ -54,11 +67,7 @@ export default function ClientPaymentHistoryScreen() {
                     background: colors.card,
                   }}
                 >
-                  <img
-                    src={pro.photo}
-                    alt={pro.name}
-                    style={{ width: 40, height: 40, borderRadius: "var(--radius-md)", objectFit: "cover" }}
-                  />
+                  <ProPhoto pro={{ name: a.proName, photo: null }} size={40} radius="var(--radius-md)" />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p
                       style={{
@@ -79,7 +88,8 @@ export default function ClientPaymentHistoryScreen() {
                         margin: "var(--space-1) 0 0",
                       }}
                     >
-                      {a.date} • {a.payment}
+                      {a.proName} • {a.date}
+                      {a.payment ? ` • ${a.payment}` : ""}
                     </p>
                   </div>
                   <span
@@ -90,7 +100,7 @@ export default function ClientPaymentHistoryScreen() {
                       color: colors.primaryText,
                     }}
                   >
-                    R$ {a.price.toFixed(2)}
+                    {price != null ? `R$ ${price.toFixed(2)}` : ""}
                   </span>
                 </div>
               );

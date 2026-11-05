@@ -1,11 +1,11 @@
-// Buscar (profissional): apresentação visual de profissionais próximos · demonstração, dados dos mocks, regras a definir
+// Buscar (profissional): apresentação visual de profissionais próximos · demonstração, dados de exemplo, sem endpoint no backend, regras a definir
 import { MapPin, Search, Star } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "../../context/SessionContext";
 import { ContactAvatar } from "../../shared/components/conversations";
 import { DemoBanner, DemoNotice } from "../../shared/components/demo";
 import { ScreenFrame } from "../../shared/components/ScreenFrame";
-import { mockProfessionals } from "../../shared/data/professionals";
+import { partnersDemo } from "../../shared/data/demo";
 import { colors, fontBody } from "../../shared/theme";
 import { ProBottomNav } from "../components/ProBottomNav";
 
@@ -16,7 +16,7 @@ export function ProSearchScreen() {
   const [query, setQuery] = useState("");
   const [noticeId, setNoticeId] = useState(null);
   const q = normalize(query.trim());
-  const nearby = [...mockProfessionals]
+  const nearby = [...partnersDemo]
     .sort((a, b) => a.distance - b.distance)
     .filter((p) => normalize(`${p.name} ${p.role}`).includes(q));
 

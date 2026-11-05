@@ -1,38 +1,6 @@
 // Conteúdo demonstrativo das telas ainda sem backend: todo texto e dado aqui é exemplo, nada é real · mock
 import { mockProfessionals } from "./professionals";
 
-// ---- Conversas (cliente e profissional) ----
-export const demoMessages = [
-  { id: "m1", from: "them", text: "Mensagem de exemplo recebida.", time: "09:30" },
-  { id: "m2", from: "me", text: "Mensagem de exemplo enviada.", time: "09:32", status: "read" },
-  { id: "m3", from: "them", text: "Outra mensagem de exemplo recebida.", time: "09:35" },
-];
-
-const lastOf = demoMessages[demoMessages.length - 1];
-
-// Lado do cliente: conversas com profissionais já existentes nos mocks
-export const clientConversationsDemo = mockProfessionals.slice(0, 3).map((pro, i) => ({
-  id: `pro-${pro.id}`,
-  proId: pro.id,
-  name: pro.name,
-  subtitle: pro.role,
-  photo: pro.photo,
-  last: lastOf.text,
-  time: i === 0 ? "09:35" : i === 1 ? "Ontem" : "12/07",
-  unread: i === 0 ? 2 : 0,
-}));
-
-// Lado do profissional: clientes que já aparecem na agenda e no financeiro dos mocks
-export const proConversationsDemo = ["Ana Souza", "Rafael Lima", "Beatriz Nunes"].map((name, i) => ({
-  id: `cli-${i + 1}`,
-  name,
-  subtitle: "Cliente",
-  photo: null,
-  last: lastOf.text,
-  time: i === 0 ? "09:35" : i === 1 ? "Ontem" : "12/07",
-  unread: i === 0 ? 1 : 0,
-}));
-
 // ---- Notificações: usam só os avisos que o acompanhamento do agendamento já documenta ----
 export const notificationsDemo = [
   {
@@ -128,13 +96,16 @@ export const loyaltyDemo = {
   ],
 };
 
-// ---- Histórico de clientes do profissional: nomes já usados nos mocks, números de exemplo ----
-export const proClientsDemo = [
-  { id: "cli-1", name: "Ana Souza", last: "Hoje, 10:30", count: 5, procedures: ["Coloração", "Hidratação"] },
-  { id: "cli-2", name: "Rafael Lima", last: "Ontem, 13:00", count: 3, procedures: ["Corte"] },
-  { id: "cli-3", name: "Beatriz Nunes", last: "12/07", count: 1, procedures: ["Corte", "Escova"] },
-  { id: "cli-4", name: "Camila Rocha", last: "28/06", count: 2, procedures: ["Hidratação"] },
-];
+// ---- Busca de parcerias do profissional: exemplos, o backend não tem endpoint de parcerias ----
+export const partnersDemo = mockProfessionals.map((p) => ({
+  id: p.id,
+  name: p.name,
+  role: p.role,
+  photo: p.photo,
+  distance: p.distance,
+  rating: p.rating,
+  reviews: p.reviews,
+}));
 
 // ---- Certificados: exemplos, nenhum foi validado ----
 export const certificatesDemo = [
@@ -166,13 +137,3 @@ export const journeySteps = [
   "Avaliação",
   "Fidelidade",
 ];
-
-// ---- Chat: mensagem com imagem e estados de envio (apenas visual) ----
-export const chatImageDemo = {
-  id: "m4",
-  from: "me",
-  image: true,
-  text: "Imagem de exemplo",
-  time: "09:40",
-  status: "read",
-};

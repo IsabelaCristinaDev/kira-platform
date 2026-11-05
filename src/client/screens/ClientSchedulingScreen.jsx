@@ -1,5 +1,5 @@
-// Agendamento: data e horário · mock com latência e erro simulados · futura API: GET /profissionais/:id/disponibilidade
-import { useQuery } from "@tanstack/react-query";
+// Agendamento: serviço, data, horário e confirmação · API: kira-backend (slots de disponibilidade e POST /api/agendamentos)
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { useScheduling } from "../../context/SchedulingContext";
@@ -11,45 +11,62 @@ import {
   LoadingSchedule,
   TimeSlotGrid,
 } from "../../shared/components/Calendar";
-import { ErrorState } from "../../shared/components/states";
-import { Header, PrimaryButton, SecondaryButton } from "../../shared/components/ui";
-import { api } from "../../shared/api";
-import { mockProfessionals } from "../../shared/data/professionals";
+import { ErrorState, SkeletonLoading } from "../../shared/components/states";
+import { CategoryChip, Header, PrimaryButton, SecondaryButton } from "../../shared/components/ui";
+import { api, errorMessage } from "../../shared/api";
+import { useBookableDays } from "../../shared/hooks/useBookableDays";
 import { colors, fontBody, fontDisplay, gradientKira } from "../../shared/theme";
 import { startOfDay } from "../../shared/utils/date";
+import { useProfessional } from "../hooks/useProfessionals";
 
 export default function ClientSchedulingScreen() {
   const {
     bookedSlot,
     changeMonth,
-    retriedDatesRef,
-    retrySchedule,
     scheduleTime,
     selectScheduleDate,
     selectedDate,
     selectedProId,
+    selectedServiceId,
     setAgendaTab,
+    setBookedSlot,
     setScheduleTime,
+    setSelectedServiceId,
     viewMonth,
   } = useScheduling();
   const { setScreen } = useSession();
   const today = startOfDay(new Date());
   const [monthAnimKey, setMonthAnimKey] = useState(0);
-  const pro = mockProfessionals.find((p) => p.id === selectedProId) || mockProfessionals[0];
-  // Horários do dia escolhido (mock com latência e um erro simulado; ver api.availability)
+  const queryClient = useQueryClient();
+  const proQuery = useProfessional(selectedProId);
+  const pro = proQuery.data;
+  const isDayAvailable = useBookableDays(selectedProId);
+  const service = pro?.services.find((s) => s.id === selectedServiceId) ?? null;
+  // Horários livres do dia escolhido para o serviço escolhido
   const availability = useQuery({
-    queryKey: ["availability", pro.id, selectedDate?.toDateString()],
-    queryFn: () =>
-      api.availability.get({
-        pro,
-        date: selectedDate,
-        retried: retriedDatesRef.current.has(selectedDate.toDateString()),
-      }),
-    enabled: !!selectedDate,
+    queryKey: ["availability", selectedProId, selectedServiceId, selectedDate?.toDateString()],
+    queryFn: () => api.availability.get({ proId: selectedProId, serviceId: selectedServiceId, date: selectedDate }),
+    enabled: !!selectedDate && !!selectedServiceId,
   });
   const times = availability.data ?? [];
   const scheduleLoading = availability.isFetching;
   const scheduleError = availability.isError && !availability.isFetching;
+  const book = useMutation({
+    mutationFn: () => {
+      const [h, m] = scheduleTime.split(":").map(Number);
+      const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), h, m);
+      return api.appointments.create({ proId: selectedProId, serviceId: selectedServiceId, start });
+    },
+    onSuccess: () => {
+      setBookedSlot(scheduleTime);
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    },
+  });
+  const selectService = (id) => {
+    setSelectedServiceId(id);
+    setScheduleTime(null);
+    book.reset();
+  };
   const handleChangeMonth = (delta) => {
     changeMonth(delta);
     setMonthAnimKey((k) => k + 1);
@@ -57,6 +74,23 @@ export default function ClientSchedulingScreen() {
   const canGoPrev =
     viewMonth.getFullYear() > today.getFullYear() ||
     (viewMonth.getFullYear() === today.getFullYear() && viewMonth.getMonth() > today.getMonth());
+  if (!pro) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <Header onBack={() => setScreen("clientProfessionalProfile")} />
+        <div style={{ padding: "0 var(--space-24) var(--space-32)" }}>
+          {proQuery.isError || !selectedProId ? (
+            <ErrorState
+              onRetry={selectedProId ? proQuery.refetch : () => setScreen("clientSearch")}
+              message="Não foi possível carregar este profissional."
+            />
+          ) : (
+            <SkeletonLoading count={2} />
+          )}
+        </div>
+      </div>
+    );
+  }
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
       <Header onBack={() => setScreen("clientProfessionalProfile")} />
@@ -105,8 +139,8 @@ export default function ClientSchedulingScreen() {
                 margin: 0,
               }}
             >
-              {pro.name} • {selectedDate?.toLocaleDateString("pt-BR", { day: "2-digit", month: "long" })} às{" "}
-              {bookedSlot}
+              {service?.name} com {pro.name} •{" "}
+              {selectedDate?.toLocaleDateString("pt-BR", { day: "2-digit", month: "long" })} às {bookedSlot}
             </p>
             <div
               style={{ width: "100%", maxWidth: 260, display: "flex", flexDirection: "column", gap: "var(--space-10)" }}
@@ -143,8 +177,19 @@ export default function ClientSchedulingScreen() {
                 margin: "0 0 var(--space-18)",
               }}
             >
-              Escolha o melhor dia e horário para o seu atendimento.
+              Escolha o serviço, o dia e o horário do seu atendimento.
             </p>
+
+            <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap", marginBottom: "var(--space-18)" }}>
+              {pro.services.map((s) => (
+                <CategoryChip
+                  key={s.id}
+                  label={`${s.name} · R$ ${s.price.toFixed(2)}`}
+                  active={s.id === selectedServiceId}
+                  onClick={() => selectService(s.id)}
+                />
+              ))}
+            </div>
 
             <CalendarHeader
               monthDate={viewMonth}
@@ -159,10 +204,24 @@ export default function ClientSchedulingScreen() {
                 today={today}
                 monthKey={monthAnimKey}
                 onSelect={selectScheduleDate}
+                isDayAvailable={isDayAvailable}
               />
             </div>
 
-            {selectedDate && (
+            {selectedDate && !selectedServiceId && (
+              <p
+                style={{
+                  fontFamily: fontBody,
+                  fontSize: "var(--font-size-xs)",
+                  color: colors.mutedForeground,
+                  textAlign: "center",
+                }}
+              >
+                Escolha um serviço para ver os horários.
+              </p>
+            )}
+
+            {selectedDate && selectedServiceId && (
               <>
                 <h2
                   style={{
@@ -179,8 +238,8 @@ export default function ClientSchedulingScreen() {
                   <LoadingSchedule />
                 ) : scheduleError ? (
                   <ErrorState
-                    onRetry={() => retrySchedule(availability.refetch)}
-                    message="Não foi possível carregar os horários agora."
+                    onRetry={() => availability.refetch()}
+                    message={errorMessage(availability.error, "Não foi possível carregar os horários agora.")}
                   />
                 ) : times.length === 0 ? (
                   <EmptySchedule />
@@ -205,7 +264,27 @@ export default function ClientSchedulingScreen() {
 
             {scheduleTime && (
               <div style={{ marginTop: "var(--space-20)" }}>
-                <PrimaryButton onClick={() => setScreen("clientCheckout")}>Continuar para o pagamento</PrimaryButton>
+                {book.isError && (
+                  <p
+                    role="alert"
+                    style={{
+                      fontFamily: fontBody,
+                      fontSize: "var(--font-size-xs)",
+                      color: colors.destructiveText,
+                      margin: "0 0 var(--space-12)",
+                    }}
+                  >
+                    {errorMessage(book.error, "Não foi possível confirmar o agendamento.")}
+                  </p>
+                )}
+                <PrimaryButton disabled={book.isPending} onClick={() => book.mutate()}>
+                  {book.isPending ? "Confirmando..." : "Confirmar agendamento"}
+                </PrimaryButton>
+                <div style={{ marginTop: "var(--space-10)" }}>
+                  <SecondaryButton onClick={() => setScreen("clientCheckout")}>
+                    Ver formas de pagamento (demonstração)
+                  </SecondaryButton>
+                </div>
               </div>
             )}
           </>

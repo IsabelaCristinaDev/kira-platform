@@ -3,7 +3,7 @@ import { Fragment, useEffect, useMemo, useRef } from "react";
 import { HANDOFF_STATES, MESSAGE_TYPES } from "../../../shared/api/chatContract";
 import { Text } from "../../../shared/components/primitives";
 import { colors } from "../../../shared/theme";
-import { groupMessagesByDay } from "../../chat/chatMessages";
+import { groupMessagesByDay } from "../../../shared/utils/chatMessages";
 import { ProfessionalCard } from "../ProfessionalCards";
 import { HandoffBanner } from "./HandoffBanner";
 import { AssistantRow, MessageBubble } from "./MessageBubble";
