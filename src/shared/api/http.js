@@ -63,10 +63,12 @@ const send = (path, { method = "GET", body, query, auth = true } = {}) => {
   const url = new URL(`${baseUrl()}${path}`);
   Object.entries(query ?? {}).forEach(([k, v]) => v != null && url.searchParams.set(k, v));
   const headers = { Accept: "application/json" };
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+  // Envio de arquivo (FormData): o navegador define o Content-Type com o separador do multipart
+  const isForm = typeof FormData !== "undefined" && body instanceof FormData;
+  if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
   const token = auth ? authStore.get()?.token : null;
   if (token) headers.Authorization = `Bearer ${token}`;
-  return fetch(url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+  return fetch(url, { method, headers, body: body === undefined || isForm ? body : JSON.stringify(body) });
 };
 
 // Respostas em que o backend recusa o refresh token. Qualquer outro erro é temporário e mantém a sessão.

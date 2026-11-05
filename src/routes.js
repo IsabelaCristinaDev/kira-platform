@@ -79,6 +79,7 @@ export const professionalPaths = area("/profissional", [
   ["proLoyalty", "fidelidade"],
   ["proSecurity", "seguranca"],
   ["proBusinessHours", "horario"],
+  ["proPortfolio", "portfolio"],
   ["proHelp", "ajuda"],
   ["proFaq", "ajuda/perguntas"],
   ["proConversations", "conversas"],

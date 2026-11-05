@@ -222,3 +222,51 @@ describe("businessHours.get", () => {
     expect(fetch.mock.calls[0][1].headers.Authorization).toBeUndefined();
   });
 });
+
+const entrar = (id) => {
+  const store = new Map();
+  vi.stubGlobal("localStorage", {
+    getItem: (k) => store.get(k) ?? null,
+    setItem: (k, v) => store.set(k, v),
+    removeItem: (k) => store.delete(k),
+  });
+  authStore.set({ token: "t", refreshToken: "r", tipo: "EMPRESA", nome: "Ana", id });
+};
+
+describe("portfolio", () => {
+  it("lista as fotos do estúdio sem exigir login", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(json(200, [{ id: "f1", url: "/api/arquivos/a.jpg", dataCriacao: "2026-11-05T10:00:00" }]));
+    vi.stubGlobal("fetch", fetch);
+    const photos = await api.portfolio.list("e1");
+    expect(urls(fetch)[0]).toContain("/api/studios/e1/portfolio");
+    expect(photos).toEqual([
+      { id: "f1", url: expect.stringContaining("/api/arquivos/a.jpg"), createdAt: "2026-11-05T10:00:00" },
+    ]);
+  });
+
+  it("envia a foto como multipart no campo arquivo, na conta logada", async () => {
+    entrar("e9");
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(json(201, { id: "f2", url: "/api/arquivos/b.png", dataCriacao: "2026-11-05T10:00:00" }));
+    vi.stubGlobal("fetch", fetch);
+    await api.portfolio.add(new File(["x"], "b.png", { type: "image/png" }));
+    const [url, init] = fetch.mock.calls[0];
+    expect(String(url)).toContain("/api/empresas/e9/portfolio");
+    expect(init.method).toBe("POST");
+    expect(init.body).toBeInstanceOf(FormData);
+    expect(init.body.get("arquivo").name).toBe("b.png");
+    expect(init.headers["Content-Type"]).toBeUndefined();
+  });
+
+  it("remove a foto da conta logada", async () => {
+    entrar("e9");
+    const fetch = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal("fetch", fetch);
+    await api.portfolio.remove("f2");
+    expect(String(fetch.mock.calls[0][0])).toContain("/api/empresas/e9/portfolio/f2");
+    expect(fetch.mock.calls[0][1].method).toBe("DELETE");
+  });
+});

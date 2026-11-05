@@ -6,6 +6,7 @@ import {
   CreditCard,
   Gift,
   HelpCircle,
+  Images,
   Home,
   Search,
   ShieldCheck,
@@ -18,6 +19,7 @@ export const proProfileMenu = [
     title: "Minha atividade",
     items: [
       { label: "Minha agenda", icon: Calendar, go: "proAgendaDash" },
+      { label: "Meu portfólio", icon: Images, go: "proPortfolio" },
       { label: "Horário de funcionamento", icon: Clock, go: "proBusinessHours" },
       { label: "Financeiro", icon: CreditCard, go: "proFinance" },
     ],

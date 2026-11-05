@@ -106,6 +106,7 @@ function Prototype() {
         ["Agenda: conversa", "proConversation"],
         ["Perfil (menu)", "proProfileMenu"],
         ["Horário", "proBusinessHours"],
+        ["Portfólio", "proPortfolio"],
         ["Financeiro", "proFinance"],
         ["Analytics", "proAnalytics"],
         ["Gift Cards", "proGiftCards"],

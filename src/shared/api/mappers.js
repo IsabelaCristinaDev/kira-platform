@@ -432,3 +432,6 @@ export const toProfessionalRegistration = (f) => {
     tipoEstabelecimento: isCompany ? "ESTABELECIMENTO" : "AUTONOMA",
   };
 };
+
+/** @returns {{ id: string, url: string, createdAt: string }} */
+export const toPortfolioPhoto = (f) => ({ id: f.id, url: f.url, createdAt: f.dataCriacao });

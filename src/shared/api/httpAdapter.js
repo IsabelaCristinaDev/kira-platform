@@ -1,6 +1,6 @@
 // Adaptador HTTP: cada função chama o kira-backend (e o ViaCEP) e devolve dados no formato das telas · API: kira-backend, ViaCEP
 import { ApiError, SESSION_ENDED, SESSION_ENDED_MESSAGE } from "./contract";
-import { authStore, request } from "./http";
+import { API_URL, authStore, request } from "./http";
 import {
   toAppointment,
   toBusinessHours,
@@ -18,6 +18,7 @@ import {
   toClientProfileRequest,
   toConversation,
   toMessage,
+  toPortfolioPhoto,
   toProfessional,
   toProfessionalRegistration,
   toReview,
@@ -50,6 +51,10 @@ const availableSlots = async ({ proId, serviceId, staffId, date }) => {
   });
   return slots.map(toSlotTime);
 };
+
+// As fotos vêm como /api/arquivos/...: no build, o endereço completo é o da API
+const fileUrl = (url) => (url?.startsWith("/") ? `${API_URL}${url}` : url);
+const withFileUrl = (photo) => ({ ...photo, url: fileUrl(photo.url) });
 
 const isBusinessRule = (e) => e instanceof ApiError && e.code === "REGRA_DE_NEGOCIO";
 
@@ -150,6 +155,19 @@ export const httpAdapter = {
       const list = await request(`/api/studios/${id}/funcionarias`, { auth: false });
       return list.map(toStaff);
     },
+  },
+  portfolio: {
+    // Público: as fotos de trabalhos que o estúdio mostra no perfil
+    list: async (proId) =>
+      (await request(`/api/studios/${proId}/portfolio`, { auth: false })).map(toPortfolioPhoto).map(withFileUrl),
+    add: async (file) => {
+      const body = new FormData();
+      body.append("arquivo", file);
+      return withFileUrl(
+        toPortfolioPhoto(await request(`/api/empresas/${currentUserId()}/portfolio`, { method: "POST", body })),
+      );
+    },
+    remove: (photoId) => request(`/api/empresas/${currentUserId()}/portfolio/${photoId}`, { method: "DELETE" }),
   },
   availability: {
     // Com `staffId`, só os horários em que aquela funcionária está livre
