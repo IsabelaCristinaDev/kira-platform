@@ -93,7 +93,12 @@ export default function ClientProfessionalProfileScreen() {
             pro={pro}
             size={84}
             radius="var(--radius-4xl)"
-            style={{ border: `3px solid ${colors.card}`, boxShadow: "var(--shadow-md)" }}
+            style={{
+              position: "relative",
+              display: "block",
+              border: `3px solid ${colors.card}`,
+              boxShadow: "var(--shadow-md)",
+            }}
           />
           <h1
             style={{
