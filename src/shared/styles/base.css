@@ -165,6 +165,19 @@ textarea,
 }
 
 /* respeita quem pede menos movimento; o giro do carregando continua para indicar progresso */
+/* Barra de rolagem invisível dentro do app (a rolagem continua funcionando) */
+.k-frame,
+.k-frame * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.k-frame::-webkit-scrollbar,
+.k-frame *::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .k-mascot {
     animation: none;
